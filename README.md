@@ -1,6 +1,6 @@
 # 2026 Capstone Project
 
-> **HealthMate AI: 나만을 위한 AI 건강 비서**
+> **HealthMate AI: 만성질환 위험군을 위한 Vision AI 식단 인식과 AI 맞춤 코칭 통합 헬스케어 앱**
 >
 > \- 이화여자대학교 컴퓨터공학전공 캡스톤디자인 스타트 2팀 Sudo -
 
