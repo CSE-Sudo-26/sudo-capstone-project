@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>On-Care | HealthMate AI</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Serif+Display&display=swap"
+        rel="stylesheet" />
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --green: #2e7d5e;
+            --green-light: #4caf85;
+            --green-pale: #e8f5ef;
+            --accent: #f4a946;
+            --dark: #1a2e24;
+            --text: #2d3a33;
+            --muted: #6b8070;
+            --bg: #f7faf8;
+            --white: #ffffff;
+            --radius: 16px;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+        }
+
+        /* HEADER */
+        header {
+            background: var(--dark);
+            color: var(--white);
+            padding: 72px 24px 60px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: -80px;
+            left: -80px;
+            width: 340px;
+            height: 340px;
+            background: radial-gradient(circle, rgba(76, 175, 133, 0.25) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        header::after {
+            content: '';
+            position: absolute;
+            bottom: -60px;
+            right: -40px;
+            width: 260px;
+            height: 260px;
+            background: radial-gradient(circle, rgba(244, 169, 70, 0.18) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .badge {
+            display: inline-block;
+            background: var(--green-light);
+            color: var(--white);
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            padding: 4px 14px;
+            border-radius: 999px;
+            margin-bottom: 20px;
+        }
+
+        header h1 {
+            font-family: 'DM Serif Display', serif;
+            font-size: clamp(2rem, 5vw, 3.2rem);
+            line-height: 1.2;
+            margin-bottom: 12px;
+        }
+
+        header .brand {
+            font-size: 1.1rem;
+            color: var(--accent);
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        header .subtitle {
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.65);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* MAIN */
+        main {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 48px 24px 80px;
+        }
+
+        section {
+            margin-bottom: 56px;
+        }
+
+        h2 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--green);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h2 .emoji {
+            font-size: 1.5rem;
+        }
+
+        /* INFO TABLE */
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--white);
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: 0 2px 16px rgba(30, 60, 40, 0.07);
+        }
+
+        .info-table tr {
+            border-bottom: 1px solid #e8f0eb;
+        }
+
+        .info-table tr:last-child {
+            border-bottom: none;
+        }
+
+        .info-table th {
+            width: 30%;
+            background: var(--green-pale);
+            color: var(--green);
+            font-weight: 700;
+            font-size: 0.88rem;
+            padding: 14px 18px;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        .info-table td {
+            padding: 14px 18px;
+            font-size: 0.9rem;
+            color: var(--text);
+            vertical-align: top;
+        }
+
+        /* CARD GRID */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 16px;
+        }
+
+        .card {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 24px 20px;
+            box-shadow: 0 2px 12px rgba(30, 60, 40, 0.06);
+            border-left: 4px solid var(--green-light);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 24px rgba(30, 60, 40, 0.11);
+        }
+
+        .card h3 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 8px;
+        }
+
+        .card p {
+            font-size: 0.85rem;
+            color: var(--muted);
+            line-height: 1.6;
+        }
+
+        /* TEAM */
+        .team-grid {
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .member {
+            text-align: center;
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 28px 24px 20px;
+            box-shadow: 0 2px 12px rgba(30, 60, 40, 0.07);
+            min-width: 160px;
+            flex: 1;
+            max-width: 200px;
+            transition: transform 0.2s;
+        }
+
+        .member:hover {
+            transform: translateY(-4px);
+        }
+
+        .member img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--green-pale);
+            margin-bottom: 12px;
+        }
+
+        .member .name {
+            font-weight: 700;
+            font-size: 1rem;
+            color: var(--dark);
+            margin-bottom: 4px;
+        }
+
+        .member a {
+            font-size: 0.8rem;
+            color: var(--green);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .member a:hover {
+            text-decoration: underline;
+        }
+
+        /* TAG CHIPS */
+        .chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 4px;
+        }
+
+        .chip {
+            background: var(--green-pale);
+            color: var(--green);
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 4px 12px;
+            border-radius: 999px;
+        }
+
+        .chip.accent {
+            background: #fff4e0;
+            color: #b87a00;
+        }
+
+        /* FOOTER */
+        footer {
+            background: var(--dark);
+            color: rgba(255, 255, 255, 0.5);
+            text-align: center;
+            padding: 28px 24px;
+            font-size: 0.82rem;
+        }
+
+        @media (max-width: 600px) {
+
+            .info-table th,
+            .info-table td {
+                padding: 10px 12px;
+                font-size: 0.82rem;
+            }
+
+            .info-table th {
+                width: 35%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="badge">2026 Capstone Design</div>
+        <h1>HealthMate AI</h1>
+        <div class="brand">온케어 (On-Care)</div>
+        <p class="subtitle">만성질환 위험군을 위한 Vision AI 식단 인식과 AI 맞춤 코칭 통합 헬스케어 앱</p>
+    </header>
+
+    <main>
+
+        <!-- 프로젝트 소개 -->
+        <section>
+            <h2><span class="emoji">📌</span> 프로젝트 소개</h2>
+            <table class="info-table">
+                <tr>
+                    <th>프로젝트명</th>
+                    <td>HealthMate AI: 만성질환 위험군을 위한 Vision AI 식단 인식과 AI 맞춤 코칭 통합 헬스케어 앱</td>
+                </tr>
+                <tr>
+                    <th>서비스명(브랜드)</th>
+                    <td>온케어 (On-Care)</td>
+                </tr>
+                <tr>
+                    <th>트랙</th>
+                    <td>산학</td>
+                </tr>
+                <tr>
+                    <th>팀명</th>
+                    <td>Sudo</td>
+                </tr>
+                <tr>
+                    <th>팀구성</th>
+                    <td>최지수, 박서연, 신수빈</td>
+                </tr>
+                <tr>
+                    <th>팀지도교수</th>
+                    <td>황의원 교수님</td>
+                </tr>
+            </table>
+        </section>
+
+        <!-- 무엇을 만드나 -->
+        <section>
+            <h2><span class="emoji">🛠️</span> 무엇을 만드는가</h2>
+            <div class="card-grid">
+                <div class="card">
+                    <h3>🍱 Vision AI 식단 자동 기록</h3>
+                    <p>음식 사진 촬영 한 번으로 YOLO 계열 모델이 음식 종류·양·영양소를 자동 분석하여 식단 등록. 피드백 누적으로 추천 정확도 지속 향상.</p>
+                </div>
+                <div class="card">
+                    <h3>👤 초개인화 건강 프로필 엔진</h3>
+                    <p>키·몸무게·나이·성별·질환 정보 기반 고유 건강 프로필 생성. LLM + 규칙 기반 하이브리드 AI로 식단·운동 계획 정밀 조정.</p>
+                </div>
+                <div class="card">
+                    <h3>🏃 동적 맞춤 운동 코칭</h3>
+                    <p>운동 후 피드백(강도·피로도·통증)을 반영해 다음 운동 계획을 실시간 재조정하는 AI 개인 트레이너.</p>
+                </div>
+                <div class="card">
+                    <h3>📅 통합 건강 일정 관리</h3>
+                    <p>식단·운동·병원 예약·건강검진 일정을 하나의 캘린더에서 관리. FCM 기반 푸시 알림으로 실천 유도.</p>
+                </div>
+                <div class="card">
+                    <h3>🤖 LLM 기반 AI 챗봇 상담</h3>
+                    <p>축적된 건강 데이터를 맥락으로 이해하여 개인 상황에 최적화된 실시간 건강 조언 및 Q&A 제공.</p>
+                </div>
+                <div class="card">
+                    <h3>🏆 포인트 시스템</h3>
+                    <p>식단 기록·운동 목표 달성 시 포인트 지급. streak 보상으로 자발적 참여 유도, 프리미엄 기능 이용권과 교환 가능.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 고객 -->
+        <section>
+            <h2><span class="emoji">🎯</span> 고객 (누구를 위해)</h2>
+            <div class="card-grid">
+                <div class="card">
+                    <h3>2030세대 만성질환 보유자 및 위험군</h3>
+                    <p>고혈압·당뇨·이상지질혈증 등 특정 질환에 맞는 식단·운동을 전문 지식 없이도 안전하게 안내받고 싶은 사용자.</p>
+                </div>
+                <div class="card">
+                    <h3>바쁜 현대인 및 1인 가구</h3>
+                    <p>식단·운동·병원 일정을 여러 앱에 분산 관리하는 불편함을 느끼며, 하나의 통합 플랫폼을 필요로 하는 사용자.</p>
+                </div>
+                <div class="card">
+                    <h3>건강 관리 지속이 어려운 사람</h3>
+                    <p>동기 부족으로 루틴 유지에 실패하는 사용자. 게임 형태의 보상 구조를 통해 장기적 습관 형성이 필요한 사람.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pain Point -->
+        <section>
+            <h2><span class="emoji">💡</span> Pain Point (해결할 문제)</h2>
+            <div class="card-grid">
+                <div class="card">
+                    <h3>건강 관리 도구의 파편화</h3>
+                    <p>식단·운동·병원 예약 앱이 분리되어 데이터가 통합 활용되지 못하는 문제를 하나의 플랫폼으로 해결.</p>
+                </div>
+                <div class="card">
+                    <h3>개인화 부재</h3>
+                    <p>기존 앱의 획일적 정보 한계를 LLM + 규칙 기반 하이브리드 AI 프로필 학습으로 해결.</p>
+                </div>
+                <div class="card">
+                    <h3>식단 기록의 높은 진입장벽</h3>
+                    <p>직접 음식명·양을 입력하는 번거로움을 Vision AI 이미지 인식으로 간소화하여 기록 지속성 확보.</p>
+                </div>
+                <div class="card">
+                    <h3>지속 참여 동기 부족</h3>
+                    <p>건강 관리가 의무처럼 느껴져 이탈하는 문제를 포인트 적립·streak 보상·목표 달성 피드백으로 해결.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 사용 기술 -->
+        <section>
+            <h2><span class="emoji">⚙️</span> 사용 기술</h2>
+            <div class="chips">
+                <span class="chip">LLM + 규칙 기반 AI 추천 엔진</span>
+                <span class="chip">Vision AI / YOLO 계열 이미지 인식</span>
+                <span class="chip accent">FastAPI / Spring Boot</span>
+                <span class="chip accent">Flutter (iOS · Android)</span>
+                <span class="chip">공공데이터포털 식품영양성분 DB</span>
+                <span class="chip">FCM 푸시 알림</span>
+                <span class="chip accent">클라우드 인프라</span>
+            </div>
+        </section>
+
+        <!-- 기대 효과 -->
+        <section>
+            <h2><span class="emoji">✨</span> 기대 효과</h2>
+            <div class="card-grid">
+                <div class="card">
+                    <h3>만성질환 예방 및 관리 실효성 향상</h3>
+                    <p>질환별 맞춤 식단·운동 추천으로 고혈압·당뇨·이상지질혈증 등 생활습관 질환의 조기 예방과 관리 지원.</p>
+                </div>
+                <div class="card">
+                    <h3>건강 관리 습관의 장기적 내재화</h3>
+                    <p>포인트 보상·streak 달성·AI 피드백의 선순환 구조로 지속 가능한 건강 루틴 형성.</p>
+                </div>
+                <div class="card">
+                    <h3>데이터 기반 개인화 서비스 고도화</h3>
+                    <p>사용자 피드백 누적 → 추천 알고리즘 정밀도 향상 → 스마트워치 연동·AI 건강 리포트 등 프리미엄 기능 확장.</p>
+                </div>
+                <div class="card">
+                    <h3>의료비 절감 및 사회적 기여</h3>
+                    <p>예방 중심 건강 관리 습관 형성으로 불필요한 병원 방문과 만성질환 악화를 줄여 의료 비용 절감에 기여.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 팀원 소개 -->
+        <section>
+            <h2><span class="emoji">👥</span> 팀원 소개</h2>
+            <div class="team-grid">
+                <div class="member">
+                    <img src="https://github.com/aJISUa.png" alt="최지수" />
+                    <div class="name">최지수</div>
+                    <a href="https://github.com/aJISUa" target="_blank">@aJISUa</a>
+                </div>
+                <div class="member">
+                    <img src="https://github.com/seoyeon0516.png" alt="박서연" />
+                    <div class="name">박서연</div>
+                    <a href="https://github.com/seoyeon0516" target="_blank">@seoyeon0516</a>
+                </div>
+                <div class="member">
+                    <img src="https://github.com/subin21cc.png" alt="신수빈" />
+                    <div class="name">신수빈</div>
+                    <a href="https://github.com/subin21cc" target="_blank">@subin21cc</a>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        <p>이화여자대학교 컴퓨터공학전공 캡스톤디자인 스타트 2팀 &nbsp;|&nbsp; Team Sudo &nbsp;|&nbsp; 2026</p>
+    </footer>
+
+</body>
+
+</html>
