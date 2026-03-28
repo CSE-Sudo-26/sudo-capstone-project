@@ -1,4 +1,4 @@
-# HealthMate AI: 나만을 위한 AI 건강 비서
+# HealthMate AI: 만성질환 위험군 대상 식단 인식·코칭 통합 헬스케어 플랫폼
 
 <br>
 
