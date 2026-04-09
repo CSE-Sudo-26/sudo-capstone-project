@@ -1,36 +1,191 @@
-# 2026 Capstone Project
+<div align="center">
 
-> **HealthMate AI: 만성질환 위험군 대상 식단 인식·코칭 통합 헬스케어 플랫폼**
->
-> \- 이화여자대학교 컴퓨터공학전공 캡스톤디자인 스타트 2팀 Sudo -
+<br/>
 
-<br>
+# 🩺 On-Care
+### HealthMate AI: 만성질환 위험군 대상 식단 인식·코칭 통합 헬스케어 플랫폼
 
-## 📌 프로젝트 소개
+<br/>
 
-| 항목 | 내용 |
-|------|------|
-| 프로젝트명 | HealthMate AI: 만성질환 위험군 대상 식단 인식·코칭 통합 헬스케어 플랫폼 |
-| 서비스명(브랜드) | 온케어 (On-Care) |
-| 트랙 | 산학 |
-| 팀명 | Sudo |
-| 팀구성 | 최지수, 박서연, 신수빈 |
-| 팀지도교수 | 황의원 교수님 |
-| 무엇을 만들고자 하는가 | - **Vision AI 기반 식단 자동 기록**: 음식 사진 촬영 한 번으로 YOLO 계열 이미지 인식 모델이 음식 종류·양·영양소를 자동 분석하여 식단을 등록. 사용자 선호도 피드백을 누적해 추천 정확도를 지속 향상.</br> - **초개인화 건강 프로필 엔진**: 키·몸무게·나이·성별·질환 정보(고혈압·당뇨·이상지질혈증 등)를 기반으로 사용자 고유 건강 프로필을 생성하고, LLM + 규칙 기반 필터링 하이브리드 AI로 식단·운동 계획을 지속 정밀 조정.</br> - **동적 맞춤 운동 코칭**: 운동 수행 후 사용자가 입력하는 피드백(강도·피로도·통증 부위)을 반영해 다음 운동 계획을 실시간 재조정하는 AI 개인 트레이너 기능.</br> - **통합 건강 일정 관리**: 식단·운동·병원 예약·건강검진 일정을 하나의 캘린더에서 관리하고, FCM 기반 푸시 알림으로 실천을 유도.</br> - **LLM 기반 AI 챗봇 상담**: 축적된 사용자 건강 데이터(식단·운동·질환 정보)를 맥락으로 이해하여 개인 상황에 최적화된 실시간 건강 조언 및 Q&A 제공.</br> - **포인트 시스템**: 식단 기록·운동 목표 달성·일정 이행 시 포인트 지급, 연속(streak) 달성 보상으로 자발적 참여를 유도하고 프리미엄 AI 분석 기능 이용권과 교환 가능. |
-| 고객 (누구를 위해) | - **2030세대 만성질환 보유자 및 위험군**: 고혈압·당뇨·이상지질혈증 등 특정 질환에 맞는 식단·운동을 전문 지식 없이도 안전하게 안내받고 싶은 사용자. (국민건강보험공단 기준 2030세대 만성질환 유병률 급증)</br> - **바쁜 현대인 및 1인 가구**: 식단·운동·병원 일정을 여러 앱에 분산 관리하는 불편함을 느끼며, 하나의 통합 플랫폼을 필요로 하는 사용자.</br> - **건강 관리 지속에 어려움을 겪는 사람**: 동기 부족으로 루틴 유지에 실패하는 사용자로, 게임 형태의 보상 구조를 통해 장기적 습관 형성이 필요한 사람. |
-| Pain Point (해결할 문제) | - **건강 관리 도구의 파편화**: 식단·운동·병원 예약 앱이 분리되어 데이터가 통합 활용되지 못하고 관리 피로도가 높은 문제를 하나의 플랫폼으로 해결.</br> - **개인화 부재**: 기존 앱들이 질환·체력·선호도를 반영하지 못한 획일적 정보만 제공하는 한계를, LLM + 규칙 기반 하이브리드 AI 프로필 학습으로 해결.</br> - **식단 기록의 높은 진입장벽**: 직접 음식명·양을 입력해야 하는 번거로움을 Vision AI 이미지 인식으로 간소화하여 기록 지속성을 확보.</br> - **지속 참여 동기 부족**: 건강 관리가 의무처럼 느껴져 이탈하는 문제를, 포인트 적립·streak 보상·목표 달성 피드백 등으로 해결. |
-| 사용 기술 | - **AI 추천 엔진 (LLM + 규칙 기반 필터링)**: 건강 프로필·질환 정보·누적 피드백 데이터를 결합한 하이브리드 모델로 식단·운동 개인화 추천 정밀도 향상.</br> - **이미지 인식 (Vision AI / YOLO 계열)**: 음식 사진에서 식품 종류·양을 자동 감지, 공공데이터포털 식품영양성분 DB와 연계하여 칼로리·영양소 정보 자동 산출.</br> - **백엔드 / 앱 프레임워크**: FastAPI 또는 Spring Boot 기반 고성능 RESTful 서버 + Flutter 기반 iOS·Android 크로스 플랫폼 앱.</br> - **공공 데이터 연동**: 공공데이터포털 식품영양성분 DB 및 의료기관 정보 API 실시간 연동으로 정확한 영양·의료 정보 반영.</br> - **알림 시스템**: FCM(Firebase Cloud Messaging)을 활용한 식단·운동·병원 일정 푸시 알림.</br> - **클라우드 인프라**: 사용자 증가에 대응하는 확장 가능한 클라우드 서버 기반 데이터 통합 관리 및 AI 추천 시스템 실시간 연동. |
-| 기대 효과 | - **만성질환 예방 및 관리 실효성 향상**: 질환별 맞춤 식단·운동 추천으로 고혈압·당뇨·이상지질혈증 등 생활습관 질환의 조기 예방과 관리 지원.</br> - **건강 관리 습관의 장기적 내재화**: 포인트 보상·streak 달성·AI 피드백의 선순환 구조로 단기 다짐이 아닌 지속 가능한 건강 루틴 형성.</br> - **데이터 기반 개인화 서비스 고도화**: 사용자 피드백 누적 → 추천 알고리즘 정밀도 향상 → 향후 스마트워치 연동·AI 건강 리포트 등 프리미엄 기능 확장 기반 마련.</br> - **의료비 절감 및 사회적 기여**: 예방 중심 건강 관리 습관 형성으로 불필요한 병원 방문과 만성질환 악화를 줄여 개인·사회적 의료 비용 절감에 기여. |
+[![Flutter](https://img.shields.io/badge/Flutter-3.x-02569B?style=flat-square&logo=flutter&logoColor=white)](https://flutter.dev)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.100+-009688?style=flat-square&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
+[![YOLOv8](https://img.shields.io/badge/YOLOv8-Vision_AI-FF6B35?style=flat-square&logo=pytorch&logoColor=white)](https://github.com/ultralytics/ultralytics)
+[![GPT-4o](https://img.shields.io/badge/GPT--4o-RAG_Pipeline-412991?style=flat-square&logo=openai&logoColor=white)](https://openai.com)
+
+<br/>
+
+> **2026 이화여자대학교 컴퓨터공학전공 캡스톤디자인**
+> **[Team02] Sudo**
+
+<br/>
+
+</div>
+
+---
+
+## 📌 Overview
+
+2030세대 만성질환(고혈압·당뇨·이상지질혈증) 유병률이 구조적으로 급증하는 가운데, 기존 헬스케어 앱은 **식단·운동·일정의 파편화**와 **획일적 정보 제공**이라는 한계를 벗어나지 못하고 있습니다.
+
+**On-Care**는 이 문제를 정면으로 해결합니다.
+
+- **Vision AI** 기반 식단 자동 인식으로 기록 진입장벽을 제거하고
+- **RAG(Retrieval-Augmented Generation)** 아키텍처로 사용자 개인 건강 이력을 LLM에 연결해 *'내 데이터를 아는 AI 코치'* 를 구현하며
+- 식단·운동·상담·헬스장·일정을 **단일 플랫폼**에서 통합 제공합니다
+
+<br/>
+
+## ✨ Key Features
+
+| 기능 | 설명 | 핵심 기술 |
+|------|------|-----------|
+| **Vision AI 식단 자동 인식** | 음식 사진 1장으로 식품 종류·섭취량·칼로리·영양소 자동 분석 및 기록 | YOLOv8, 공공데이터 식품영양성분 DB |
+| **RAG 기반 AI 헬스 챗봇** | 사용자 건강 이력 Vector DB를 GPT-4o에 컨텍스트로 주입, 개인 맞춤 코칭 제공 | LangChain, Pinecone, GPT-4o |
+| **AI 맞춤 운동 코칭** | 체력·목적·건강 상태 기반 운동 루틴 생성, 피드백 반영 동적 재조정 | LLM + 규칙 기반 하이브리드 |
+| **헬스장 검색 & 트레이너 연동** | 위치 기반 헬스장 검색·예약·트레이너 인앱 채팅, AI 사용자 데이터 자동 요약 전달 | 카카오맵 API |
+| **통합 건강 일정 관리** | 식단·운동·병원 예약·건강검진 캘린더 통합, 실시간 푸시 알림 | FCM |
+| **게이미피케이션 보상 시스템** | 활동 포인트·Streak 보상, 프리미엄 기능과 교환 가능 | — |
+
+<br/>
+
+## 🏗️ System Architecture
+
+```
+┌──────────────────────────────────────────────────────────────────┐
+│               Flutter Mobile App (iOS / Android)                 │
+│        카메라 · 식단 · RAG 챗봇 · 운동 · 헬스장 · 포인트 · 캘린더          │
+└──────────────────────────┬───────────────────────────────────────┘
+                           │  HTTPS REST API
+┌──────────────────────────▼───────────────────────────────────────┐
+│              FastAPI Backend  (Docker / AWS EC2)                 │
+│        인증 JWT · 식단 API · 운동 API · RAG Pipeline · 포인트 관리     │
+└──────┬──────────────────┬─────────────────────────┬──────────────┘
+       │                  │                         │
+┌──────▼──────┐  ┌────────▼────────┐  ┌─────────────▼────────────┐
+│  MySQL RDS  │  │  YOLO Vision AI │  │      RAG Pipeline        │
+│   사용자·식단  │  │  식단 이미지 인식   │  │  LangChain + Pinecone    │
+│  운동·포인트   │  │  PyTorch 추론서버 │  │  GPT-4o API              │
+└─────────────┘  └─────────────────┘  └──────────────────────────┘
+                           │
+┌──────────────────────────▼───────────────────────────────────────┐
+│                      External APIs                               │
+│      카카오맵 API · 공공데이터 식품영양성분 DB · OpenAI API · FCM        │
+└──────────────────────────────────────────────────────────────────┘
+
+```
 
 
+<br/>
 
+## 🤖 RAG Pipeline
 
+사용자의 질문이 어떻게 개인화된 답변으로 변환되는지:
 
-<br>
+```
+사용자 질문 "오늘 식단 괜찮아?"
+      │
+      ▼
+  [1] 임베딩 (text-embedding-3-small)
+      │
+      ▼
+  [2] Vector DB Semantic Search (Pinecone)
+      │  → 인바디 이력 · 이번 주 식단 기록 · 운동 로그 · 질환 정보 · 목표 설정
+      │
+      ▼
+  [3] GPT-4o 컨텍스트 주입 → 맞춤 답변 생성
+      │
+      ▼
+  "최근 3일간 탄수화물 목표 대비 12% 초과.
+   저녁에 닭가슴살 샐러드를 추천드립니다."
+```
 
-## 👥 팀원 소개
+> 단순 일반 정보가 아닌 **'내 이번 주 기록 기준' 맞춤 조언**이 핵심 차별점입니다.
+
+<br/>
+
+## 🛠️ Tech Stack
+
+### AI / ML
+![YOLOv8](https://img.shields.io/badge/YOLOv8-Object_Detection-FF6B35?style=flat-square)
+![GPT-4o](https://img.shields.io/badge/GPT--4o-LLM-412991?style=flat-square)
+![LangChain](https://img.shields.io/badge/LangChain-RAG_Framework-1C3C3C?style=flat-square)
+![Pinecone](https://img.shields.io/badge/Pinecone-Vector_DB-00B4A2?style=flat-square)
+![PyTorch](https://img.shields.io/badge/PyTorch-Inference_Server-EE4C2C?style=flat-square)
+
+### Mobile
+![Flutter](https://img.shields.io/badge/Flutter-Cross_Platform-02569B?style=flat-square)
+![Riverpod](https://img.shields.io/badge/Riverpod-State_Management-00AAFF?style=flat-square)
+![Dart](https://img.shields.io/badge/Dart-Language-0175C2?style=flat-square)
+
+### Backend
+![FastAPI](https://img.shields.io/badge/FastAPI-REST_Server-009688?style=flat-square)
+![MySQL](https://img.shields.io/badge/MySQL-AWS_RDS-4479A1?style=flat-square)
+![Docker](https://img.shields.io/badge/Docker-Containerization-2496ED?style=flat-square)
+![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-CI/CD-2088FF?style=flat-square)
+
+### Cloud & Infra
+![Firebase](https://img.shields.io/badge/FCM-Push_Notification-FFCA28?style=flat-square)
+
+### External APIs
+![KakaoMap](https://img.shields.io/badge/Kakao_Map-Location_Service-FFCD00?style=flat-square)
+![공공데이터](https://img.shields.io/badge/공공데이터포털-식품영양성분_DB-0066CC?style=flat-square)
+
+<br/>
+
+## 📊 Competitive Analysis
+
+|  | Noom | Samsung Health | **On-Care** |
+|--|------|----------------|-------------|
+| 식단 기록 | 수동 텍스트 입력 | 바코드 스캔 위주 | **사진 1장 → Vision AI 자동 분석** |
+| AI 개인화 | 일반적 조언 | 단순 목표 설정 | **RAG로 내 건강 DB 참조하는 AI 코치** |
+| 운동·식단 통합 | 분리 운영 | 운동 중심 + 식단 추가형 | **식단·운동·일정·상담 완전 통합** |
+| 헬스장 연동 | ✗ | ✗ | **위치 검색·예약·트레이너 채팅** |
+| 보상 메커니즘 | 제한적 | ✗ | **포인트·Streak·프리미엄 기능 교환** |
+
+<br/>
+
+## 👥 Team Sudo
 
 |                          최지수                          |                            박서연                             |                           신수빈                            |
 |:-----------------------------------------------------:|:----------------------------------------------------------:|:--------------------------------------------------------:|
 | <img src="https://github.com/aJISUa.png" width="100"> | <img src="https://github.com/seoyeon0516.png" width="100"> | <img src="https://github.com/subin21cc.png" width="100"> |
 |         [@aJISUa](https://github.com/aJISUa)          |       [@seoyeon0516](https://github.com/seoyeon0516)       |        [@subin21cc](https://github.com/subin21cc)        |
+
+> 지도교수: 황의원 교수님 · 이화여자대학교 컴퓨터공학전공
+
+<br/>
+
+## 📁 Repository Structure
+
+```
+sudo-capstone-project/
+├── app/                    # Flutter 모바일 앱
+│   ├── lib/
+│   │   ├── features/       # 기능별 모듈 (식단, 운동, 챗봇, 헬스장, 캘린더)
+│   │   ├── core/           # 공통 유틸리티, 라우팅, 테마
+│   │   └── main.dart
+│   └── pubspec.yaml
+├── backend/                # FastAPI 백엔드 서버
+│   ├── api/                # 라우터 및 엔드포인트
+│   ├── services/           # 비즈니스 로직 (RAG, Vision AI 연동)
+│   ├── models/             # DB 모델
+│   └── main.py
+├── ai/
+│   ├── vision/             # YOLOv8 식단 인식 모델 학습 · 추론
+│   └── rag/                # RAG 파이프라인 (LangChain + Pinecone)
+├── infra/                  # Docker, CI/CD (GitHub Actions)
+└── docs/                   # 설계 문서, API 명세
+```
+
+<br/>
+
+
+---
+
+<div align="center">
+
+**2026 이화여자대학교 캡스톤디자인**
+
+*Team Sudo — Jisu Choi · Seoyeon Park · Subin Shin*
+
+</div>
