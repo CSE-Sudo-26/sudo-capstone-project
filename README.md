@@ -159,7 +159,7 @@
 
 ```
 sudo-capstone-project/
-├── app/                    # Flutter 모바일 앱
+├── mobile/                    # Flutter 모바일 앱
 │   ├── lib/
 │   │   ├── features/       # 기능별 모듈 (식단, 운동, 챗봇, 헬스장, 캘린더)
 │   │   ├── core/           # 공통 유틸리티, 라우팅, 테마
