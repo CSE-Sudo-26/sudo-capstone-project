@@ -9,7 +9,8 @@
 
 [![Flutter](https://img.shields.io/badge/Flutter-3.x-02569B?style=flat-square&logo=flutter&logoColor=white)](https://flutter.dev)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.100+-009688?style=flat-square&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
-[![YOLOv8](https://img.shields.io/badge/YOLOv8-Vision_AI-FF6B35?style=flat-square&logo=pytorch&logoColor=white)](https://github.com/ultralytics/ultralytics)
+[![YOLOv8](https://img.shields.io/badge/YOLOv8-Image_Filtering-FF6B35?style=flat-square&logo=pytorch&logoColor=white)](https://github.com/ultralytics/ultralytics)
+[![Gemini](https://img.shields.io/badge/Gemini_API-Vision_AI-4285F4?style=flat-square&logo=google&logoColor=white)](https://ai.google.dev)
 [![GPT-4o](https://img.shields.io/badge/GPT--4o-RAG_Pipeline-412991?style=flat-square&logo=openai&logoColor=white)](https://openai.com)
 
 <br/>
@@ -29,7 +30,7 @@
 
 **On-Care**는 이 문제를 정면으로 해결합니다.
 
-- **Vision AI** 기반 식단 자동 인식으로 기록 진입장벽을 제거하고
+- **YOLOv8 + Gemini Vision API** 2단계 파이프라인으로 식단 자동 인식의 정확도와 효율을 동시에 확보하고
 - **RAG(Retrieval-Augmented Generation)** 아키텍처로 사용자 개인 건강 이력을 LLM에 연결해 *'내 데이터를 아는 AI 코치'* 를 구현하며
 - 식단·운동·상담·헬스장·일정을 **단일 플랫폼**에서 통합 제공합니다
 
@@ -39,7 +40,7 @@
 
 | 기능 | 설명 | 핵심 기술 |
 |------|------|-----------|
-| **Vision AI 식단 자동 인식** | 음식 사진 1장으로 식품 종류·섭취량·칼로리·영양소 자동 분석 및 기록 | YOLOv8, 공공데이터 식품영양성분 DB |
+| **Vision AI 식단 자동 인식** | 음식 사진 1장으로 식품 종류·섭취량·칼로리·영양소 자동 분석 및 기록 | YOLOv8 (음식 필터링) + Gemini Vision API (영양 분석), 공공데이터 식품영양성분 DB |
 | **RAG 기반 AI 헬스 챗봇** | 사용자 건강 이력 Vector DB를 GPT-4o에 컨텍스트로 주입, 개인 맞춤 코칭 제공 | LangChain, Pinecone, GPT-4o |
 | **AI 맞춤 운동 코칭** | 체력·목적·건강 상태 기반 운동 루틴 생성, 피드백 반영 동적 재조정 | LLM + 규칙 기반 하이브리드 |
 | **헬스장 검색 & 트레이너 연동** | 위치 기반 헬스장 검색·예약·트레이너 인앱 채팅, AI 사용자 데이터 자동 요약 전달 | 카카오맵 API |
@@ -61,19 +62,49 @@
 │        인증 JWT · 식단 API · 운동 API · RAG Pipeline · 포인트 관리     │
 └──────┬──────────────────┬─────────────────────────┬──────────────┘
        │                  │                         │
-┌──────▼──────┐  ┌────────▼────────┐  ┌─────────────▼────────────┐
-│  MySQL RDS  │  │  YOLO Vision AI │  │      RAG Pipeline        │
-│   사용자·식단  │  │  식단 이미지 인식   │  │  LangChain + Pinecone    │
-│  운동·포인트   │  │  PyTorch 추론서버 │  │  GPT-4o API              │
-└─────────────┘  └─────────────────┘  └──────────────────────────┘
+┌──────▼──────┐  ┌────────▼──────────────┐  ┌──────▼───────────────┐
+│  MySQL RDS  │  │  Vision AI Pipeline   │  │    RAG Pipeline      │
+│   사용자·식단  │  │  YOLOv8 (1차 필터링)    │  │  LangChain+Pinecone  │
+│  운동·포인트   │  │  → Gemini Vision API  │  │  GPT-4o API          │
+└─────────────┘  │    (영양 분석)          │  └──────────────────────┘
+                 └───────────────────────┘
                            │
 ┌──────────────────────────▼───────────────────────────────────────┐
 │                      External APIs                               │
-│      카카오맵 API · 공공데이터 식품영양성분 DB · OpenAI API · FCM        │
+│   카카오맵 API · 공공데이터 식품영양성분 DB · Google AI · OpenAI · FCM   │
 └──────────────────────────────────────────────────────────────────┘
-
 ```
 
+<br/>
+
+## 🍽️ Vision AI 식단 인식 Pipeline
+
+사진 한 장이 어떻게 영양 정보로 변환되는지:
+
+```
+사용자 식단 사진 업로드
+      │
+      ▼
+  [1] YOLOv8 — 음식 이미지 1차 필터링
+      │  → 음식으로 분류된 경우만 다음 단계로 진행
+      │  → 음식이 아닌 경우 즉시 반려 (API 비용 절감 · 응답 속도 향상)
+      │
+      ▼
+  [2] Gemini Vision API — 상세 음식 분석
+      │  → 음식 종류 식별 · 추정 섭취량 분석
+      │
+      ▼
+  [3] 공공데이터 식품영양성분 DB 매핑
+      │  → 칼로리 · 탄수화물 · 단백질 · 지방 · 나트륨 등 영양소 계산
+      │
+      ▼
+  [4] 식단 기록 저장 (MySQL RDS)
+      │
+      ▼
+  "닭볶음밥 1인분 (450kcal) · 탄수화물 62g · 단백질 18g · 지방 14g"
+```
+
+> **YOLOv8으로 음식 여부를 먼저 판별**해 불필요한 Gemini API 호출을 차단하고, 음식으로 확인된 이미지에 한해 **Gemini Vision API로 세밀한 영양 분석**을 수행하는 2단계 구조가 핵심입니다.
 
 <br/>
 
@@ -106,7 +137,8 @@
 ## 🛠️ Tech Stack
 
 ### AI / ML
-![YOLOv8](https://img.shields.io/badge/YOLOv8-Object_Detection-FF6B35?style=flat-square)
+![YOLOv8](https://img.shields.io/badge/YOLOv8-Food_Image_Filtering-FF6B35?style=flat-square)
+![Gemini Vision API](https://img.shields.io/badge/Gemini_Vision_API-Nutrition_Analysis-4285F4?style=flat-square)
 ![GPT-4o](https://img.shields.io/badge/GPT--4o-LLM-412991?style=flat-square)
 ![LangChain](https://img.shields.io/badge/LangChain-RAG_Framework-1C3C3C?style=flat-square)
 ![Pinecone](https://img.shields.io/badge/Pinecone-Vector_DB-00B4A2?style=flat-square)
@@ -128,6 +160,7 @@
 
 ### External APIs
 ![KakaoMap](https://img.shields.io/badge/Kakao_Map-Location_Service-FFCD00?style=flat-square)
+![Google AI](https://img.shields.io/badge/Google_AI-Gemini_API-4285F4?style=flat-square)
 ![공공데이터](https://img.shields.io/badge/공공데이터포털-식품영양성분_DB-0066CC?style=flat-square)
 
 <br/>
@@ -136,7 +169,7 @@
 
 |  | Noom | Samsung Health | **On-Care** |
 |--|------|----------------|-------------|
-| 식단 기록 | 수동 텍스트 입력 | 바코드 스캔 위주 | **사진 1장 → Vision AI 자동 분석** |
+| 식단 기록 | 수동 텍스트 입력 | 바코드 스캔 위주 | **사진 1장 → YOLOv8 필터링 + Gemini Vision AI 영양 분석** |
 | AI 개인화 | 일반적 조언 | 단순 목표 설정 | **RAG로 내 건강 DB 참조하는 AI 코치** |
 | 운동·식단 통합 | 분리 운영 | 운동 중심 + 식단 추가형 | **식단·운동·일정·상담 완전 통합** |
 | 헬스장 연동 | ✗ | ✗ | **위치 검색·예약·트레이너 채팅** |
@@ -167,18 +200,17 @@ sudo-capstone-project/
 │   └── pubspec.yaml
 ├── backend/                # FastAPI 백엔드 서버
 │   ├── api/                # 라우터 및 엔드포인트
-│   ├── services/           # 비즈니스 로직 (RAG, Vision AI 연동)
+│   ├── services/           # 비즈니스 로직 (Vision AI Pipeline, RAG 연동)
 │   ├── models/             # DB 모델
 │   └── main.py
 ├── ai/
-│   ├── vision/             # YOLOv8 식단 인식 모델 학습 · 추론
+│   ├── vision/             # YOLOv8 음식 필터링 모델 · Gemini Vision API 연동
 │   └── rag/                # RAG 파이프라인 (LangChain + Pinecone)
 ├── infra/                  # Docker, CI/CD (GitHub Actions)
 └── docs/                   # 설계 문서, API 명세
 ```
 
 <br/>
-
 
 ---
 
