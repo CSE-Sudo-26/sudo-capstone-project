@@ -2,483 +2,986 @@
 <html lang="ko">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>On-Care | HealthMate AI</title>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Serif+Display&display=swap"
-        rel="stylesheet" />
-    <style>
-        *,
-        *::before,
-        *::after {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>On-Care | HealthMate AI</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Serif+Display&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-        :root {
-            --green: #2e7d5e;
-            --green-light: #4caf85;
-            --green-pale: #e8f5ef;
-            --accent: #f4a946;
-            --dark: #1a2e24;
-            --text: #2d3a33;
-            --muted: #6b8070;
-            --bg: #f7faf8;
-            --white: #ffffff;
-            --radius: 16px;
-        }
+    :root {
+      --green: #2e7d5e;
+      --green-light: #4caf85;
+      --green-pale: #e8f5ef;
+      --green-mid: #d0ecdf;
+      --accent: #f4a946;
+      --accent-pale: #fff4e0;
+      --blue: #185fa5;
+      --blue-pale: #e6f1fb;
+      --purple: #534ab7;
+      --purple-pale: #eeedfe;
+      --dark: #1a2e24;
+      --text: #2d3a33;
+      --muted: #6b8070;
+      --bg: #f7faf8;
+      --white: #ffffff;
+      --radius: 14px;
+      --radius-sm: 8px;
+    }
 
-        html {
-            scroll-behavior: smooth;
-        }
+    html { scroll-behavior: smooth; }
 
-        body {
-            font-family: 'Noto Sans KR', sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            line-height: 1.7;
-        }
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+    }
 
-        /* HEADER */
-        header {
-            background: var(--dark);
-            color: var(--white);
-            padding: 72px 24px 60px;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
+    /* ── HEADER ── */
+    header {
+      background: var(--dark);
+      color: var(--white);
+      padding: 72px 24px 64px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
 
-        header::before {
-            content: '';
-            position: absolute;
-            top: -80px;
-            left: -80px;
-            width: 340px;
-            height: 340px;
-            background: radial-gradient(circle, rgba(76, 175, 133, 0.25) 0%, transparent 70%);
-            pointer-events: none;
-        }
+    header::before {
+      content: '';
+      position: absolute; top: -80px; left: -80px;
+      width: 340px; height: 340px;
+      background: radial-gradient(circle, rgba(76,175,133,0.22) 0%, transparent 70%);
+      pointer-events: none;
+    }
 
-        header::after {
-            content: '';
-            position: absolute;
-            bottom: -60px;
-            right: -40px;
-            width: 260px;
-            height: 260px;
-            background: radial-gradient(circle, rgba(244, 169, 70, 0.18) 0%, transparent 70%);
-            pointer-events: none;
-        }
+    header::after {
+      content: '';
+      position: absolute; bottom: -60px; right: -40px;
+      width: 260px; height: 260px;
+      background: radial-gradient(circle, rgba(244,169,70,0.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
 
-        .badge {
-            display: inline-block;
-            background: var(--green-light);
-            color: var(--white);
-            font-size: 0.75rem;
-            font-weight: 700;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            padding: 4px 14px;
-            border-radius: 999px;
-            margin-bottom: 20px;
-        }
+    .header-badge {
+      display: inline-block;
+      background: rgba(76,175,133,0.25);
+      border: 1px solid rgba(76,175,133,0.5);
+      color: #a8e6cd;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 4px 14px;
+      border-radius: 999px;
+      margin-bottom: 20px;
+    }
 
-        header h1 {
-            font-family: 'DM Serif Display', serif;
-            font-size: clamp(2rem, 5vw, 3.2rem);
-            line-height: 1.2;
-            margin-bottom: 12px;
-        }
+    header h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      line-height: 1.2;
+      margin-bottom: 10px;
+    }
 
-        header .brand {
-            font-size: 1.1rem;
-            color: var(--accent);
-            font-weight: 700;
-            margin-bottom: 10px;
-        }
+    header .brand {
+      font-size: 1.1rem;
+      color: var(--accent);
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
 
-        header .subtitle {
-            font-size: 0.95rem;
-            color: rgba(255, 255, 255, 0.65);
-            max-width: 600px;
-            margin: 0 auto;
-        }
+    header .subtitle {
+      font-size: 0.95rem;
+      color: rgba(255,255,255,0.6);
+      max-width: 600px;
+      margin: 0 auto 28px;
+    }
 
-        /* MAIN */
-        main {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 48px 24px 80px;
-        }
+    .header-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      margin-top: 4px;
+    }
 
-        section {
-            margin-bottom: 56px;
-        }
+    .header-chip {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.18);
+      color: rgba(255,255,255,0.75);
+      font-size: 0.75rem;
+      padding: 4px 12px;
+      border-radius: 999px;
+    }
 
-        h2 {
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: var(--green);
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+    /* ── MAIN ── */
+    main {
+      max-width: 940px;
+      margin: 0 auto;
+      padding: 52px 24px 88px;
+    }
 
-        h2 .emoji {
-            font-size: 1.5rem;
-        }
+    section { margin-bottom: 60px; }
 
-        /* INFO TABLE */
-        .info-table {
-            width: 100%;
-            border-collapse: collapse;
-            background: var(--white);
-            border-radius: var(--radius);
-            overflow: hidden;
-            box-shadow: 0 2px 16px rgba(30, 60, 40, 0.07);
-        }
+    h2 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--green);
+      margin-bottom: 22px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
 
-        .info-table tr {
-            border-bottom: 1px solid #e8f0eb;
-        }
+    /* ── INFO TABLE ── */
+    .info-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--white);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: 0 2px 16px rgba(30,60,40,0.07);
+    }
 
-        .info-table tr:last-child {
-            border-bottom: none;
-        }
+    .info-table tr { border-bottom: 1px solid #e8f0eb; }
+    .info-table tr:last-child { border-bottom: none; }
 
-        .info-table th {
-            width: 30%;
-            background: var(--green-pale);
-            color: var(--green);
-            font-weight: 700;
-            font-size: 0.88rem;
-            padding: 14px 18px;
-            text-align: left;
-            vertical-align: top;
-        }
+    .info-table th {
+      width: 28%;
+      background: var(--green-pale);
+      color: var(--green);
+      font-weight: 700;
+      font-size: 0.87rem;
+      padding: 14px 18px;
+      text-align: left;
+      vertical-align: top;
+    }
 
-        .info-table td {
-            padding: 14px 18px;
-            font-size: 0.9rem;
-            color: var(--text);
-            vertical-align: top;
-        }
+    .info-table td {
+      padding: 14px 18px;
+      font-size: 0.9rem;
+      color: var(--text);
+      vertical-align: top;
+    }
 
-        /* CARD GRID */
-        .card-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-            gap: 16px;
-        }
+    /* ── CARD GRID ── */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 16px;
+    }
 
-        .card {
-            background: var(--white);
-            border-radius: var(--radius);
-            padding: 24px 20px;
-            box-shadow: 0 2px 12px rgba(30, 60, 40, 0.06);
-            border-left: 4px solid var(--green-light);
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
+    .card {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 22px 20px;
+      box-shadow: 0 2px 12px rgba(30,60,40,0.06);
+      border-left: 4px solid var(--green-light);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
 
-        .card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 24px rgba(30, 60, 40, 0.11);
-        }
+    .card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 24px rgba(30,60,40,0.11);
+    }
 
-        .card h3 {
-            font-size: 0.95rem;
-            font-weight: 700;
-            color: var(--dark);
-            margin-bottom: 8px;
-        }
+    .card.accent-card { border-left-color: var(--accent); }
+    .card.blue-card   { border-left-color: var(--blue); }
+    .card.purple-card { border-left-color: var(--purple); }
 
-        .card p {
-            font-size: 0.85rem;
-            color: var(--muted);
-            line-height: 1.6;
-        }
+    .card h3 {
+      font-size: 0.94rem;
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: 8px;
+    }
 
-        /* TEAM */
-        .team-grid {
-            display: flex;
-            gap: 24px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
+    .card p {
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.65;
+    }
 
-        .member {
-            text-align: center;
-            background: var(--white);
-            border-radius: var(--radius);
-            padding: 28px 24px 20px;
-            box-shadow: 0 2px 12px rgba(30, 60, 40, 0.07);
-            min-width: 160px;
-            flex: 1;
-            max-width: 200px;
-            transition: transform 0.2s;
-        }
+    .card .tag {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 2px 9px;
+      border-radius: 999px;
+      margin-bottom: 9px;
+    }
 
-        .member:hover {
-            transform: translateY(-4px);
-        }
+    .tag-green  { background: var(--green-pale);   color: var(--green); }
+    .tag-accent { background: var(--accent-pale);  color: #b87a00; }
+    .tag-blue   { background: var(--blue-pale);    color: var(--blue); }
+    .tag-purple { background: var(--purple-pale);  color: var(--purple); }
 
-        .member img {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 3px solid var(--green-pale);
-            margin-bottom: 12px;
-        }
+    /* ── PIPELINE ── */
+    .pipeline {
+      background: var(--dark);
+      border-radius: var(--radius);
+      padding: 28px 24px;
+      color: rgba(255,255,255,0.85);
+      font-size: 0.85rem;
+      overflow-x: auto;
+    }
 
-        .member .name {
-            font-weight: 700;
-            font-size: 1rem;
-            color: var(--dark);
-            margin-bottom: 4px;
-        }
+    .pipeline-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--green-light);
+      margin-bottom: 16px;
+    }
 
-        .member a {
-            font-size: 0.8rem;
-            color: var(--green);
-            text-decoration: none;
-            font-weight: 500;
-        }
+    .pipeline-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
 
-        .member a:hover {
-            text-decoration: underline;
-        }
+    .step {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+    }
 
-        /* TAG CHIPS */
-        .chips {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 4px;
-        }
+    .step-connector {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex-shrink: 0;
+    }
 
-        .chip {
-            background: var(--green-pale);
-            color: var(--green);
-            font-size: 0.8rem;
-            font-weight: 600;
-            padding: 4px 12px;
-            border-radius: 999px;
-        }
+    .step-num {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      background: var(--green);
+      color: #fff;
+      font-size: 0.75rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
 
-        .chip.accent {
-            background: #fff4e0;
-            color: #b87a00;
-        }
+    .step-line {
+      width: 2px;
+      flex: 1;
+      min-height: 20px;
+      background: rgba(76,175,133,0.35);
+      margin: 4px 0;
+    }
 
-        /* FOOTER */
-        footer {
-            background: var(--dark);
-            color: rgba(255, 255, 255, 0.5);
-            text-align: center;
-            padding: 28px 24px;
-            font-size: 0.82rem;
-        }
+    .step-body {
+      padding-bottom: 20px;
+      flex: 1;
+    }
 
-        @media (max-width: 600px) {
+    .step-body strong {
+      display: block;
+      color: #fff;
+      font-size: 0.88rem;
+      margin-bottom: 3px;
+    }
 
-            .info-table th,
-            .info-table td {
-                padding: 10px 12px;
-                font-size: 0.82rem;
-            }
+    .step-body span {
+      color: rgba(255,255,255,0.55);
+      font-size: 0.8rem;
+      line-height: 1.5;
+    }
 
-            .info-table th {
-                width: 35%;
-            }
-        }
-    </style>
+    .step-result {
+      margin-top: 16px;
+      background: rgba(76,175,133,0.12);
+      border: 1px solid rgba(76,175,133,0.3);
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+      font-size: 0.82rem;
+      color: #a8e6cd;
+      font-weight: 500;
+    }
+
+    /* ── ARCH BOXES ── */
+    .arch-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 6px;
+    }
+
+    .arch-layer {
+      background: var(--white);
+      border-radius: var(--radius-sm);
+      border: 1px solid #dce8e2;
+      padding: 14px 18px;
+    }
+
+    .arch-layer-title {
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--green);
+      margin-bottom: 8px;
+    }
+
+    .arch-items {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+    }
+
+    .arch-item {
+      background: var(--green-pale);
+      color: var(--green);
+      font-size: 0.78rem;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: var(--radius-sm);
+    }
+
+    .arch-item.ext {
+      background: var(--accent-pale);
+      color: #b87a00;
+    }
+
+    .arch-item.ai {
+      background: var(--blue-pale);
+      color: var(--blue);
+    }
+
+    .arch-arrow {
+      text-align: center;
+      color: var(--muted);
+      font-size: 1.1rem;
+      line-height: 1;
+      padding: 2px 0;
+    }
+
+    /* ── COMPARE TABLE ── */
+    .compare-wrap { overflow-x: auto; }
+
+    .compare-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--white);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: 0 2px 16px rgba(30,60,40,0.07);
+      min-width: 560px;
+    }
+
+    .compare-table th {
+      background: var(--dark);
+      color: rgba(255,255,255,0.85);
+      font-size: 0.85rem;
+      font-weight: 700;
+      padding: 13px 16px;
+      text-align: left;
+    }
+
+    .compare-table th.ours {
+      background: var(--green);
+      color: #fff;
+    }
+
+    .compare-table td {
+      padding: 12px 16px;
+      font-size: 0.84rem;
+      color: var(--text);
+      border-bottom: 1px solid #e8f0eb;
+      vertical-align: top;
+    }
+
+    .compare-table tr:last-child td { border-bottom: none; }
+
+    .compare-table td.ours {
+      background: var(--green-pale);
+      color: var(--green);
+      font-weight: 600;
+    }
+
+    .compare-table td.center { text-align: center; color: var(--muted); }
+
+    /* ── TECH CHIPS ── */
+    .tech-section { display: flex; flex-direction: column; gap: 14px; }
+
+    .tech-group {
+      background: var(--white);
+      border-radius: var(--radius-sm);
+      border: 1px solid #dce8e2;
+      padding: 14px 18px;
+    }
+
+    .tech-group-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+
+    .chips { display: flex; flex-wrap: wrap; gap: 7px; }
+
+    .chip {
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 999px;
+    }
+
+    .chip-green  { background: var(--green-pale);   color: var(--green); }
+    .chip-accent { background: var(--accent-pale);  color: #b87a00; }
+    .chip-blue   { background: var(--blue-pale);    color: var(--blue); }
+    .chip-purple { background: var(--purple-pale);  color: var(--purple); }
+    .chip-dark   { background: #e8eae9;             color: #3a4a40; }
+
+    .tech-note {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-top: 8px;
+      line-height: 1.55;
+    }
+
+    /* ── TEAM ── */
+    .team-grid {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .member {
+      text-align: center;
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 28px 24px 20px;
+      box-shadow: 0 2px 12px rgba(30,60,40,0.07);
+      min-width: 150px;
+      flex: 1;
+      max-width: 190px;
+      transition: transform 0.2s;
+    }
+
+    .member:hover { transform: translateY(-4px); }
+
+    .member img {
+      width: 76px; height: 76px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid var(--green-pale);
+      margin-bottom: 12px;
+    }
+
+    .member .name {
+      font-weight: 700;
+      font-size: 0.97rem;
+      color: var(--dark);
+      margin-bottom: 4px;
+    }
+
+    .member a {
+      font-size: 0.78rem;
+      color: var(--green);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .member a:hover { text-decoration: underline; }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--dark);
+      color: rgba(255,255,255,0.45);
+      text-align: center;
+      padding: 28px 24px;
+      font-size: 0.8rem;
+    }
+
+    /* ── DIVIDER ── */
+    .divider {
+      height: 1px;
+      background: var(--green-mid);
+      margin: 8px 0 22px;
+    }
+
+    @media (max-width: 600px) {
+      .info-table th, .info-table td { padding: 10px 12px; font-size: 0.82rem; }
+      .info-table th { width: 35%; }
+      .pipeline { padding: 20px 16px; }
+    }
+  </style>
 </head>
 
 <body>
 
-    <header>
-        <div class="badge">2026 Capstone Design</div>
-        <h1>HealthMate AI</h1>
-        <div class="brand">온케어 (On-Care)</div>
-        <p class="subtitle">만성질환 위험군 대상 식단 인식·코칭 통합 헬스케어 플랫폼</p>
-    </header>
+  <header>
+    <div class="header-badge">2026 Capstone Design · Team Sudo</div>
+    <h1>HealthMate AI</h1>
+    <div class="brand">온케어 (On-Care)</div>
+    <p class="subtitle">만성질환 위험군 대상 식단 인식·코칭 통합 헬스케어 플랫폼</p>
+    <div class="header-chips">
+      <span class="header-chip">Flutter 3.x</span>
+      <span class="header-chip">FastAPI</span>
+      <span class="header-chip">YOLOv8 + Gemini Vision</span>
+      <span class="header-chip">GPT-4o · RAG Pipeline</span>
+      <span class="header-chip">AWS EC2 · RDS</span>
+    </div>
+  </header>
 
-    <main>
+  <main>
 
-        <!-- 프로젝트 소개 -->
-        <section>
-            <h2><span class="emoji">📌</span> 프로젝트 소개</h2>
-            <table class="info-table">
-                <tr>
-                    <th>프로젝트명</th>
-                    <td>HealthMate AI: 만성질환 위험군 대상 식단 인식·코칭 통합 헬스케어 플랫폼</td>
-                </tr>
-                <tr>
-                    <th>서비스명(브랜드)</th>
-                    <td>온케어 (On-Care)</td>
-                </tr>
-                <tr>
-                    <th>트랙</th>
-                    <td>산학</td>
-                </tr>
-                <tr>
-                    <th>팀명</th>
-                    <td>Sudo</td>
-                </tr>
-                <tr>
-                    <th>팀구성</th>
-                    <td>최지수, 박서연, 신수빈</td>
-                </tr>
-                <tr>
-                    <th>팀지도교수</th>
-                    <td>황의원 교수님</td>
-                </tr>
-            </table>
-        </section>
+    <!-- 프로젝트 소개 -->
+    <section>
+      <h2>📌 프로젝트 소개</h2>
+      <table class="info-table">
+        <tr><th>프로젝트명</th><td>HealthMate AI: 만성질환 위험군 대상 식단 인식·코칭 통합 헬스케어 플랫폼</td></tr>
+        <tr><th>서비스명 (브랜드)</th><td>온케어 (On-Care)</td></tr>
+        <tr><th>트랙</th><td>산학</td></tr>
+        <tr><th>팀명</th><td>Sudo</td></tr>
+        <tr><th>팀 구성</th><td>최지수, 박서연, 신수빈</td></tr>
+        <tr><th>지도 교수</th><td>황의원 교수님 · 이화여자대학교 컴퓨터공학전공</td></tr>
+      </table>
+    </section>
 
-        <!-- 무엇을 만드나 -->
-        <section>
-            <h2><span class="emoji">🛠️</span> 무엇을 만드는가</h2>
-            <div class="card-grid">
-                <div class="card">
-                    <h3>🍱 Vision AI 식단 자동 기록</h3>
-                    <p>음식 사진 촬영 한 번으로 YOLO 계열 모델이 음식 종류·양·영양소를 자동 분석하여 식단 등록. 피드백 누적으로 추천 정확도 지속 향상.</p>
-                </div>
-                <div class="card">
-                    <h3>👤 초개인화 건강 프로필 엔진</h3>
-                    <p>키·몸무게·나이·성별·질환 정보 기반 고유 건강 프로필 생성. LLM + 규칙 기반 하이브리드 AI로 식단·운동 계획 정밀 조정.</p>
-                </div>
-                <div class="card">
-                    <h3>🏃 동적 맞춤 운동 코칭</h3>
-                    <p>운동 후 피드백(강도·피로도·통증)을 반영해 다음 운동 계획을 실시간 재조정하는 AI 개인 트레이너.</p>
-                </div>
-                <div class="card">
-                    <h3>📅 통합 건강 일정 관리</h3>
-                    <p>식단·운동·병원 예약·건강검진 일정을 하나의 캘린더에서 관리. FCM 기반 푸시 알림으로 실천 유도.</p>
-                </div>
-                <div class="card">
-                    <h3>🤖 LLM 기반 AI 챗봇 상담</h3>
-                    <p>축적된 건강 데이터를 맥락으로 이해하여 개인 상황에 최적화된 실시간 건강 조언 및 Q&A 제공.</p>
-                </div>
-                <div class="card">
-                    <h3>🏆 포인트 시스템</h3>
-                    <p>식단 기록·운동 목표 달성 시 포인트 지급. streak 보상으로 자발적 참여 유도, 프리미엄 기능 이용권과 교환 가능.</p>
-                </div>
+    <!-- Overview -->
+    <section>
+      <h2>🔍 Overview</h2>
+      <div class="card" style="border-left-color: var(--green); padding: 24px 22px;">
+        <p style="font-size:0.93rem; color:var(--text); line-height:1.8;">
+          2030세대 만성질환(고혈압·당뇨·이상지질혈증) 유병률이 구조적으로 급증하는 가운데,
+          기존 헬스케어 앱은 <strong>식단·운동·일정의 파편화</strong>와 <strong>획일적 정보 제공</strong>이라는 한계를 벗어나지 못하고 있습니다.
+        </p>
+        <p style="font-size:0.93rem; color:var(--text); line-height:1.8; margin-top:12px;">
+          <strong>On-Care</strong>는 이 문제를 세 가지 방식으로 해결합니다.
+        </p>
+        <div class="card-grid" style="margin-top:16px; gap:12px;">
+          <div style="background:var(--green-pale); border-radius:var(--radius-sm); padding:14px 16px;">
+            <div style="font-size:0.8rem; font-weight:700; color:var(--green); margin-bottom:5px;">① Vision AI 2단계 파이프라인</div>
+            <div style="font-size:0.82rem; color:#3a5a47; line-height:1.6;">YOLOv8 + Gemini Vision API로 식단 자동 인식의 정확도와 비용 효율을 동시에 확보</div>
+          </div>
+          <div style="background:var(--blue-pale); border-radius:var(--radius-sm); padding:14px 16px;">
+            <div style="font-size:0.8rem; font-weight:700; color:var(--blue); margin-bottom:5px;">② RAG 기반 개인화 AI 코치</div>
+            <div style="font-size:0.82rem; color:#1a4a7a; line-height:1.6;">사용자 건강 이력을 Vector DB에 저장 후 GPT-4o에 주입 — '내 데이터를 아는 AI 코치' 구현</div>
+          </div>
+          <div style="background:var(--accent-pale); border-radius:var(--radius-sm); padding:14px 16px;">
+            <div style="font-size:0.8rem; font-weight:700; color:#b87a00; margin-bottom:5px;">③ 단일 플랫폼 통합</div>
+            <div style="font-size:0.82rem; color:#7a5400; line-height:1.6;">식단·운동·상담·헬스장·일정을 하나의 앱에서 관리해 데이터 연속성 확보</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Key Features -->
+    <section>
+      <h2>✨ 핵심 기능</h2>
+      <div class="card-grid">
+        <div class="card">
+          <span class="tag tag-green">Vision AI</span>
+          <h3>🍱 식단 자동 인식 및 영양 분석</h3>
+          <p>음식 사진 1장으로 YOLOv8 필터링 → Gemini Vision 영양 분석 → 공공데이터 DB 매핑까지 자동 처리. 칼로리·탄수화물·단백질·지방·나트륨 즉시 기록.</p>
+        </div>
+        <div class="card blue-card">
+          <span class="tag tag-blue">RAG · GPT-4o</span>
+          <h3>🤖 RAG 기반 AI 헬스 챗봇</h3>
+          <p>인바디·식단 로그·운동 이력·질환 정보를 Pinecone Vector DB에 저장 후 GPT-4o에 컨텍스트로 주입. "이번 주 내 식단 기준" 맞춤 조언 제공.</p>
+        </div>
+        <div class="card">
+          <span class="tag tag-green">LLM + 규칙 기반</span>
+          <h3>🏃 AI 맞춤 운동 코칭</h3>
+          <p>체력·목적·건강 상태 기반 운동 루틴 생성. 피드백(강도·피로도·통증) 반영 동적 재조정으로 지속 가능한 루틴 유지.</p>
+        </div>
+        <div class="card accent-card">
+          <span class="tag tag-accent">카카오맵 API</span>
+          <h3>🏋️ 헬스장 검색 & 트레이너 연동</h3>
+          <p>위치 기반 헬스장 검색·예약·트레이너 인앱 채팅. AI가 이용자 건강 데이터를 자동 요약해 트레이너에게 전달, 맞춤 지도 효율 향상.</p>
+        </div>
+        <div class="card">
+          <span class="tag tag-green">FCM</span>
+          <h3>📅 통합 건강 일정 관리</h3>
+          <p>식단·운동·병원 예약·건강검진 일정을 하나의 캘린더에서 통합 관리. 실시간 푸시 알림으로 실천 유도.</p>
+        </div>
+        <div class="card purple-card">
+          <span class="tag tag-purple">게이미피케이션</span>
+          <h3>🏆 포인트 & Streak 보상</h3>
+          <p>활동 포인트·연속 기록 Streak 보상으로 내재적 동기 강화. 적립 포인트는 프리미엄 기능과 교환 가능.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- System Architecture -->
+    <section>
+      <h2>🏗️ 시스템 아키텍처</h2>
+      <div class="arch-grid">
+        <div class="arch-layer" style="background:var(--dark); border-color:var(--dark);">
+          <div class="arch-layer-title" style="color:#a8e6cd;">Flutter Mobile App (iOS / Android)</div>
+          <div class="arch-items">
+            <span class="arch-item ai">카메라 · 식단</span>
+            <span class="arch-item ai">RAG 챗봇</span>
+            <span class="arch-item ai">운동 코칭</span>
+            <span class="arch-item ai">헬스장 · 예약</span>
+            <span class="arch-item ai">포인트</span>
+            <span class="arch-item ai">캘린더</span>
+          </div>
+        </div>
+        <div class="arch-arrow">↕ HTTPS REST API</div>
+        <div class="arch-layer">
+          <div class="arch-layer-title">FastAPI Backend (Docker / AWS EC2)</div>
+          <div class="arch-items">
+            <span class="arch-item">JWT 인증</span>
+            <span class="arch-item">식단 API</span>
+            <span class="arch-item">운동 API</span>
+            <span class="arch-item">RAG Pipeline</span>
+            <span class="arch-item">포인트 관리</span>
+            <span class="arch-item">GitHub Actions CI/CD</span>
+          </div>
+        </div>
+        <div class="arch-arrow">↕</div>
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap:8px;">
+          <div class="arch-layer">
+            <div class="arch-layer-title">데이터</div>
+            <div class="arch-items">
+              <span class="arch-item">MySQL (AWS RDS)</span>
+              <span class="arch-item">Pinecone Vector DB</span>
             </div>
-        </section>
-
-        <!-- 고객 -->
-        <section>
-            <h2><span class="emoji">🎯</span> 고객 (누구를 위해)</h2>
-            <div class="card-grid">
-                <div class="card">
-                    <h3>2030세대 만성질환 보유자 및 위험군</h3>
-                    <p>고혈압·당뇨·이상지질혈증 등 특정 질환에 맞는 식단·운동을 전문 지식 없이도 안전하게 안내받고 싶은 사용자.</p>
-                </div>
-                <div class="card">
-                    <h3>바쁜 현대인 및 1인 가구</h3>
-                    <p>식단·운동·병원 일정을 여러 앱에 분산 관리하는 불편함을 느끼며, 하나의 통합 플랫폼을 필요로 하는 사용자.</p>
-                </div>
-                <div class="card">
-                    <h3>건강 관리 지속이 어려운 사람</h3>
-                    <p>동기 부족으로 루틴 유지에 실패하는 사용자. 게임 형태의 보상 구조를 통해 장기적 습관 형성이 필요한 사람.</p>
-                </div>
+          </div>
+          <div class="arch-layer">
+            <div class="arch-layer-title">Vision AI Pipeline</div>
+            <div class="arch-items">
+              <span class="arch-item ai">YOLOv8 필터링</span>
+              <span class="arch-item ai">Gemini Vision API</span>
             </div>
-        </section>
-
-        <!-- Pain Point -->
-        <section>
-            <h2><span class="emoji">💡</span> Pain Point (해결할 문제)</h2>
-            <div class="card-grid">
-                <div class="card">
-                    <h3>건강 관리 도구의 파편화</h3>
-                    <p>식단·운동·병원 예약 앱이 분리되어 데이터가 통합 활용되지 못하는 문제를 하나의 플랫폼으로 해결.</p>
-                </div>
-                <div class="card">
-                    <h3>개인화 부재</h3>
-                    <p>기존 앱의 획일적 정보 한계를 LLM + 규칙 기반 하이브리드 AI 프로필 학습으로 해결.</p>
-                </div>
-                <div class="card">
-                    <h3>식단 기록의 높은 진입장벽</h3>
-                    <p>직접 음식명·양을 입력하는 번거로움을 Vision AI 이미지 인식으로 간소화하여 기록 지속성 확보.</p>
-                </div>
-                <div class="card">
-                    <h3>지속 참여 동기 부족</h3>
-                    <p>건강 관리가 의무처럼 느껴져 이탈하는 문제를 포인트 적립·streak 보상·목표 달성 피드백으로 해결.</p>
-                </div>
+          </div>
+          <div class="arch-layer">
+            <div class="arch-layer-title">RAG Pipeline</div>
+            <div class="arch-items">
+              <span class="arch-item ai">LangChain</span>
+              <span class="arch-item ai">GPT-4o</span>
             </div>
-        </section>
+          </div>
+        </div>
+        <div class="arch-arrow">↕</div>
+        <div class="arch-layer" style="background:#fffdf7; border-color:#f0d9a0;">
+          <div class="arch-layer-title" style="color:#b87a00;">External APIs</div>
+          <div class="arch-items">
+            <span class="arch-item ext">카카오맵 API</span>
+            <span class="arch-item ext">공공데이터 식품영양성분 DB</span>
+            <span class="arch-item ext">Google Gemini AI</span>
+            <span class="arch-item ext">OpenAI GPT-4o</span>
+            <span class="arch-item ext">Firebase FCM</span>
+          </div>
+        </div>
+      </div>
+    </section>
 
-        <!-- 사용 기술 -->
-        <section>
-            <h2><span class="emoji">⚙️</span> 사용 기술</h2>
-            <div class="chips">
-                <span class="chip">LLM + 규칙 기반 AI 추천 엔진</span>
-                <span class="chip">Vision AI / YOLO 계열 이미지 인식</span>
-                <span class="chip accent">FastAPI / Spring Boot</span>
-                <span class="chip accent">Flutter (iOS · Android)</span>
-                <span class="chip">공공데이터포털 식품영양성분 DB</span>
-                <span class="chip">FCM 푸시 알림</span>
-                <span class="chip accent">클라우드 인프라</span>
+    <!-- Vision AI Pipeline -->
+    <section>
+      <h2>🍽️ Vision AI 식단 인식 파이프라인</h2>
+      <div class="pipeline">
+        <div class="pipeline-title">사진 한 장 → 영양 정보 자동 변환 흐름</div>
+        <div class="pipeline-steps">
+
+          <div class="step">
+            <div class="step-connector">
+              <div class="step-num">1</div>
+              <div class="step-line"></div>
             </div>
-        </section>
-
-        <!-- 기대 효과 -->
-        <section>
-            <h2><span class="emoji">✨</span> 기대 효과</h2>
-            <div class="card-grid">
-                <div class="card">
-                    <h3>만성질환 예방 및 관리 실효성 향상</h3>
-                    <p>질환별 맞춤 식단·운동 추천으로 고혈압·당뇨·이상지질혈증 등 생활습관 질환의 조기 예방과 관리 지원.</p>
-                </div>
-                <div class="card">
-                    <h3>건강 관리 습관의 장기적 내재화</h3>
-                    <p>포인트 보상·streak 달성·AI 피드백의 선순환 구조로 지속 가능한 건강 루틴 형성.</p>
-                </div>
-                <div class="card">
-                    <h3>데이터 기반 개인화 서비스 고도화</h3>
-                    <p>사용자 피드백 누적 → 추천 알고리즘 정밀도 향상 → 스마트워치 연동·AI 건강 리포트 등 프리미엄 기능 확장.</p>
-                </div>
-                <div class="card">
-                    <h3>의료비 절감 및 사회적 기여</h3>
-                    <p>예방 중심 건강 관리 습관 형성으로 불필요한 병원 방문과 만성질환 악화를 줄여 의료 비용 절감에 기여.</p>
-                </div>
+            <div class="step-body">
+              <strong>YOLOv8 — 음식 이미지 1차 필터링</strong>
+              <span>음식으로 분류된 경우만 다음 단계로 진행. 음식이 아닌 이미지는 즉시 반려하여 API 비용 절감 및 응답 속도 향상.</span>
             </div>
-        </section>
+          </div>
 
-        <!-- 팀원 소개 -->
-        <section>
-            <h2><span class="emoji">👥</span> 팀원 소개</h2>
-            <div class="team-grid">
-                <div class="member">
-                    <img src="https://github.com/aJISUa.png" alt="최지수" />
-                    <div class="name">최지수</div>
-                    <a href="https://github.com/aJISUa" target="_blank">@aJISUa</a>
-                </div>
-                <div class="member">
-                    <img src="https://github.com/seoyeon0516.png" alt="박서연" />
-                    <div class="name">박서연</div>
-                    <a href="https://github.com/seoyeon0516" target="_blank">@seoyeon0516</a>
-                </div>
-                <div class="member">
-                    <img src="https://github.com/subin21cc.png" alt="신수빈" />
-                    <div class="name">신수빈</div>
-                    <a href="https://github.com/subin21cc" target="_blank">@subin21cc</a>
-                </div>
+          <div class="step">
+            <div class="step-connector">
+              <div class="step-num">2</div>
+              <div class="step-line"></div>
             </div>
-        </section>
+            <div class="step-body">
+              <strong>Gemini Vision API — 상세 음식 분석</strong>
+              <span>음식 종류 식별 및 추정 섭취량 분석. 복합 음식(비빔밥, 찌개 등) 포함 다품목 동시 인식.</span>
+            </div>
+          </div>
 
-    </main>
+          <div class="step">
+            <div class="step-connector">
+              <div class="step-num">3</div>
+              <div class="step-line"></div>
+            </div>
+            <div class="step-body">
+              <strong>공공데이터 식품영양성분 DB 매핑</strong>
+              <span>칼로리 · 탄수화물 · 단백질 · 지방 · 나트륨 등 영양소 수치 계산. 공신력 있는 국가 데이터 기반.</span>
+            </div>
+          </div>
 
-    <footer>
-        <p>이화여자대학교 컴퓨터공학전공 캡스톤디자인 스타트 2팀 &nbsp;|&nbsp; Team Sudo &nbsp;|&nbsp; 2026</p>
-    </footer>
+          <div class="step">
+            <div class="step-connector">
+              <div class="step-num">4</div>
+            </div>
+            <div class="step-body">
+              <strong>식단 기록 저장 (MySQL RDS)</strong>
+              <span>분석 결과를 사용자 이력에 누적 저장. RAG 파이프라인의 컨텍스트 소스로 활용.</span>
+              <div class="step-result">
+                💬 결과 예시 — "닭볶음밥 1인분 (450 kcal) · 탄수화물 62 g · 단백질 18 g · 지방 14 g · 나트륨 890 mg"
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- RAG Pipeline -->
+    <section>
+      <h2>🤖 RAG 파이프라인</h2>
+      <div class="pipeline">
+        <div class="pipeline-title">사용자 질문 → 개인화 답변 생성 흐름</div>
+        <div class="pipeline-steps">
+
+          <div class="step">
+            <div class="step-connector">
+              <div class="step-num">1</div>
+              <div class="step-line"></div>
+            </div>
+            <div class="step-body">
+              <strong>질문 임베딩 (text-embedding-3-small)</strong>
+              <span>사용자 질문을 고차원 벡터로 변환하여 의미 기반 검색 준비.</span>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-connector">
+              <div class="step-num">2</div>
+              <div class="step-line"></div>
+            </div>
+            <div class="step-body">
+              <strong>Vector DB Semantic Search (Pinecone)</strong>
+              <span>인바디 이력 · 이번 주 식단 기록 · 운동 로그 · 질환 정보 · 목표 설정 등 관련 컨텍스트 검색.</span>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-connector">
+              <div class="step-num">3</div>
+            </div>
+            <div class="step-body">
+              <strong>GPT-4o 컨텍스트 주입 → 맞춤 답변 생성</strong>
+              <span>LangChain 오케스트레이션으로 검색된 개인 데이터를 GPT-4o에 주입해 일반 정보가 아닌 '내 기록 기준' 답변 생성.</span>
+              <div class="step-result">
+                💬 결과 예시 — "최근 3일간 탄수화물 목표 대비 12% 초과. 저녁에 닭가슴살 샐러드를 추천드립니다."
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Pain Points -->
+    <section>
+      <h2>💡 Pain Point (해결할 문제)</h2>
+      <div class="card-grid">
+        <div class="card">
+          <span class="tag tag-green">① 파편화</span>
+          <h3>건강 관리 도구의 파편화</h3>
+          <p>식단·운동·병원 일정을 별도 앱에서 관리해 데이터 연속성이 낮고 앱 전환 비용이 기록 이탈을 가속. 단일 플랫폼으로 해결.</p>
+        </div>
+        <div class="card">
+          <span class="tag tag-green">② 진입 장벽</span>
+          <h3>식단 기록의 높은 진입 장벽</h3>
+          <p>텍스트 수동 입력·바코드 스캔 의존으로 기록 이탈률이 높음. 사진 1장 → Vision AI 자동 분석으로 마찰을 제거.</p>
+        </div>
+        <div class="card">
+          <span class="tag tag-blue">③ 획일성</span>
+          <h3>획일적 AI 조언</h3>
+          <p>개인 건강 이력·식단 로그·질환 정보를 반영하지 못하는 일반 정보 수준에 그침. RAG 파이프라인으로 '내 데이터를 아는 AI' 실현.</p>
+        </div>
+        <div class="card accent-card">
+          <span class="tag tag-accent">④ 연동 부재</span>
+          <h3>트레이너 연동 채널 부재</h3>
+          <p>이용자 건강 데이터가 트레이너에게 전달되는 인앱 채널이 없어 대면 상담 시 수기 보고에 의존. AI 자동 요약 리포트로 해결.</p>
+        </div>
+        <div class="card purple-card">
+          <span class="tag tag-purple">⑤ 동기 부족</span>
+          <h3>동기 부여 지속성 부족</h3>
+          <p>단기 목표 달성 후 앱 이탈 빈번. 포인트·Streak 보상 시스템으로 내재적 동기를 강화하고 장기 습관 형성 유도.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Competitive Analysis -->
+    <section>
+      <h2>📊 경쟁사 비교 분석</h2>
+      <div class="compare-wrap">
+        <table class="compare-table">
+          <thead>
+            <tr>
+              <th>구분</th>
+              <th>Noom</th>
+              <th>Samsung Health</th>
+              <th class="ours">On-Care ✦</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>식단 기록</strong></td>
+              <td>수동 텍스트 입력</td>
+              <td>바코드 스캔 위주</td>
+              <td class="ours">사진 1장 → YOLOv8 필터링 + Gemini Vision AI 영양 분석</td>
+            </tr>
+            <tr>
+              <td><strong>AI 개인화</strong></td>
+              <td>일반적 조언</td>
+              <td>단순 목표 설정</td>
+              <td class="ours">RAG로 내 건강 DB를 참조하는 AI 코치</td>
+            </tr>
+            <tr>
+              <td><strong>운동·식단 통합</strong></td>
+              <td>분리 운영</td>
+              <td>운동 중심 + 식단 추가형</td>
+              <td class="ours">식단·운동·일정·상담 완전 통합</td>
+            </tr>
+            <tr>
+              <td><strong>헬스장 연동</strong></td>
+              <td class="center">✗</td>
+              <td class="center">✗</td>
+              <td class="ours">위치 검색·예약·트레이너 채팅</td>
+            </tr>
+            <tr>
+              <td><strong>보상 메커니즘</strong></td>
+              <td>제한적</td>
+              <td class="center">✗</td>
+              <td class="ours">포인트·Streak·프리미엄 기능 교환</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Tech Stack -->
+    <section>
+      <h2>⚙️ 기술 스택</h2>
+      <div class="tech-section">
+        <div class="tech-group">
+          <div class="tech-group-label">AI / ML</div>
+          <div class="chips">
+            <span class="chip chip-blue">YOLOv8</span>
+            <span class="chip chip-blue">Gemini Vision API</span>
+            <span class="chip chip-blue">GPT-4o</span>
+            <span class="chip chip-blue">LangChain</span>
+            <span class="chip chip-blue">Pinecone</span>
+            <span class="chip chip-blue">text-embedding-3-small</span>
+            <span class="chip chip-blue">PyTorch</span>
+          </div>
+          <div class="tech-note">YOLOv8으로 음식 여부를 1차 필터링해 불필요한 API 호출을 차단하고, Gemini Vision으로 세밀한 영양 분석 수행. Pinecone에 저장된 개인 건강 이력을 GPT-4o에 주입하는 RAG 파이프라인이 핵심 차별점.</div>
+        </div>
+        <div class="tech-group">
+          <div class="tech-group-label">Mobile</div>
+          <div class="chips">
+            <span class="chip chip-green">Flutter 3.x</span>
+            <span class="chip chip-green">Riverpod</span>
+            <span class="chip chip-green">Dart</span>
+          </div>
+          <div class="tech-note">단일 코드베이스로 iOS·Android 동시 지원. Riverpod으로 상태 관리 복잡도 제어.</div>
+        </div>
+        <div class="tech-group">
+          <div class="tech-group-label">Backend</div>
+          <div class="chips">
+            <span class="chip chip-green">FastAPI</span>
+            <span class="chip chip-green">MySQL (AWS RDS)</span>
+            <span class="chip chip-dark">JWT 인증</span>
+            <span class="chip chip-dark">SQLAlchemy</span>
+            <span class="chip chip-dark">Uvicorn</span>
+          </div>
+          <div class="tech-note">FastAPI 비동기 처리로 AI 추론 대기 시간 최소화. JWT로 사용자 인증 관리.</div>
+        </div>
+        <div class="tech-group">
+          <div class="tech-group-label">Infra & DevOps</div>
+          <div class="chips">
+            <span class="chip chip-accent">Docker</span>
+            <span class="chip chip-accent">AWS EC2</span>
+            <span class="chip chip-accent">GitHub Actions CI/CD</span>
+            <span class="chip chip-accent">Firebase FCM</span>
+          </div>
+          <div class="tech-note">Docker로 개발 환경 통일. GitHub Actions로 빌드·테스트·배포 자동화.</div>
+        </div>
+        <div class="tech-group">
+          <div class="tech-group-label">External APIs</div>
+          <div class="chips">
+            <span class="chip chip-purple">카카오맵 API</span>
+            <span class="chip chip-purple">공공데이터포털 식품영양성분 DB</span>
+          </div>
+          <div class="tech-note">국가 식품영양성분 DB로 칼로리·탄수화물·단백질·지방·나트륨 공신력 있는 수치 매핑.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 기대 효과 -->
+    <section>
+      <h2>✨ 기대 효과</h2>
+      <div class="card-grid">
+        <div class="card">
+          <h3>📸 식단 기록 자동화</h3>
+          <p>사진 1장으로 칼로리·영양소 즉시 분석. 기록 마찰 최소화로 일일 식단 기록 유지율 향상.</p>
+        </div>
+        <div class="card blue-card">
+          <h3>🧠 개인 맞춤 AI 코칭</h3>
+          <p>RAG 파이프라인으로 인바디·식단 로그·운동 이력·질환 정보를 LLM에 주입. 일반 앱과 차별화되는 실질적 조언 제공.</p>
+        </div>
+        <div class="card">
+          <h3>🔗 건강 관리 통합화</h3>
+          <p>식단·운동·헬스장·병원 일정을 단일 플랫폼에서 관리. 앱 전환 비용 제거 및 데이터 연속성 확보.</p>
+        </div>
+        <div class="card accent-card">
+          <h3>🤝 트레이너-이용자 연결</h3>
+          <p>AI가 이용자 데이터를 자동 요약해 트레이너에게 전달. 전문 지도의 질·효율 향상 및 상담 준비 시간 단축.</p>
+        </div>
+        <div class="card">
+          <h3>🏥 만성질환 예방 기여</h3>
+          <p>2030세대의 조기 식습관·운동 습관 개선을 통해 고혈압·당뇨·이상지질혈증 발병 위험 감소에 기여.</p>
+        </div>
+        <div class="card purple-card">
+          <h3>🎯 장기 지속성 확보</h3>
+          <p>포인트·Streak 보상 시스템으로 내재적 동기 강화. 단기 이탈 방지 및 장기적 건강 습관 형성 유도.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 팀원 -->
+    <section>
+      <h2>👥 팀원 소개</h2>
+      <div class="team-grid">
+        <div class="member">
+          <img src="https://github.com/aJISUa.png" alt="최지수" />
+          <div class="name">최지수</div>
+          <a href="https://github.com/aJISUa" target="_blank">@aJISUa</a>
+        </div>
+        <div class="member">
+          <img src="https://github.com/seoyeon0516.png" alt="박서연" />
+          <div class="name">박서연</div>
+          <a href="https://github.com/seoyeon0516" target="_blank">@seoyeon0516</a>
+        </div>
+        <div class="member">
+          <img src="https://github.com/subin21cc.png" alt="신수빈" />
+          <div class="name">신수빈</div>
+          <a href="https://github.com/subin21cc" target="_blank">@subin21cc</a>
+        </div>
+      </div>
+      <p style="text-align:center; font-size:0.83rem; color:var(--muted); margin-top:20px;">
+        지도 교수: 황의원 교수님 &nbsp;·&nbsp; 이화여자대학교 컴퓨터공학전공
+      </p>
+    </section>
+
+  </main>
+
+  <footer>
+    <p>2026 이화여자대학교 컴퓨터공학전공 캡스톤디자인 &nbsp;|&nbsp; Team Sudo &nbsp;·&nbsp; Jisu Choi · Seoyeon Park · Subin Shin</p>
+  </footer>
 
 </body>
-
 </html>
