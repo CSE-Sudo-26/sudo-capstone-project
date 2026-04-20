@@ -7,7 +7,7 @@ import os
 load_dotenv()
 genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 
-# 2. 모델 설정 (시각 인식 능력이 뛰어난 Flash 모델 추천)
+# 2. 모델 설정
 model = genai.GenerativeModel('gemini-3-flash-preview')
 
 
