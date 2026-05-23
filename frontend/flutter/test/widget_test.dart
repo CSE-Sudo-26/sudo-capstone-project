@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:logger/logger.dart';
 
 import 'package:oncare/app/app.dart';
 import 'package:oncare/core/config/app_config.dart';
+import 'package:oncare/core/logging/app_logger.dart';
 import 'package:oncare/gen/l10n/app_localizations.dart';
 import 'package:oncare/shared/services/locale_provider.dart';
 
@@ -18,6 +20,7 @@ void main() {
       ProviderScope(
         overrides: <Override>[
           appConfigProvider.overrideWithValue(config),
+          appLoggerProvider.overrideWithValue(Logger(level: Level.off)),
           if (locale != null) localeProvider.overrideWith((ref) => locale),
         ],
         child: const OncareApp(),
@@ -30,9 +33,11 @@ void main() {
     await pumpApp(tester, locale: const Locale('en'));
     expect(find.widgetWithText(AppBar, 'Dashboard'), findsOneWidget);
     expect(find.byType(NavigationBar), findsOneWidget);
-    expect(find.text('Diet'), findsOneWidget);
-    expect(find.text('Exercise'), findsOneWidget);
-    expect(find.text('My Health'), findsOneWidget);
+    // Dashboard content may share tokens with nav labels (e.g.
+    // 'Exercise' metric card + 'Exercise' bottom-nav destination).
+    expect(find.text('Diet'), findsAtLeastNWidgets(1));
+    expect(find.text('Exercise'), findsAtLeastNWidgets(1));
+    expect(find.text('My Health'), findsAtLeastNWidgets(1));
   });
 
   testWidgets('Tapping a bottom-nav destination switches branch', (
