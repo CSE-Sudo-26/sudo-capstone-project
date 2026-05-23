@@ -395,7 +395,7 @@ class _PointsCard extends StatelessWidget {
                 borderRadius: BorderRadius.all(AppRadius.lg),
               ),
             ),
-            child: Text('${rank}위 랭킹'),
+            child: Text('$rank위 랭킹'),
           ),
         ],
       ),
