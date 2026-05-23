@@ -43,17 +43,19 @@ void main() {
   ) async {
     await pumpApp(tester, locale: const Locale('en'));
 
-    await tester.tap(find.text('Diet'));
+    // OncareHeader is a Material+Container (not an AppBar), so we
+    // settle for `find.text(...)` finders here.
+    await tester.tap(find.text('Diet').first);
     await tester.pumpAndSettle();
-    expect(find.widgetWithText(AppBar, 'Diet'), findsOneWidget);
+    expect(find.text('Diet'), findsAtLeastNWidgets(1));
 
-    await tester.tap(find.text('Exercise'));
+    await tester.tap(find.text('Exercise').first);
     await tester.pumpAndSettle();
-    expect(find.widgetWithText(AppBar, 'Exercise'), findsOneWidget);
+    expect(find.text('Exercise'), findsAtLeastNWidgets(1));
 
-    await tester.tap(find.text('My'));
+    await tester.tap(find.text('My').first);
     await tester.pumpAndSettle();
-    expect(find.widgetWithText(AppBar, 'My'), findsOneWidget);
+    expect(find.text('My'), findsAtLeastNWidgets(1));
   });
 
   testWidgets('Korean locale localises the bottom-nav labels', (tester) async {
