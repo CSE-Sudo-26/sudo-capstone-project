@@ -7,6 +7,8 @@ import 'package:oncare/features/dashboard/presentation/controllers/dashboard_con
 import 'package:oncare/features/dashboard/presentation/widgets/dashboard_content.dart';
 import 'package:oncare/gen/l10n/app_localizations.dart';
 import 'package:oncare/shared/widgets/error_view.dart';
+import 'package:oncare/shared/widgets/modals/quick_input_dialog.dart';
+import 'package:oncare/shared/widgets/modals/schedule_calendar_sheet.dart';
 import 'package:oncare/shared/widgets/oncare_header.dart';
 
 class DashboardPage extends ConsumerWidget {
@@ -26,13 +28,26 @@ class DashboardPage extends ConsumerWidget {
             onNotificationTap: () {
               // TODO(stage-8.8): open NotificationPanel right-slide sheet.
             },
-            onCalendarTap: () {
-              // TODO(stage-8.7): open Calendar bottom sheet.
-            },
+            onCalendarTap: () => showScheduleCalendarSheet(context),
           ),
           Expanded(
             child: summary.when(
-              data: (s) => DashboardContent(summary: s),
+              data: (s) => DashboardContent(
+                summary: s,
+                onQuickInputWeight: () => showQuickInputDialog(
+                  context,
+                  kind: QuickInputKind.weight,
+                ),
+                onQuickInputBloodPressure: () => showQuickInputDialog(
+                  context,
+                  kind: QuickInputKind.bloodPressure,
+                ),
+                onQuickInputBloodSugar: () => showQuickInputDialog(
+                  context,
+                  kind: QuickInputKind.bloodSugar,
+                ),
+                onOpenSchedule: () => showScheduleCalendarSheet(context),
+              ),
               loading: () => const Center(child: CircularProgressIndicator()),
               error: (Object error, StackTrace _) => ErrorView(
                 error: error is AppError
