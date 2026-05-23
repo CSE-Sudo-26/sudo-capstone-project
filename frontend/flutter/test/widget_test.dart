@@ -6,6 +6,9 @@ import 'package:logger/logger.dart';
 import 'package:oncare/app/app.dart';
 import 'package:oncare/core/config/app_config.dart';
 import 'package:oncare/core/logging/app_logger.dart';
+import 'package:oncare/features/diet/data/repositories/mock_diet_repository.dart';
+import 'package:oncare/features/diet/domain/repositories/diet_repository.dart';
+import 'package:oncare/features/diet/presentation/controllers/diet_controller.dart';
 import 'package:oncare/gen/l10n/app_localizations.dart';
 import 'package:oncare/shared/services/locale_provider.dart';
 
@@ -21,6 +24,11 @@ void main() {
         overrides: <Override>[
           appConfigProvider.overrideWithValue(config),
           appLoggerProvider.overrideWithValue(Logger(level: Level.off)),
+          // Diet repo defaults to DioDietRepository (Stage 9) which
+          // needs a real dio+db. Swap to the in-memory mock here.
+          dietRepositoryProvider.overrideWithValue(
+            const MockDietRepository() as DietRepository,
+          ),
           if (locale != null) localeProvider.overrideWith((ref) => locale),
         ],
         child: const OncareApp(),

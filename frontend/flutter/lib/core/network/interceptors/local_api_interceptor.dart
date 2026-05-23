@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:logger/logger.dart';
 
@@ -27,6 +29,7 @@ class LocalApiInterceptor extends Interceptor {
     'GET /ping': _ping,
     'GET /healthz': _healthz,
     'GET /version': _version,
+    'GET /diet/days/today': _dietToday,
   };
 
   @override
@@ -88,6 +91,58 @@ class LocalApiInterceptor extends Interceptor {
       'api_version': 'v1',
       'app_version': '0.2.0+2',
     });
+  }
+
+  // ---- Diet ----
+
+  Future<Response<Object?>> _dietToday(RequestOptions options) async {
+    final today = _todayDateString();
+    final rows = await (_db.select(
+      _db.dietEntries,
+    )..where((t) => t.date.equals(today))).get();
+
+    int totalCalories = 0;
+    int totalSodium = 0;
+    int totalSugar = 0;
+    final entriesJson = <Map<String, Object?>>[];
+    for (final r in rows) {
+      totalCalories += r.totalCalories;
+      totalSodium += r.sodiumMg;
+      totalSugar += r.sugarG;
+      entriesJson.add(<String, Object?>{
+        'id': r.id,
+        'meal_type': r.mealType,
+        'time_label': r.timeLabel,
+        'foods': (jsonDecode(r.foodsJson) as List<Object?>).cast<Object?>(),
+        'total_calories': r.totalCalories,
+        'sodium_mg': r.sodiumMg,
+        'sugar_g': r.sugarG,
+      });
+    }
+
+    return _ok(options, <String, Object?>{
+      'entries': entriesJson,
+      'total_calories': totalCalories,
+      'total_sodium_mg': totalSodium,
+      'total_sugar_g': totalSugar,
+      // Macro breakdown isn't tracked per entry yet — return the
+      // demo split until a richer schema lands.
+      'macros': <String, Object?>{
+        'carbs_pct': 50,
+        'protein_pct': 30,
+        'fat_pct': 20,
+      },
+      'ai_coach_message': totalSodium > 2000
+          ? '오늘 점심에 나트륨이 많았어요. 저녁은 담백한 구이/샐러드로 균형을 맞춰봐요!'
+          : '균형 잡힌 하루였어요. 내일도 이대로 가요!',
+    });
+  }
+
+  String _todayDateString() {
+    final now = DateTime.now();
+    return '${now.year.toString().padLeft(4, '0')}-'
+        '${now.month.toString().padLeft(2, '0')}-'
+        '${now.day.toString().padLeft(2, '0')}';
   }
 
   // ---- helpers ----
