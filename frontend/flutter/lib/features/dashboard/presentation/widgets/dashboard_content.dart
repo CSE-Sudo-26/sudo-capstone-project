@@ -203,24 +203,9 @@ class _HealthSummaryCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: AppSpacing.md),
-          if (summary.sodiumWarning != null)
-            Container(
-              padding: const EdgeInsets.all(AppSpacing.md),
-              decoration: BoxDecoration(
-                color: AppColors.warning.withValues(alpha: 0.10),
-                borderRadius: const BorderRadius.all(AppRadius.lg),
-                border: Border.all(
-                  color: AppColors.warning.withValues(alpha: 0.20),
-                ),
-              ),
-              child: Text(
-                '${summary.sodiumWarning!} 🥗',
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: AppColors.warning,
-                ),
-              ),
-            ),
-          const SizedBox(height: AppSpacing.md),
+          // Sodium-warning banner removed from this card per the new
+          // design ref; the same message now lives in the combined
+          // daily-feedback card above (see _DailyFeedbackCard).
           for (final i in summary.indicators) ...<Widget>[
             _IndicatorRow(indicator: i),
             const SizedBox(height: AppSpacing.md),
