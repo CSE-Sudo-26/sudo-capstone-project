@@ -5,6 +5,7 @@ import 'package:oncare/core/errors/app_error.dart';
 import 'package:oncare/design_system/tokens/colors.dart';
 import 'package:oncare/design_system/tokens/spacing.dart';
 import 'package:oncare/features/diet/presentation/controllers/diet_controller.dart';
+import 'package:oncare/features/diet/presentation/pages/diet_add_camera_page.dart';
 import 'package:oncare/features/diet/presentation/widgets/diet_summary_card.dart';
 import 'package:oncare/features/diet/presentation/widgets/diet_week_strip.dart';
 import 'package:oncare/features/diet/presentation/widgets/meal_card.dart';
@@ -25,6 +26,24 @@ class DietRecordPage extends ConsumerStatefulWidget {
 
 class _DietRecordPageState extends ConsumerState<DietRecordPage> {
   late DateTime _selectedDay = DateTime.now();
+
+  Future<void> _openDietAddFlow() async {
+    final captured = await Navigator.of(context).push<bool>(
+      MaterialPageRoute<bool>(
+        builder: (_) => const DietAddCameraPage(),
+        fullscreenDialog: true,
+      ),
+    );
+    if (!mounted) return;
+    if (captured == true) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('식단 분석을 완료했어요. 결과 확인 화면은 곧 공개됩니다.'),
+          duration: Duration(seconds: 3),
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -98,14 +117,7 @@ class _DietRecordPageState extends ConsumerState<DietRecordPage> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: AppColors.primary,
         foregroundColor: AppColors.primaryForeground,
-        onPressed: () {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('식단 추가 — 카메라/수동 입력은 Stage 8.7'),
-              duration: Duration(seconds: 2),
-            ),
-          );
-        },
+        onPressed: _openDietAddFlow,
         child: const Icon(Icons.add),
       ),
     );
