@@ -66,7 +66,12 @@ class _IndicatorTrendDialog extends StatelessWidget {
             const SizedBox(height: AppSpacing.lg),
             _LatestMeasurementCard(trend: trend),
             const SizedBox(height: AppSpacing.lg),
-            _TrendChartCard(values: trend.chartValues),
+            _TrendChartCard(
+              values: trend.chartValues,
+              minY: trend.chartMinY,
+              maxY: trend.chartMaxY,
+              interval: trend.chartInterval,
+            ),
             const SizedBox(height: AppSpacing.lg),
             Text(
               '최근 기록',
@@ -188,8 +193,16 @@ class _LatestMeasurementCard extends StatelessWidget {
 }
 
 class _TrendChartCard extends StatelessWidget {
-  const _TrendChartCard({required this.values});
+  const _TrendChartCard({
+    required this.values,
+    required this.minY,
+    required this.maxY,
+    required this.interval,
+  });
   final List<double> values;
+  final double minY;
+  final double maxY;
+  final double interval;
 
   @override
   Widget build(BuildContext context) {
@@ -219,7 +232,15 @@ class _TrendChartCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: AppSpacing.md),
-          SizedBox(height: 200, child: _TrendLineChart(values: values)),
+          SizedBox(
+            height: 200,
+            child: _TrendLineChart(
+              values: values,
+              minY: minY,
+              maxY: maxY,
+              interval: interval,
+            ),
+          ),
         ],
       ),
     );
@@ -227,15 +248,20 @@ class _TrendChartCard extends StatelessWidget {
 }
 
 class _TrendLineChart extends StatelessWidget {
-  const _TrendLineChart({required this.values});
+  const _TrendLineChart({
+    required this.values,
+    required this.minY,
+    required this.maxY,
+    required this.interval,
+  });
   final List<double> values;
+  final double minY;
+  final double maxY;
+  final double interval;
 
   @override
   Widget build(BuildContext context) {
     if (values.isEmpty) return const SizedBox.shrink();
-    final maxV = values.reduce((double a, double b) => a > b ? a : b);
-    final step = _interval(maxV);
-    final chartMax = ((maxV / step).ceil() * step).toDouble();
 
     final xLabels = <int, String>{};
     for (int i = 0; i < values.length; i++) {
@@ -250,13 +276,13 @@ class _TrendLineChart extends StatelessWidget {
 
     return LineChart(
       LineChartData(
-        minY: 0,
-        maxY: chartMax,
+        minY: minY,
+        maxY: maxY,
         minX: 0,
         maxX: (values.length - 1).toDouble(),
         gridData: FlGridData(
           drawVerticalLine: false,
-          horizontalInterval: chartMax / 4,
+          horizontalInterval: interval,
           getDrawingHorizontalLine: (_) => const FlLine(
             color: AppColors.border,
             dashArray: <int>[4, 4],
@@ -266,9 +292,12 @@ class _TrendLineChart extends StatelessWidget {
           leftTitles: AxisTitles(
             sideTitles: SideTitles(
               showTitles: true,
-              interval: chartMax / 4,
+              interval: interval,
               getTitlesWidget: (double value, TitleMeta meta) {
-                if (value == meta.max) return const SizedBox.shrink();
+                // Hide the very top label only when it would butt up
+                // against the chart title; here the chart has its own
+                // padded title, so show every gridline label including
+                // the ceiling for clarity.
                 return Padding(
                   padding: const EdgeInsets.only(right: 4),
                   child: Text(
@@ -326,14 +355,6 @@ class _TrendLineChart extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  double _interval(double max) {
-    if (max <= 25) return 5;
-    if (max <= 50) return 10;
-    if (max <= 100) return 25;
-    if (max <= 160) return 40;
-    return 50;
   }
 }
 
