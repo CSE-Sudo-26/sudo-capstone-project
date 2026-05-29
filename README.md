@@ -9,6 +9,9 @@
 
 ***HealthMate AI: 불규칙한 생활 속 2030을 위한<br> 고혈압·당뇨 위험군 대상 식단 인식·코칭 통합 헬스케어 플랫폼***
 
+<br/>
+
+[![YouTube Demo](https://img.shields.io/badge/YouTube-데모_영상_보기-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://youtu.be/C4ivM_dlAww?si=oaAuue_Fw9jY9Mhy)
 
 <br/><br/>
 
