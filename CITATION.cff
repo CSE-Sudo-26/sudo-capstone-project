@@ -20,8 +20,11 @@ authors:
   - family-names: "Shin"
     given-names: "Subin"
     affiliation: "Ewha Womans University, Dept. of Computer Science and Engineering"
-date-released: "2026-06-11"
-version: "0.3.0"
+# date-released / version 은 frontend/flutter/CHANGELOG.md 의 최신
+# 릴리스 엔트리(0.3.0+3, 2026-05-20)와 일치시킨다. 새 릴리스가 추가되면
+# 본 파일도 함께 갱신할 것.
+date-released: "2026-05-20"
+version: "0.3.0+3"
 repository-code: "https://github.com/CSE-Sudo-26/sudo-capstone-project"
 url: "https://github.com/CSE-Sudo-26/sudo-capstone-project"
 license: MIT
