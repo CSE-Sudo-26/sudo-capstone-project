@@ -361,6 +361,14 @@ flutter test        # 단위 · 위젯 · golden 테스트
 > **실 백엔드 연동(그로쓰 단계 예정)** 시:
 > `flutter run -d chrome --dart-define=USE_MOCK_API=false --dart-define=API_BASE_URL=<your-api>`
 
+### Backend — Vision AI PoC *(선택 · 앱과 독립)*
+음식 사진을 Gemini Vision 으로 분석하는 **독립 실행 프로토타입**입니다 (앱 구동엔 불필요). 상세 설명·환경변수는 [`backend/README.md`](backend/README.md) 참조.
+```bash
+cd backend && pip install -r requirements.txt
+cd services && cp .env.example .env    # .env 에 실제 GEMINI_API_KEY 입력
+python gemini_service.py               # 샘플 이미지 분석 결과 출력
+```
+
 <br/>
 
 ## AI Transparency
