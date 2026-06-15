@@ -23,7 +23,7 @@
 
 ## Index
 
-[Quick Facts](#quick-facts) · [Current Implementation Status](#current-implementation-status) · [Why On-Care](#why-on-care) · [Problem](#problem) · [Solution](#solution) · [Key Features](#key-features) · [Screenshots](#screenshots) · [Vision AI Pipeline (설계안)](#vision-ai-pipeline-설계안) · [RAG Pipeline (설계안)](#rag-pipeline-설계안) · [System Architecture (설계안)](#system-architecture-설계안) · [Tech Stack](#tech-stack) · [Competitive Analysis](#competitive-analysis) · [Development Roadmap](#development-roadmap) · [User Interview & Feedback](#user-interview--feedback) · [Repository Structure](#repository-structure) · [Getting Started](#getting-started) · [AI Transparency](#ai-transparency) · [What's Next](#whats-next) · [Team](#team) · [License](#license)
+[Quick Facts](#quick-facts) · [Current Implementation Status](#current-implementation-status) · [Why On-Care](#why-on-care) · [Problem](#problem) · [Solution](#solution) · [Key Features](#key-features) · [Screenshots](#screenshots) · [Vision AI Pipeline (설계안)](#vision-ai-pipeline-설계안) · [RAG Pipeline (설계안)](#rag-pipeline-설계안) · [System Architecture (설계안)](#system-architecture-설계안) · [Tech Stack](#tech-stack) · [Competitive Analysis](#competitive-analysis) · [Development Roadmap](#development-roadmap) · [User Interview & Feedback](#user-interview--feedback) · [Repository Structure](#repository-structure) · [Getting Started](#getting-started) · [Collaboration](#collaboration--workflow) · [AI Transparency](#ai-transparency) · [What's Next](#whats-next) · [Team](#team) · [License](#license)
 
 ---
 
@@ -107,14 +107,16 @@ On-Care 는 위 다섯 가지 마찰을 다음의 네 가지 기술적 의사결
 
 ## Key Features
 
-| 기능 | 설명 | 핵심 기술 |
-|------|------|-----------|
-| **Vision AI 식단 자동 인식** | 음식 사진 1장으로 식품 종류·영양소를 분석 및 기록하는 시나리오 구현 (*핵심 엔진 설계 단계*) | Flutter (UI) <br> *(YOLOv8 · Gemini API 연동 예정)* |
-| **RAG 기반 AI 헬스 챗봇** | 사용자 건강 이력을 실시간 컨텍스트로 주입하여 개인 맞춤 코칭을 제공하는 대화형 UX | Flutter (UI) <br> *(LangChain · Pinecone · GPT-4o 연동 예정)* |
-| **AI 맞춤 운동 코칭** | 체력·목적·건강 상태 기반 운동 루틴 생성 및 동적 재조정 화면 인터랙션 | Flutter (UI) |
-| **헬스장 검색 & 트레이너 연동** | 위치 기반 검색·예약·트레이너 인앱 채팅 화면 및 정보 연속성 흐름 설계 | 카카오맵 API (연동 예정) |
-| **통합 건강 일정 관리** | 식단·운동·병원 예약 캘린더 통합 및 대시보드 실시간 푸시 알림 연동 | Flutter Local State |
-| **Streak 보상 시스템** | 활동 포인트·연속 달성 보상 UI 및 동기부여 메커니즘 검증 | Flutter Local State |
+| 기능 | 상태 | 설명 | 핵심 기술 |
+|------|------|------|-----------|
+| **Vision AI 식단 자동 인식** | 🟡 프로토타입 | 음식 사진 1장으로 식품 종류·영양소를 분석 및 기록하는 시나리오 구현 (*핵심 엔진 설계 단계*) | Flutter (UI) <br> *(YOLOv8 · Gemini API 연동 예정)* |
+| **RAG 기반 AI 헬스 챗봇** | 🔵 설계 | 사용자 건강 이력을 실시간 컨텍스트로 주입하여 개인 맞춤 코칭을 제공하는 대화형 UX | Flutter (UI) <br> *(LangChain · Pinecone · GPT-4o 연동 예정)* |
+| **AI 맞춤 운동 코칭** | 🔵 설계 (UI ✅) | 체력·목적·건강 상태 기반 운동 루틴 생성 및 동적 재조정 화면 인터랙션 | Flutter (UI) |
+| **헬스장 검색 & 트레이너 연동** | 🔵 설계 (UI ✅) | 위치 기반 검색·예약·트레이너 인앱 채팅 화면 및 정보 연속성 흐름 설계 | 카카오맵 API (연동 예정) |
+| **통합 건강 일정 관리** | ✅ 구현 | 식단·운동·병원 예약 캘린더 통합 및 대시보드 연동 | Flutter Local State |
+| **Streak 보상 시스템** | 🔵 설계 | 활동 포인트·연속 달성 보상 UI 및 동기부여 메커니즘 검증 | Flutter Local State |
+
+> 범례 — ✅ 구현·동작 · 🟡 프로토타입 · 🔵 설계 단계 · `UI ✅` = 화면은 구현·엔진/연동은 설계. 상세 근거는 [Current Implementation Status](#current-implementation-status).
 
 <br/>
 
@@ -368,6 +370,18 @@ cd backend && pip install -r requirements.txt
 cd services && cp .env.example .env    # .env 에 실제 GEMINI_API_KEY 입력
 python gemini_service.py               # 샘플 이미지 분석 결과 출력
 ```
+
+<br/>
+
+## Collaboration & Workflow
+
+팀 협업은 **GitHub Flow + 이슈 기반 개발**로 운영합니다.
+
+- **Pull Request 리뷰 필수** — 모든 변경은 PR로, 리뷰 승인 후 머지
+- **AI 코드 리뷰** — [CodeRabbit](.coderabbit.yaml) 자동 리뷰 연동
+- **Conventional Commits** — `feat:` · `fix:` · `docs:` 등 커밋 컨벤션 준수
+- **표준 템플릿** — [PR 템플릿](.github/pull_request_template.md) · 이슈 단위 작업 추적
+- 기여·행동강령·보안: [CONTRIBUTING](CONTRIBUTING.md) · [CODE_OF_CONDUCT](CODE_OF_CONDUCT.md) · [SECURITY](SECURITY.md)
 
 <br/>
 
