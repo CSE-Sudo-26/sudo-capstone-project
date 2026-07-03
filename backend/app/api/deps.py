@@ -90,6 +90,17 @@ def require_auth(
     return user
 
 
+def require_admin(
+    user: Annotated[User, Depends(require_auth)],
+) -> User:
+    """관리자 전용: 유효 토큰 + is_admin. 아니면 403(미인증은 require_auth 가 401)."""
+    if not user.is_admin:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="관리자 권한이 필요합니다.")
+    return user
+
+
 CurrentUser = Annotated[User, Depends(get_current_user)]
 # 엄격 인증(쓰기/삭제 등 보호 엔드포인트용) — 데모 폴백 없음
 RequireUser = Annotated[User, Depends(require_auth)]
+# 관리자 전용(공공문서 업로드 등)
+RequireAdmin = Annotated[User, Depends(require_admin)]

@@ -17,7 +17,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
-from app.api.deps import CurrentUser
+from app.api.deps import RequireAdmin
 from app.db.session import get_db
 from app.services.coach.rag import ingest_document
 
@@ -34,7 +34,7 @@ class PublicDocIn(BaseModel):
 @router.post("/coach/documents/public", status_code=201)
 def upload_public_doc(
     payload: PublicDocIn,
-    current_user: CurrentUser,  # 데모: 인증만. 운영선 관리자 권한 체크 필요
+    admin: RequireAdmin,  # 관리자 전용(비관리자 403, 미인증 401)
     db: Annotated[Session, Depends(get_db)],
 ) -> dict:
     if not payload.content.strip():
