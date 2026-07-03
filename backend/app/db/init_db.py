@@ -31,6 +31,8 @@ def init_db() -> None:
 
     # 참조 데이터: 공공 식품영양성분 DB(데모/운영 무관, 멱등)
     _seed_food_nutrients()
+    # 참조 데이터: 공공 코칭 가이드라인(RAG 공공 문서, 멱등·best-effort)
+    _seed_public_coach_docs()
 
     if settings.seed_demo_data:
         _seed_demo_user()
@@ -78,6 +80,30 @@ def _seed_food_nutrients() -> None:
                 fat_g=item.get("fat_g"),
             ))
         db.commit()
+    finally:
+        db.close()
+
+
+def _seed_public_coach_docs() -> None:
+    """공공 코칭 가이드라인을 RAG 공공 문서로 적재(멱등). 임베딩 불가 시 조용히 스킵."""
+    from app.data.coach_public_docs import PUBLIC_DOCS
+    from app.services.coach.rag import ingest_document
+
+    db: Session = SessionLocal()
+    try:
+        exists = db.scalar(
+            select(models.CoachDocument).where(models.CoachDocument.user_id.is_(None)).limit(1)
+        )
+        if exists:
+            return
+        for doc in PUBLIC_DOCS:
+            try:
+                ingest_document(
+                    db, doc["content"], user_id=None,
+                    domain=doc["domain"], source="public", title=doc["title"],
+                )
+            except Exception:  # noqa: BLE001 — 적재 실패가 기동을 막지 않도록
+                db.rollback()
     finally:
         db.close()
 

@@ -25,6 +25,7 @@ from app.models.models import DietEntry
 from app.schemas.diet_api import (
     DietAnalyzeResponse, DietEntryOut, DietTodayResponse, Macros,
 )
+from app.services.coach.personal_ingest import record_diet
 from app.services.nutrition.enrich import enrich_analysis
 from app.services.recognizer.factory import get_recognizer
 
@@ -131,5 +132,11 @@ async def diet_analyze(
     db.add(entry)
     db.commit()
     db.refresh(entry)
+
+    # 개인 RAG 문서로 적재(코치가 내 최근 식단을 검색하도록). best-effort.
+    record_diet(
+        db, current_user.id, date=entry.date, foods=foods_for_storage,
+        total_calories=entry.total_calories, sodium_mg=entry.sodium_mg, sugar_g=entry.sugar_g,
+    )
 
     return DietAnalyzeResponse(entry_id=entry.id, analysis=analysis)

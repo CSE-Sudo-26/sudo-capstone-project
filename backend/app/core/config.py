@@ -56,6 +56,8 @@ class Settings(BaseSettings):
     # 검색: 개인 문서 / 공공 문서 각각 top-k
     retrieve_personal_k: int = 3
     retrieve_public_k: int = 3
+    # 식단/바이탈 기록 시 개인 RAG 문서 자동 적재(코치가 내 최근 데이터를 검색하도록)
+    rag_auto_ingest: bool = True
 
     # --- 기타 ---
     cors_allow_origins: str = "*"
