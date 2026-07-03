@@ -183,4 +183,28 @@ void main() {
     );
     expect(res.statusCode, 400);
   });
+
+  test('POST /users/me/onboarding persists fields + onboarded flag', () async {
+    final res = await dio.post<Map<String, Object?>>(
+      '/users/me/onboarding',
+      data: <String, Object?>{
+        'birth_date': '1988-03-03',
+        'gender': 'female',
+        'conditions': '고혈압, 당뇨',
+        'goal_weight_kg': 62,
+        'daily_sodium_mg': 1500,
+      },
+    );
+    expect(res.statusCode, 200);
+    expect(res.data!['onboarded'], true);
+    expect(res.data!['gender'], 'female');
+
+    // GET /users/me/profile reflects the onboarding write.
+    final prof = await dio.get<Map<String, Object?>>('/users/me/profile');
+    expect(prof.data!['birth_date'], '1988-03-03');
+    expect(prof.data!['conditions'], '고혈압, 당뇨');
+    expect(prof.data!['goal_weight_kg'], 62);
+    expect(prof.data!['daily_sodium_mg'], 1500);
+    expect(prof.data!['onboarded'], true);
+  });
 }

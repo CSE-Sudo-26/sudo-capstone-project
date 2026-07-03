@@ -23,6 +23,19 @@ class MockAccountRepository implements AccountRepository {
   Future<UserProfile> fetchProfile() async => _demo;
 
   @override
+  Future<UserProfile> submitOnboarding({
+    String? birthDate,
+    String? gender,
+    num? heightCm,
+    num? weightKg,
+    String? conditions,
+    num? goalWeightKg,
+    int? goalBpSystolic,
+    int? goalBloodSugar,
+    int? dailySodiumMg,
+  }) async => _demo;
+
+  @override
   Future<UserProfile> updateProfile({
     String? name,
     String? email,

@@ -14,6 +14,35 @@ class DioAccountRepository implements AccountRepository {
   }
 
   @override
+  Future<UserProfile> submitOnboarding({
+    String? birthDate,
+    String? gender,
+    num? heightCm,
+    num? weightKg,
+    String? conditions,
+    num? goalWeightKg,
+    int? goalBpSystolic,
+    int? goalBloodSugar,
+    int? dailySodiumMg,
+  }) async {
+    final res = await _dio.post<Map<String, Object?>>(
+      '/users/me/onboarding',
+      data: <String, Object?>{
+        'birth_date': ?birthDate,
+        'gender': ?gender,
+        'height_cm': ?heightCm,
+        'weight_kg': ?weightKg,
+        'conditions': ?conditions,
+        'goal_weight_kg': ?goalWeightKg,
+        'goal_bp_systolic': ?goalBpSystolic,
+        'goal_blood_sugar': ?goalBloodSugar,
+        'daily_sodium_mg': ?dailySodiumMg,
+      },
+    );
+    return UserProfile.fromJson(res.data!);
+  }
+
+  @override
   Future<UserProfile> updateProfile({
     String? name,
     String? email,

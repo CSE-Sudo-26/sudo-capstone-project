@@ -45,6 +45,7 @@ class LocalApiInterceptor extends Interceptor {
     'GET /users/me': _usersMe,
     'GET /users/me/profile': _usersMeProfile,
     'PUT /users/me': _usersMeUpdate,
+    'POST /users/me/onboarding': _usersMeOnboarding,
     'PUT /users/me/health-goals': _usersMeHealthGoals,
     'GET /users/me/health': _usersMeHealth,
     'GET /places/nearby': _placesNearby,
@@ -775,6 +776,32 @@ class LocalApiInterceptor extends Interceptor {
     ]) {
       if (body[k] != null) patch[k] = body[k];
     }
+    await _mergeProfileOverlay(patch);
+    return _ok(options, await _mergedProfile());
+  }
+
+  /// POST /users/me/onboarding — first-run setup. Persists any provided
+  /// fields and marks the profile onboarded; mirrors FastAPI's partial save.
+  Future<Response<Object?>> _usersMeOnboarding(RequestOptions options) async {
+    final body = _jsonBody(options);
+    final patch = <String, Object?>{};
+    for (final String k in <String>[
+      'name',
+      'birth_date',
+      'gender',
+      'height_cm',
+      'weight_kg',
+      'conditions',
+      'goals',
+      'goal_weight_kg',
+      'goal_bp_systolic',
+      'goal_blood_sugar',
+      'daily_calories',
+      'daily_sodium_mg',
+    ]) {
+      if (body[k] != null) patch[k] = body[k];
+    }
+    patch['onboarded'] = true;
     await _mergeProfileOverlay(patch);
     return _ok(options, await _mergedProfile());
   }
