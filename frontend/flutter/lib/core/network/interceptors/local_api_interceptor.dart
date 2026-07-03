@@ -41,6 +41,9 @@ class LocalApiInterceptor extends Interceptor {
     'GET /ai-coach/feedback': _aiCoachFeedback,
     'POST /ai-coach/chat': _aiCoachChat,
     'GET /users/me': _usersMe,
+    'GET /users/me/profile': _usersMeProfile,
+    'PUT /users/me': _usersMeUpdate,
+    'PUT /users/me/health-goals': _usersMeHealthGoals,
     'GET /users/me/health': _usersMeHealth,
     'GET /places/nearby': _placesNearby,
     // Vitals — three fixed kinds (weight | blood-pressure | blood-sugar).
@@ -660,12 +663,78 @@ class LocalApiInterceptor extends Interceptor {
 
   // ---- Users / Me ----
 
+  // ---- Profile (내 프로필 / 건강 목표) — AppKeyValues 로 영속 ----
+
+  static const Map<String, Object?> _defaultProfile = <String, Object?>{
+    'id': 'user-demo',
+    'name': '김민수',
+    'email': 'minsu@oncare.com',
+    'phone': '010-1234-5678',
+    'birth_date': '1990-01-15',
+    'gender': '',
+    'conditions': '',
+    'goals': '',
+    'goal_weight_kg': 70,
+    'goal_bp_systolic': 120,
+    'goal_blood_sugar': 100,
+    'daily_calories': 2000,
+    'daily_sodium_mg': 2000,
+    'onboarded': true,
+  };
+
+  Future<Map<String, Object?>> _readProfileOverlay() async {
+    final raw = await _db.readValue('profile_overlay');
+    if (raw == null || raw.isEmpty) return <String, Object?>{};
+    return (jsonDecode(raw) as Map<Object?, Object?>).cast<String, Object?>();
+  }
+
+  Future<Map<String, Object?>> _mergedProfile() async {
+    return <String, Object?>{..._defaultProfile, ...await _readProfileOverlay()};
+  }
+
+  Future<void> _mergeProfileOverlay(Map<String, Object?> patch) async {
+    final overlay = await _readProfileOverlay();
+    overlay.addAll(patch);
+    await _db.putValue('profile_overlay', jsonEncode(overlay));
+  }
+
   Future<Response<Object?>> _usersMe(RequestOptions options) async {
+    final p = await _mergedProfile();
     return _ok(options, <String, Object?>{
-      'id': 'user-demo',
-      'name': '김민수',
-      'email': 'minsu@oncare.com',
+      'id': p['id'],
+      'name': p['name'],
+      'email': p['email'],
     });
+  }
+
+  Future<Response<Object?>> _usersMeProfile(RequestOptions options) async {
+    return _ok(options, await _mergedProfile());
+  }
+
+  Future<Response<Object?>> _usersMeUpdate(RequestOptions options) async {
+    final body = _jsonBody(options);
+    final patch = <String, Object?>{};
+    for (final String k in <String>['name', 'email', 'phone', 'birth_date']) {
+      if (body[k] != null) patch[k] = body[k];
+    }
+    await _mergeProfileOverlay(patch);
+    return _ok(options, await _mergedProfile());
+  }
+
+  Future<Response<Object?>> _usersMeHealthGoals(RequestOptions options) async {
+    final body = _jsonBody(options);
+    final patch = <String, Object?>{};
+    for (final String k in <String>[
+      'goal_weight_kg',
+      'goal_bp_systolic',
+      'goal_blood_sugar',
+      'daily_calories',
+      'daily_sodium_mg',
+    ]) {
+      if (body[k] != null) patch[k] = body[k];
+    }
+    await _mergeProfileOverlay(patch);
+    return _ok(options, await _mergedProfile());
   }
 
   Future<Response<Object?>> _usersMeHealth(RequestOptions options) async {
@@ -916,6 +985,16 @@ class LocalApiInterceptor extends Interceptor {
   }
 
   // ---- helpers ----
+
+  /// Parse a request body (JSON Map or raw String) into a Map.
+  Map<String, Object?> _jsonBody(RequestOptions options) {
+    final body = options.data;
+    if (body is Map) return body.cast<String, Object?>();
+    if (body is String && body.isNotEmpty) {
+      return (jsonDecode(body) as Map<Object?, Object?>).cast<String, Object?>();
+    }
+    return <String, Object?>{};
+  }
 
   /// Build a 200 OK response carrying [body]. Subclasses of handlers
   /// will build their bodies as plain Map/List structures (snake_case)

@@ -96,4 +96,32 @@ void main() {
     );
     expect(res.statusCode, 400);
   });
+
+  test('PUT /users/me persists profile; GET /users/me/profile + /users/me reflect it', () async {
+    final put = await dio.put<Map<String, Object?>>(
+      '/users/me',
+      data: <String, Object?>{'name': '이순신', 'phone': '010-9999-0000'},
+    );
+    expect(put.statusCode, 200);
+    expect(put.data!['name'], '이순신');
+
+    final prof = await dio.get<Map<String, Object?>>('/users/me/profile');
+    expect(prof.data!['name'], '이순신');
+    expect(prof.data!['phone'], '010-9999-0000');
+    expect(prof.data!['email'], 'minsu@oncare.com'); // 안 바꾼 값은 기본 유지
+
+    final me = await dio.get<Map<String, Object?>>('/users/me');
+    expect(me.data!['name'], '이순신');
+  });
+
+  test('PUT /users/me/health-goals persists goals', () async {
+    await dio.put<Map<String, Object?>>(
+      '/users/me/health-goals',
+      data: <String, Object?>{'goal_weight_kg': 65, 'daily_sodium_mg': 1800},
+    );
+    final prof = await dio.get<Map<String, Object?>>('/users/me/profile');
+    expect(prof.data!['goal_weight_kg'], 65);
+    expect(prof.data!['daily_sodium_mg'], 1800);
+    expect(prof.data!['goal_bp_systolic'], 120); // 미변경 목표는 기본 유지
+  });
 }
