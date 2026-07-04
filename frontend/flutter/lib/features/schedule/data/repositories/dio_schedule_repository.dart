@@ -23,6 +23,19 @@ class DioScheduleRepository implements ScheduleRepository {
   }
 
   @override
+  Future<List<ScheduleEvent>> fetchByMonth(String month) async {
+    final res = await _dio.get<List<Object?>>(
+      '/schedule/events',
+      queryParameters: <String, Object?>{'month': month},
+    );
+    final rows = res.data ?? const <Object?>[];
+    return rows
+        .cast<Map<String, Object?>>()
+        .map(ScheduleEvent.fromJson)
+        .toList();
+  }
+
+  @override
   Future<ScheduleEvent> createEvent({
     required String date,
     required String title,

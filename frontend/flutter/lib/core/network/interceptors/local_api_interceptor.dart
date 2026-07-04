@@ -626,12 +626,20 @@ class LocalApiInterceptor extends Interceptor {
   // ---- Schedule ----
 
   Future<Response<Object?>> _scheduleEvents(RequestOptions options) async {
-    // `?date=YYYY-MM-DD`. Defaults to today.
-    final date =
-        (options.queryParameters['date'] as String?) ?? _todayDateString();
-    final rows = await (_db.select(
-      _db.scheduleEvents,
-    )..where((t) => t.date.equals(date))).get();
+    // `?month=YYYY-MM` → whole month (calendar grid); otherwise
+    // `?date=YYYY-MM-DD` (defaults to today). Filtered in Dart to keep the
+    // drift import minimal (no LIKE extension needed); the demo table is
+    // tiny.
+    final month = options.queryParameters['month'] as String?;
+    final all = await _db.select(_db.scheduleEvents).get();
+    final rows = (month != null && month.isNotEmpty)
+        ? all.where((r) => r.date.startsWith('$month-')).toList()
+        : () {
+            final date =
+                (options.queryParameters['date'] as String?) ??
+                _todayDateString();
+            return all.where((r) => r.date == date).toList();
+          }();
 
     final list = <Map<String, Object?>>[
       for (final r in rows)

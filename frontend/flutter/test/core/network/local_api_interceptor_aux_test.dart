@@ -393,4 +393,37 @@ void main() {
     );
     expect(gone.statusCode, 404);
   });
+
+  test('GET /schedule/events?month returns the whole month only', () async {
+    for (final ({String id, String date, String cat}) e in <({
+      String id,
+      String date,
+      String cat,
+    })>[
+      (id: 'm-1', date: '2029-09-03', cat: 'hospital'),
+      (id: 'm-2', date: '2029-09-21', cat: 'meal'),
+      (id: 'm-3', date: '2029-10-01', cat: 'other'),
+    ]) {
+      await db
+          .into(db.scheduleEvents)
+          .insert(
+            ScheduleEventsCompanion.insert(
+              id: e.id,
+              date: e.date,
+              time: '10:00',
+              title: e.id,
+              category: e.cat,
+            ),
+          );
+    }
+
+    final res = await dio.get<List<Object?>>(
+      '/schedule/events',
+      queryParameters: <String, Object?>{'month': '2029-09'},
+    );
+    expect(res.statusCode, 200);
+    final ids = res.data!.cast<Map<String, Object?>>().map((e) => e['id']);
+    expect(ids, containsAll(<String>['m-1', 'm-2']));
+    expect(ids, isNot(contains('m-3'))); // 다른 달 제외
+  });
 }
