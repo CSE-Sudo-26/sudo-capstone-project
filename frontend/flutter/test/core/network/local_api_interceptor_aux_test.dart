@@ -242,4 +242,38 @@ void main() {
     final prof = await dio.get<Map<String, Object?>>('/users/me/profile');
     expect(prof.data!['name'], '김민수');
   });
+
+  test('POST /schedule/events persists; GET returns it for that date', () async {
+    final res = await dio.post<Map<String, Object?>>(
+      '/schedule/events',
+      data: <String, Object?>{
+        'date': '2026-07-04',
+        'time': '15:30',
+        'title': '치과 예약',
+        'category': 'hospital',
+      },
+    );
+    expect(res.statusCode, 201);
+    expect(res.data!['title'], '치과 예약');
+    expect(res.data!['emoji'], '🏥'); // derived from category
+    expect((res.data!['id']! as String).isNotEmpty, isTrue);
+
+    final list = await dio.get<List<Object?>>(
+      '/schedule/events',
+      queryParameters: <String, Object?>{'date': '2026-07-04'},
+    );
+    final titles = list.data!
+        .cast<Map<String, Object?>>()
+        .map((e) => e['title']);
+    expect(titles, contains('치과 예약'));
+  });
+
+  test('POST /schedule/events rejects a missing title', () async {
+    final res = await dio.post<Map<String, Object?>>(
+      '/schedule/events',
+      data: <String, Object?>{'date': '2026-07-04', 'title': ''},
+      options: Options(validateStatus: (int? s) => true),
+    );
+    expect(res.statusCode, 400);
+  });
 }

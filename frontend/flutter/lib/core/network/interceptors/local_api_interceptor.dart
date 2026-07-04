@@ -37,6 +37,7 @@ class LocalApiInterceptor extends Interceptor {
     'GET /exercise/weeks/current': _exerciseCurrentWeek,
     'POST /exercise/sessions': _exerciseAddSession,
     'GET /schedule/events': _scheduleEvents,
+    'POST /schedule/events': _scheduleCreate,
     'GET /notifications': _notifications,
     'GET /ai-coach/feedback': _aiCoachFeedback,
     'POST /ai-coach/chat': _aiCoachChat,
@@ -539,6 +540,57 @@ class LocalApiInterceptor extends Interceptor {
         },
     ];
     return _ok(options, list);
+  }
+
+  /// Category → (emoji, color) so created events look consistent with the
+  /// seeded ones. Mirrors what a FastAPI build would fill server-side.
+  (String, String) _scheduleStyle(String category) => switch (category) {
+    'hospital' => ('🏥', '#DBEAFE'),
+    'exercise' => ('💪', '#DCFCE7'),
+    'meal' => ('🍽️', '#FFEDD5'),
+    'medication' => ('💊', '#EDE9FE'),
+    _ => ('📌', '#E0F2F7'),
+  };
+
+  /// POST /schedule/events — persist a new event to drift so it shows up in
+  /// GET /schedule/events and the dashboard's "오늘의 일정" for that date.
+  Future<Response<Object?>> _scheduleCreate(RequestOptions options) async {
+    final body = _jsonBody(options);
+    final date = (body['date'] as String? ?? '').trim();
+    final title = (body['title'] as String? ?? '').trim();
+    if (date.isEmpty || title.isEmpty) {
+      return _badRequest(options, 'date and title are required');
+    }
+    final time = (body['time'] as String? ?? '').trim();
+    final category = (body['category'] as String? ?? 'other').trim();
+    final (emoji, colorHex) = _scheduleStyle(category);
+    final id = 'evt-${DateTime.now().microsecondsSinceEpoch}';
+    await _db
+        .into(_db.scheduleEvents)
+        .insert(
+          ScheduleEventsCompanion.insert(
+            id: id,
+            date: date,
+            time: time,
+            title: title,
+            category: category,
+            emoji: Value(emoji),
+            colorHex: Value(colorHex),
+          ),
+        );
+    return Response<Object?>(
+      requestOptions: options,
+      statusCode: 201,
+      data: <String, Object?>{
+        'id': id,
+        'date': date,
+        'time': time,
+        'title': title,
+        'category': category,
+        'emoji': emoji,
+        'color_hex': colorHex,
+      },
+    );
   }
 
   // ---- Notifications ----

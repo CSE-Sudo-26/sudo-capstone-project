@@ -28,4 +28,20 @@ class MockScheduleRepository implements ScheduleRepository {
       ),
     ];
   }
+
+  @override
+  Future<ScheduleEvent> createEvent({
+    required String date,
+    required String title,
+    String time = '',
+    ScheduleCategory category = ScheduleCategory.other,
+  }) async {
+    return ScheduleEvent(
+      id: 'mock-${category.name}',
+      date: date,
+      time: time,
+      title: title,
+      category: category,
+    );
+  }
 }

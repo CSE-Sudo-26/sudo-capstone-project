@@ -21,4 +21,23 @@ class DioScheduleRepository implements ScheduleRepository {
         .map(ScheduleEvent.fromJson)
         .toList();
   }
+
+  @override
+  Future<ScheduleEvent> createEvent({
+    required String date,
+    required String title,
+    String time = '',
+    ScheduleCategory category = ScheduleCategory.other,
+  }) async {
+    final res = await _dio.post<Map<String, Object?>>(
+      '/schedule/events',
+      data: <String, Object?>{
+        'date': date,
+        'time': time,
+        'title': title,
+        'category': category.name,
+      },
+    );
+    return ScheduleEvent.fromJson(res.data!);
+  }
 }
