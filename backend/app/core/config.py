@@ -56,7 +56,7 @@ class Settings(BaseSettings):
 
     # --- RAG (STEP 7) ---
     # 임베딩 차원: 모델에 맞춰 바꿉니다. 바꾸면 재임베딩 필요(scripts/reembed).
-    #   Gemini text-embedding-004          = 768 (현재 기본, EMBEDDER=gemini)
+    #   Gemini gemini-embedding-001        = 768 (현재 기본, EMBEDDER=gemini)
     #   OpenAI text-embedding-3-small/large = 1536 / 3072 (EMBEDDER=openai 시 EMBED_DIM=1536)
     embed_dim: int = 768
     # 청킹: 윈도우(문장 수)와 겹침(stride 보정). 최적값 찾으면 여기만 수정.

@@ -62,8 +62,12 @@ def _force_stub_recognizer(monkeypatch):
     try:
         from app.core.config import get_settings
         monkeypatch.setattr(get_settings(), "recognizer", "stub")
-    except Exception:  # noqa: BLE001
-        pass
+    except Exception:  # noqa: BLE001, S110
+        import warnings
+        warnings.warn(
+            "recognizer 를 stub 으로 강제하지 못했습니다 — 테스트가 실제 Gemini Vision API 를 호출할 수 있습니다.",
+            stacklevel=2,
+        )
     yield
 
 

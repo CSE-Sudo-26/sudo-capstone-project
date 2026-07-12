@@ -14,6 +14,7 @@ import sys
 
 
 def _hint(e: Exception) -> str:
+    """예외 메시지를 사람이 읽을 수 있는 원인 힌트(429/403/404/401)로 변환한다."""
     m = str(e).lower()
     if "429" in m or "resource_exhausted" in m or "quota" in m or "rate" in m:
         return "→ 할당량/레이트리밋(429). 결제·쿼터 상태 확인."
@@ -27,10 +28,12 @@ def _hint(e: Exception) -> str:
 
 
 def _cos(a: list[float], b: list[float]) -> float:
+    """두 임베딩 벡터의 내적(임베딩 의미공간 sanity 비교용)."""
     return sum(x * y for x, y in zip(a, b))
 
 
 def main() -> None:
+    """GEMINI_API_KEY 로 코치 챗·임베딩·(선택)식단 인식을 실제 클래스로 호출해 진단한다."""
     from app.core.config import get_settings
 
     s = get_settings()
