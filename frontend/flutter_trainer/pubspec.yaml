@@ -1,0 +1,36 @@
+name: oncare_trainer
+description: "On-Care 트레이너 앱 — 트레이너용 고객 관리 / AI 루틴 / 스케줄 (Android / iOS / Web)."
+publish_to: 'none'
+
+# Versioning is managed via --build-name / --build-number at build time.
+version: 0.1.0+1
+
+environment:
+  sdk: ^3.12.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.8
+
+  # --- State management & DI ---
+  # 사용자 앱(frontend/flutter)과 동일한 Riverpod 기반. 트레이너 앱은
+  # 별도 프로젝트이므로 코드는 공유하지 않고 스택만 맞춘다.
+  flutter_riverpod: ^2.6.1
+
+  # --- Routing ---
+  go_router: ^14.6.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
+
+  # 트레이너 로고 등 정적 리소스는 후속 이슈에서 추가한다.
+  # assets:
+  #   - assets/images/
