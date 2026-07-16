@@ -27,7 +27,8 @@ class ClientsPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final clients = ref.watch(clientsProvider);
+    // Priority ordering: sodium-over clients first, then recent chat.
+    final clients = ref.watch(prioritizedClientsProvider);
     final reservations = ref.watch(todayReservationCountProvider).valueOrNull;
 
     return Scaffold(
@@ -46,24 +47,29 @@ class ClientsPage extends ConsumerWidget {
               final wide =
                   constraints.maxWidth >= AppLayout.splitBreakpoint &&
                   list.isNotEmpty;
-              if (!wide) {
+
+              // Restore the selection from the URL (?c=<id>). Absent or
+              // stale means the panel is closed — the tab starts as a
+              // plain list until a client is picked.
+              final query = GoRouterState.of(context).uri.queryParameters['c'];
+              final selected = wide && list.any((c) => c.id == query)
+                  ? query
+                  : null;
+
+              if (selected == null) {
                 return ContentFrame(
                   child: _ClientsView(
                     clients: list,
                     reservations: reservations,
                     selectedId: null,
-                    onOpen: (id) => context.push(AppRoutes.clientDetail(id)),
+                    // Wide: open the side panel via the URL. Narrow:
+                    // keep the full-screen push.
+                    onOpen: (id) => wide
+                        ? context.go('${AppRoutes.clients}?c=$id')
+                        : context.push(AppRoutes.clientDetail(id)),
                   ),
                 );
               }
-
-              // Restore the selection from the URL (?c=<id>); fall back
-              // to the first client when absent/stale.
-              final query =
-                  GoRouterState.of(context).uri.queryParameters['c'];
-              final selected = list.any((c) => c.id == query)
-                  ? query!
-                  : list.first.id;
 
               return ContentFrame(
                 maxWidth: AppLayout.wideMaxWidth,
@@ -90,6 +96,7 @@ class ClientsPage extends ConsumerWidget {
                       child: ClientDetailView(
                         clientId: selected,
                         showBack: false,
+                        onClose: () => context.go(AppRoutes.clients),
                       ),
                     ),
                   ],
@@ -249,9 +256,7 @@ class _AiSummaryCard extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  sodiumOver > 0
-                      ? '루틴 조정이 필요할 수 있어요.'
-                      : '모든 고객이 목표 범위 안에 있어요.',
+                  sodiumOver > 0 ? '루틴 조정이 필요할 수 있어요.' : '모든 고객이 목표 범위 안에 있어요.',
                   style: const TextStyle(
                     fontSize: 11.5,
                     color: AppColors.mutedForeground,

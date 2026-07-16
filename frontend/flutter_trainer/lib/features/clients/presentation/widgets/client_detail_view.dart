@@ -29,6 +29,7 @@ class ClientDetailView extends ConsumerStatefulWidget {
     super.key,
     required this.clientId,
     this.showBack = true,
+    this.onClose,
   });
 
   /// Id of the client being viewed.
@@ -36,6 +37,10 @@ class ClientDetailView extends ConsumerStatefulWidget {
 
   /// Whether to render the back button (full-screen route only).
   final bool showBack;
+
+  /// When set (split-view panel), a close button is shown that collapses
+  /// the panel back to the plain client list.
+  final VoidCallback? onClose;
 
   @override
   ConsumerState<ClientDetailView> createState() => _ClientDetailViewState();
@@ -52,7 +57,11 @@ class _ClientDetailViewState extends ConsumerState<ClientDetailView> {
 
     return Column(
       children: <Widget>[
-        _Header(client: client, showBack: widget.showBack),
+        _Header(
+          client: client,
+          showBack: widget.showBack,
+          onClose: widget.onClose,
+        ),
         _SubTabs(current: _tab, onChanged: (i) => setState(() => _tab = i)),
         Expanded(child: _body(client)),
       ],
@@ -86,10 +95,15 @@ class _ClientDetailViewState extends ConsumerState<ClientDetailView> {
 }
 
 class _Header extends StatelessWidget {
-  const _Header({required this.client, required this.showBack});
+  const _Header({
+    required this.client,
+    required this.showBack,
+    required this.onClose,
+  });
 
   final TrainerClient? client;
   final bool showBack;
+  final VoidCallback? onClose;
 
   @override
   Widget build(BuildContext context) {
@@ -150,6 +164,13 @@ class _Header extends StatelessWidget {
                   : AppColors.disabledForeground,
             ),
           ),
+          if (onClose != null)
+            IconButton(
+              icon: const Icon(Icons.close, size: 18),
+              color: AppColors.subtleForeground,
+              tooltip: '패널 닫기',
+              onPressed: onClose,
+            ),
         ],
       ),
     );
