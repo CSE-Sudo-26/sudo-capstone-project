@@ -24,13 +24,22 @@ class Macros(BaseModel):
 
 
 def calculate_macros(carbs_g: float, protein_g: float, fat_g: float) -> Macros:
-    """Build gram totals and 4/4/9 energy percentages (round half up)."""
+    """Build 4/4/9 percentages with largest remainders; ties favor fat, then protein."""
     energies = (carbs_g * 4, protein_g * 4, fat_g * 9)
     total_energy = sum(energies)
     if total_energy == 0:
-        percentages = (0, 0, 0)
+        percentages = [0, 0, 0]
     else:
-        percentages = tuple(int((energy / total_energy * 100) + 0.5) for energy in energies)
+        raw_percentages = [energy / total_energy * 100 for energy in energies]
+        percentages = [int(value) for value in raw_percentages]
+        remaining = 100 - sum(percentages)
+        ranked = sorted(
+            range(len(percentages)),
+            key=lambda index: (raw_percentages[index] - percentages[index], index),
+            reverse=True,
+        )
+        for index in ranked[:remaining]:
+            percentages[index] += 1
     return Macros(
         carbs_g=carbs_g,
         protein_g=protein_g,
@@ -59,9 +68,9 @@ class DietEntryUpdate(BaseModel):
     meal_type: str | None = None
     time_label: str | None = None
     total_calories: int | None = Field(None, ge=0)
-    carbs_g: float | None = Field(None, ge=0)
-    protein_g: float | None = Field(None, ge=0)
-    fat_g: float | None = Field(None, ge=0)
+    carbs_g: float | None = Field(None, ge=0, allow_inf_nan=False)
+    protein_g: float | None = Field(None, ge=0, allow_inf_nan=False)
+    fat_g: float | None = Field(None, ge=0, allow_inf_nan=False)
     sodium_mg: int | None = Field(None, ge=0)
     sugar_g: int | None = Field(None, ge=0)
 

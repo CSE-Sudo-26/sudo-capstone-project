@@ -14,14 +14,18 @@ from pydantic import BaseModel, Field
 class RecognizedFood(BaseModel):
     name: str = Field(..., description="음식 이름(한국어)")
     calories: Optional[int] = Field(None, description="칼로리 kcal")
-    carbs_g: Optional[float] = Field(None, description="탄수화물 g")
-    protein_g: Optional[float] = Field(None, description="단백질 g")
-    fat_g: Optional[float] = Field(None, description="지방 g")
+    carbs_g: Optional[float] = Field(
+        None, ge=0, allow_inf_nan=False, description="탄수화물 g"
+    )
+    protein_g: Optional[float] = Field(
+        None, ge=0, allow_inf_nan=False, description="단백질 g"
+    )
+    fat_g: Optional[float] = Field(None, ge=0, allow_inf_nan=False, description="지방 g")
     sodium_mg: Optional[int] = Field(None, description="나트륨 mg")
     sugar_g: Optional[int] = Field(None, description="당류 g")
     confidence: Optional[float] = Field(None, ge=0.0, le=1.0)
-    # 영양 수치 출처: "db"(공공 식품영양성분 DB 매칭) | "estimate"(LLM 추정)
-    source: str = Field("estimate", description="db|estimate")
+    # 영양 수치 출처: 공공 DB | 인식기 추정 | 두 값의 혼합
+    source: str = Field("estimate", description="db|estimate|mixed")
 
 
 class DietAnalysis(BaseModel):

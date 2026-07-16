@@ -34,10 +34,20 @@ router = APIRouter(tags=["diet"])
 logger = logging.getLogger(__name__)
 
 _ALLOWED_MIME = {"image/jpeg", "image/png", "image/webp"}
+_FOOD_STORAGE_FIELDS = ("name", "calories", "sodium_mg", "sugar_g", "source")
 
 
 def _today_str() -> str:
     return datetime.now().strftime("%Y-%m-%d")
+
+
+def _load_foods(foods_json: str) -> list[dict]:
+    foods = json.loads(foods_json) if foods_json else []
+    # Meal-level DietEntry macros are authoritative. Ignore legacy per-food macro keys.
+    return [
+        {field: food[field] for field in _FOOD_STORAGE_FIELDS if field in food}
+        for food in foods
+    ]
 
 
 @router.get("/diet/days/today", response_model=DietTodayResponse)
@@ -57,7 +67,7 @@ def diet_today(
     total_cal = total_na = total_sugar = 0
     total_carbs = total_protein = total_fat = 0.0
     for r in rows:
-        foods = json.loads(r.foods_json) if r.foods_json else []
+        foods = _load_foods(r.foods_json)
         entries.append(DietEntryOut(
             id=r.id, meal_type=r.meal_type, time_label=r.time_label,
             foods=foods, total_calories=r.total_calories,
@@ -122,10 +132,9 @@ async def diet_analyze(
     # 공공 식품영양성분 DB 매핑으로 영양 수치 보강(매칭 시 신뢰값으로 교체 → 합계 재계산)
     enrich_analysis(db, analysis, enabled=get_settings().nutrition_db_enrich)
 
-    # diet_entries 저장
+    # Per-food macros are used only to calculate meal totals; DietEntry is the single source of truth.
     foods_for_storage = [
         {"name": f.name, "calories": f.calories,
-         "carbs_g": f.carbs_g, "protein_g": f.protein_g, "fat_g": f.fat_g,
          "sodium_mg": f.sodium_mg, "sugar_g": f.sugar_g, "source": f.source}
         for f in analysis.foods
     ]
@@ -186,7 +195,7 @@ def update_entry(
             setattr(row, field, value)
     db.commit()
     db.refresh(row)
-    foods = json.loads(row.foods_json) if row.foods_json else []
+    foods = _load_foods(row.foods_json)
     return DietEntryOut(
         id=row.id, meal_type=row.meal_type, time_label=row.time_label,
         foods=foods, total_calories=row.total_calories,

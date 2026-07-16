@@ -5,33 +5,59 @@ CI 엔 GEMINI_API_KEY 가 없으므로 오프라인 스텁 인식기 경로를 �
 """
 from __future__ import annotations
 
+import json
+import math
 import uuid
 
 import pytest
+from pydantic import ValidationError
 from sqlalchemy import delete, select
 
 _JPEG = b"\xff\xd8\xff\xe0\x00\x10JFIF fake-image-bytes"
 
 
-def test_macro_percentage_uses_449_energy_and_handles_zero():
+def test_macro_percentages_use_449_and_always_sum_correctly():
     from app.schemas.diet_api import calculate_macros
 
-    assert calculate_macros(45.0, 22.5, 10.0).model_dump() == {
-        "carbs_g": 45.0,
-        "protein_g": 22.5,
-        "fat_g": 10.0,
-        "carbs_pct": 50,
-        "protein_pct": 25,
-        "fat_pct": 25,
-    }
-    assert calculate_macros(0.0, 0.0, 0.0).model_dump() == {
-        "carbs_g": 0.0,
-        "protein_g": 0.0,
-        "fat_g": 0.0,
-        "carbs_pct": 0,
-        "protein_pct": 0,
-        "fat_pct": 0,
-    }
+    equal_energy = calculate_macros(9.0, 9.0, 4.0)
+    assert (equal_energy.carbs_pct, equal_energy.protein_pct, equal_energy.fat_pct) == (
+        33, 33, 34,
+    )
+    assert equal_energy.carbs_pct + equal_energy.protein_pct + equal_energy.fat_pct == 100
+
+    regular = calculate_macros(25.0, 12.5, 5.0)
+    assert (regular.carbs_pct, regular.protein_pct, regular.fat_pct) == (51, 26, 23)
+    assert regular.carbs_pct + regular.protein_pct + regular.fat_pct == 100
+
+    zero = calculate_macros(0.0, 0.0, 0.0)
+    assert (zero.carbs_pct, zero.protein_pct, zero.fat_pct) == (0, 0, 0)
+    assert zero.carbs_pct + zero.protein_pct + zero.fat_pct == 0
+
+
+@pytest.mark.parametrize("field", ["carbs_g", "protein_g", "fat_g"])
+@pytest.mark.parametrize("value", [-0.1, math.nan, math.inf, -math.inf])
+def test_recognized_food_rejects_invalid_macros(field, value):
+    from app.schemas.diet import RecognizedFood
+
+    with pytest.raises(ValidationError):
+        RecognizedFood(name="test", **{field: value})
+
+
+@pytest.mark.parametrize("field", ["carbs_g", "protein_g", "fat_g"])
+def test_recognized_food_allows_optional_and_positive_macros(field):
+    from app.schemas.diet import RecognizedFood
+
+    assert getattr(RecognizedFood(name="test", **{field: None}), field) is None
+    assert getattr(RecognizedFood(name="test", **{field: 1.25}), field) == 1.25
+
+
+@pytest.mark.parametrize("field", ["carbs_g", "protein_g", "fat_g"])
+@pytest.mark.parametrize("value", [math.nan, math.inf, -math.inf])
+def test_entry_update_rejects_non_finite_macros(field, value):
+    from app.schemas.diet_api import DietEntryUpdate
+
+    with pytest.raises(ValidationError):
+        DietEntryUpdate(**{field: value})
 
 
 def test_analyze_offline_saves_and_reflects_macros_in_today(client, db_session):
@@ -74,6 +100,8 @@ def test_analyze_offline_saves_and_reflects_macros_in_today(client, db_session):
     stored = db_session.get(DietEntry, body["entry_id"])
     assert stored is not None
     assert (stored.carbs_g, stored.protein_g, stored.fat_g) == (45.0, 22.5, 10.0)
+    stored_foods = json.loads(stored.foods_json)
+    assert all(not {"carbs_g", "protein_g", "fat_g"} & food.keys() for food in stored_foods)
 
     second = client.post(
         "/v1/diet/analyze",
@@ -90,6 +118,11 @@ def test_analyze_offline_saves_and_reflects_macros_in_today(client, db_session):
     assert all(entry["carbs_g"] == 45.0 for entry in today_body["entries"])
     assert all(entry["protein_g"] == 22.5 for entry in today_body["entries"])
     assert all(entry["fat_g"] == 10.0 for entry in today_body["entries"])
+    assert all(
+        not {"carbs_g", "protein_g", "fat_g"} & food.keys()
+        for entry in today_body["entries"]
+        for food in entry["foods"]
+    )
     assert today_body["macros"] == {
         "carbs_g": 90.0,
         "protein_g": 45.0,
@@ -116,6 +149,47 @@ def test_analyze_rejects_empty_file(client):
         data={"meal_type": "lunch"},
     )
     assert r.status_code == 400
+
+
+def test_enrich_marks_db_mixed_and_estimate_sources(db_session):
+    from app.models.models import FoodNutrient
+    from app.schemas.diet import DietAnalysis, RecognizedFood
+    from app.services.nutrition.enrich import enrich_analysis
+
+    bibimbap = db_session.scalar(select(FoodNutrient).where(FoodNutrient.name == "비빔밥"))
+    assert bibimbap is not None
+    bibimbap.carbs_g, bibimbap.protein_g, bibimbap.fat_g = 40.0, 20.0, 8.0
+    db_session.commit()
+
+    db_only = DietAnalysis(engine="test", foods=[
+        RecognizedFood(name="비빔밥", carbs_g=1.0, protein_g=2.0, fat_g=3.0),
+    ])
+    enrich_analysis(db_session, db_only)
+    assert db_only.foods[0].source == "db"
+    assert (db_only.foods[0].carbs_g, db_only.foods[0].protein_g, db_only.foods[0].fat_g) == (
+        40.0, 20.0, 8.0,
+    )
+
+    bibimbap.protein_g = None
+    db_session.commit()
+    mixed = DietAnalysis(engine="test", foods=[
+        RecognizedFood(name="비빔밥", carbs_g=1.0, protein_g=2.0, fat_g=3.0),
+        RecognizedFood(name="없는음식", carbs_g=4.0, protein_g=5.0, fat_g=6.0),
+    ])
+    enrich_analysis(db_session, mixed)
+    assert mixed.foods[0].source == "mixed"
+    assert mixed.foods[0].protein_g == 2.0
+    assert mixed.foods[1].source == "estimate"
+
+    no_recognizer_fallback = DietAnalysis(engine="test", foods=[
+        RecognizedFood(name="비빔밥", carbs_g=1.0, protein_g=None, fat_g=3.0),
+    ])
+    enrich_analysis(db_session, no_recognizer_fallback)
+    assert no_recognizer_fallback.foods[0].source == "db"
+    assert no_recognizer_fallback.foods[0].protein_g is None
+
+    bibimbap.protein_g = 20.0
+    db_session.commit()
 
 
 def test_delete_entry_removes_from_today(client):
@@ -182,6 +256,15 @@ def test_update_entry_changes_nutrition_and_today_totals(client, db_session):
         data={"meal_type": "lunch"},
     ).json()["entry_id"]
 
+    # Legacy per-food macro keys are ignored; meal-level DietEntry macros stay authoritative.
+    row = db_session.get(DietEntry, entry_id)
+    assert row is not None
+    row.foods_json = json.dumps([{
+        "name": "legacy food", "calories": 100, "sodium_mg": 10, "sugar_g": 2,
+        "source": "estimate", "carbs_g": 99, "protein_g": 99, "fat_g": 99,
+    }])
+    db_session.commit()
+
     r = client.put(
         f"/v1/diet/entries/{entry_id}",
         json={
@@ -200,6 +283,7 @@ def test_update_entry_changes_nutrition_and_today_totals(client, db_session):
     assert (r.json()["carbs_g"], r.json()["protein_g"], r.json()["fat_g"]) == (
         25.0, 12.5, 5.0,
     )
+    assert not {"carbs_g", "protein_g", "fat_g"} & r.json()["foods"][0].keys()
 
     today = client.get("/v1/diet/days/today").json()
     assert today["total_calories"] == 333
@@ -230,17 +314,24 @@ def test_update_entry_changes_nutrition_and_today_totals(client, db_session):
 
 
 @pytest.mark.parametrize(
-    "field",
-    ["total_calories", "carbs_g", "protein_g", "fat_g", "sodium_mg", "sugar_g"],
+    ("field", "value"),
+    [
+        ("total_calories", -1),
+        ("sodium_mg", -1),
+        ("sugar_g", -1),
+        ("carbs_g", -0.1),
+        ("protein_g", -0.1),
+        ("fat_g", -0.1),
+    ],
 )
-def test_update_entry_rejects_negative_nutrition(client, field):
+def test_update_entry_rejects_negative_nutrition(client, field, value):
     entry_id = client.post(
         "/v1/diet/analyze",
         files={"image": ("food.jpg", _JPEG, "image/jpeg")},
         data={"meal_type": "lunch"},
     ).json()["entry_id"]
 
-    r = client.put(f"/v1/diet/entries/{entry_id}", json={field: -0.1})
+    r = client.put(f"/v1/diet/entries/{entry_id}", json={field: value})
     assert r.status_code == 422
 
 
