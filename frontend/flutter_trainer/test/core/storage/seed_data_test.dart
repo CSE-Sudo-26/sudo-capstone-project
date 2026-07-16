@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:drift/drift.dart' show Value;
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -91,6 +90,41 @@ void main() {
       final schedule = await db.select(db.trainerScheduleEntries).get();
       expect(schedule.every((s) => s.date == _todayString()), isTrue);
       expect(await db.readValue('trainer_seeded_v1'), _todayString());
+    });
+
+    test('seed chat messages are in the past so runtime replies sort after',
+        () async {
+      await seedIfEmpty(db);
+
+      // All seed messages must predate "now" (they use past timestamps),
+      // otherwise a reply added right after boot could interleave.
+      final now = DateTime.now();
+      final all = await db.select(db.clientChatMessages).get();
+      final seeded = all.where((m) => m.id.startsWith('seed-')).toList();
+      expect(seeded, isNotEmpty);
+      expect(
+        seeded.every((m) => m.createdAt.isBefore(now)),
+        isTrue,
+        reason: 'seed chat messages must not use future timestamps',
+      );
+
+      // A reply added now sorts last within its client's thread.
+      await db.into(db.clientChatMessages).insert(
+            ClientChatMessagesCompanion.insert(
+              id: 'chat-runtime-order',
+              clientId: 'seed-client-1',
+              sender: 'trainer',
+              body: '방금 보낸 답장',
+              timeLabel: '21:30',
+              createdAt: DateTime.now(),
+            ),
+          );
+
+      final thread = await (db.select(db.clientChatMessages)
+            ..where((m) => m.clientId.equals('seed-client-1')))
+          .get();
+      thread.sort((a, b) => a.createdAt.compareTo(b.createdAt));
+      expect(thread.last.id, 'chat-runtime-order');
     });
 
     test('user-added (non-seed) chat messages survive a re-seed', () async {

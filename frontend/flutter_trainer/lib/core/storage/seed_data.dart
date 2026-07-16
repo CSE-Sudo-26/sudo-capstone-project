@@ -120,8 +120,12 @@ Future<void> seedIfEmpty(AppDatabase db) async {
               sender: client.chat[i].sender,
               body: client.chat[i].text,
               timeLabel: client.chat[i].timeLabel,
-              // Preserve order: each seed message is a minute apart.
-              createdAt: base.add(Duration(minutes: i)),
+              // Seed messages land in the PAST (oldest first, all before
+              // `base` ≈ now) and a minute apart, so a reply added at
+              // runtime — createdAt >= now — always sorts after them.
+              createdAt: base.subtract(
+                Duration(minutes: client.chat.length - i),
+              ),
             ),
         ]);
       });
