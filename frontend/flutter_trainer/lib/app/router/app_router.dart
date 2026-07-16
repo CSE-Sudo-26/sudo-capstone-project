@@ -8,6 +8,7 @@ import 'package:oncare_trainer/features/ai_routine/presentation/pages/ai_routine
 import 'package:oncare_trainer/features/auth/domain/entities/session_state.dart';
 import 'package:oncare_trainer/features/auth/presentation/controllers/session_controller.dart';
 import 'package:oncare_trainer/features/auth/presentation/pages/trainer_sign_in_page.dart';
+import 'package:oncare_trainer/features/clients/presentation/pages/client_detail_page.dart';
 import 'package:oncare_trainer/features/clients/presentation/pages/clients_page.dart';
 import 'package:oncare_trainer/features/my/presentation/pages/my_page.dart';
 import 'package:oncare_trainer/features/schedule/presentation/pages/schedule_page.dart';
@@ -85,6 +86,12 @@ GoRouter buildAppRouter({
             ],
           ),
         ],
+      ),
+      // Full-screen client detail (over the shell — no bottom nav).
+      GoRoute(
+        path: AppRoutes.clientDetailPattern,
+        builder: (context, state) =>
+            ClientDetailPage(clientId: state.pathParameters['id']!),
       ),
       GoRoute(
         path: AppRoutes.signIn,
