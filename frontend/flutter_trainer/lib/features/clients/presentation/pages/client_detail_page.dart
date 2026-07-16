@@ -21,9 +21,7 @@ class ClientDetailPage extends StatelessWidget {
       backgroundColor: AppColors.background,
       appBar: const BrandHeader(),
       body: SafeArea(
-        child: ContentFrame(
-          child: ClientDetailView(clientId: clientId),
-        ),
+        child: ContentFrame(child: ClientDetailView(clientId: clientId)),
       ),
     );
   }
