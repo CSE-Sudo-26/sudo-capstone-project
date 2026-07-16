@@ -32,6 +32,13 @@ def enrich_analysis(db: Session, analysis: DietAnalysis, enabled: bool = True) -
             food.calories = int(round(match.calories or 0))
             food.sodium_mg = int(round(match.sodium_mg or 0))
             food.sugar_g = int(round(match.sugar_g or 0))
+            # Preserve recognizer values when this DB row has no macro data.
+            if match.carbs_g is not None:
+                food.carbs_g = float(match.carbs_g)
+            if match.protein_g is not None:
+                food.protein_g = float(match.protein_g)
+            if match.fat_g is not None:
+                food.fat_g = float(match.fat_g)
             food.source = "db"
         else:
             food.source = "estimate"

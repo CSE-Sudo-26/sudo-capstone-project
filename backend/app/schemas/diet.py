@@ -14,6 +14,9 @@ from pydantic import BaseModel, Field
 class RecognizedFood(BaseModel):
     name: str = Field(..., description="음식 이름(한국어)")
     calories: Optional[int] = Field(None, description="칼로리 kcal")
+    carbs_g: Optional[float] = Field(None, description="탄수화물 g")
+    protein_g: Optional[float] = Field(None, description="단백질 g")
+    fat_g: Optional[float] = Field(None, description="지방 g")
     sodium_mg: Optional[int] = Field(None, description="나트륨 mg")
     sugar_g: Optional[int] = Field(None, description="당류 g")
     confidence: Optional[float] = Field(None, ge=0.0, le=1.0)
@@ -26,6 +29,9 @@ class DietAnalysis(BaseModel):
     engine: str
     foods: list[RecognizedFood] = Field(default_factory=list)
     total_calories: int = 0
+    total_carbs_g: float = 0.0
+    total_protein_g: float = 0.0
+    total_fat_g: float = 0.0
     total_sodium_mg: int = 0
     total_sugar_g: int = 0
     # 고혈압·DASH 관점 식단평 (기존 PoC 의 핵심 가치)
@@ -35,6 +41,9 @@ class DietAnalysis(BaseModel):
 
     def compute_totals(self) -> "DietAnalysis":
         self.total_calories = sum(f.calories or 0 for f in self.foods)
+        self.total_carbs_g = sum(f.carbs_g or 0.0 for f in self.foods)
+        self.total_protein_g = sum(f.protein_g or 0.0 for f in self.foods)
+        self.total_fat_g = sum(f.fat_g or 0.0 for f in self.foods)
         self.total_sodium_mg = sum(f.sodium_mg or 0 for f in self.foods)
         self.total_sugar_g = sum(f.sugar_g or 0 for f in self.foods)
         return self

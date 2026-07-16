@@ -24,7 +24,7 @@ from app.core.config import get_settings
 from app.db.session import get_db
 from app.models.models import DietEntry
 from app.schemas.diet_api import (
-    DietAnalyzeResponse, DietEntryOut, DietEntryUpdate, DietTodayResponse, Macros,
+    DietAnalyzeResponse, DietEntryOut, DietEntryUpdate, DietTodayResponse, calculate_macros,
 )
 from app.services.coach.personal_ingest import record_diet
 from app.services.nutrition.enrich import enrich_analysis
@@ -55,14 +55,19 @@ def diet_today(
 
     entries: list[DietEntryOut] = []
     total_cal = total_na = total_sugar = 0
+    total_carbs = total_protein = total_fat = 0.0
     for r in rows:
         foods = json.loads(r.foods_json) if r.foods_json else []
         entries.append(DietEntryOut(
             id=r.id, meal_type=r.meal_type, time_label=r.time_label,
             foods=foods, total_calories=r.total_calories,
+            carbs_g=r.carbs_g, protein_g=r.protein_g, fat_g=r.fat_g,
             sodium_mg=r.sodium_mg, sugar_g=r.sugar_g,
         ))
         total_cal += r.total_calories
+        total_carbs += r.carbs_g
+        total_protein += r.protein_g
+        total_fat += r.fat_g
         total_na += r.sodium_mg
         total_sugar += r.sugar_g
 
@@ -79,7 +84,7 @@ def diet_today(
         total_calories=total_cal,
         total_sodium_mg=total_na,
         total_sugar_g=total_sugar,
-        macros=Macros(),  # 끼니별 매크로 추적 전까지 데모 분할(계약과 동일)
+        macros=calculate_macros(total_carbs, total_protein, total_fat),
         ai_coach_message=msg,
     )
 
@@ -117,9 +122,10 @@ async def diet_analyze(
     # 공공 식품영양성분 DB 매핑으로 영양 수치 보강(매칭 시 신뢰값으로 교체 → 합계 재계산)
     enrich_analysis(db, analysis, enabled=get_settings().nutrition_db_enrich)
 
-    # diet_entries 저장 (foods 는 {name, calories, sodium_mg, sugar_g, source})
+    # diet_entries 저장
     foods_for_storage = [
         {"name": f.name, "calories": f.calories,
+         "carbs_g": f.carbs_g, "protein_g": f.protein_g, "fat_g": f.fat_g,
          "sodium_mg": f.sodium_mg, "sugar_g": f.sugar_g, "source": f.source}
         for f in analysis.foods
     ]
@@ -131,6 +137,9 @@ async def diet_analyze(
         time_label=datetime.now().strftime("%H:%M"),
         foods_json=json.dumps(foods_for_storage, ensure_ascii=False),
         total_calories=analysis.total_calories,
+        carbs_g=analysis.total_carbs_g,
+        protein_g=analysis.total_protein_g,
+        fat_g=analysis.total_fat_g,
         sodium_mg=analysis.total_sodium_mg,
         sugar_g=analysis.total_sugar_g,
         engine=analysis.engine,
@@ -169,12 +178,19 @@ def update_entry(
         row.meal_type = payload.meal_type
     if payload.time_label is not None:
         row.time_label = payload.time_label
+    for field in (
+        "total_calories", "carbs_g", "protein_g", "fat_g", "sodium_mg", "sugar_g"
+    ):
+        value = getattr(payload, field)
+        if value is not None:
+            setattr(row, field, value)
     db.commit()
     db.refresh(row)
     foods = json.loads(row.foods_json) if row.foods_json else []
     return DietEntryOut(
         id=row.id, meal_type=row.meal_type, time_label=row.time_label,
         foods=foods, total_calories=row.total_calories,
+        carbs_g=row.carbs_g, protein_g=row.protein_g, fat_g=row.fat_g,
         sodium_mg=row.sodium_mg, sugar_g=row.sugar_g,
     )
 
