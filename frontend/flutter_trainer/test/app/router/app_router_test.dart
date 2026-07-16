@@ -1,30 +1,10 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:oncare_trainer/app/app.dart';
 import 'package:oncare_trainer/app/router/app_router.dart';
 import 'package:oncare_trainer/app/router/routes.dart';
-import 'package:oncare_trainer/core/storage/prefs_provider.dart';
 import 'package:oncare_trainer/features/auth/domain/entities/session_state.dart';
 
-/// Pumps the app with a prefs override (optionally pre-seeded with a
-/// token so the session restores as authenticated).
-Future<void> _pumpApp(WidgetTester tester, {String? token}) async {
-  final values = <String, Object>{};
-  if (token != null) values['trainer_access_token'] = token;
-  SharedPreferences.setMockInitialValues(values);
-  final prefs = await SharedPreferences.getInstance();
-  await tester.pumpWidget(
-    ProviderScope(
-      overrides: <Override>[
-        sharedPreferencesProvider.overrideWithValue(prefs),
-      ],
-      child: const OncareTrainerApp(),
-    ),
-  );
-  await tester.pumpAndSettle();
-}
+import '../../helpers/pump_app.dart';
 
 void main() {
   group('sessionRedirect', () {
@@ -69,14 +49,14 @@ void main() {
     testWidgets('unauthenticated boot lands on the login screen', (
       tester,
     ) async {
-      await _pumpApp(tester);
+      await pumpTrainerApp(tester);
       expect(find.text('로그인 없이 데모 둘러보기'), findsOneWidget);
     });
 
     testWidgets('restored session boots into the shell (고객 tab)', (
       tester,
     ) async {
-      await _pumpApp(tester, token: 'demo-trainer-token-existing');
+      await pumpTrainerApp(tester, token: 'demo-trainer-token-existing');
 
       // Auth gate redirected past sign-in into the shell.
       expect(find.text('로그인 없이 데모 둘러보기'), findsNothing);
@@ -89,14 +69,14 @@ void main() {
     });
 
     testWidgets('tapping a tab switches the branch', (tester) async {
-      await _pumpApp(tester, token: 'demo-trainer-token-existing');
+      await pumpTrainerApp(tester, token: 'demo-trainer-token-existing');
 
       await tester.tap(find.text('스케줄'));
-      await tester.pumpAndSettle();
+      await settle(tester);
       expect(find.text('스케줄 화면은 곧 준비됩니다'), findsOneWidget);
 
       await tester.tap(find.text('MY'));
-      await tester.pumpAndSettle();
+      await settle(tester);
       expect(find.text('MY 화면은 곧 준비됩니다'), findsOneWidget);
     });
   });

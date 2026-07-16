@@ -20,4 +20,10 @@ class AppRoutes {
 
   /// MY — trainer profile.
   static const String my = '/my';
+
+  /// Client detail route pattern (full-screen, over the shell).
+  static const String clientDetailPattern = '/client/:id';
+
+  /// Builds the client detail path for [id].
+  static String clientDetail(String id) => '/client/$id';
 }
