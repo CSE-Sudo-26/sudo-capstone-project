@@ -120,6 +120,10 @@ class _ExerciseAddSheetState extends ConsumerState<_ExerciseAddSheet> {
       ? _indexFromType(widget.session!.type)
       : 1;
   int _level = 0;
+  // Intensity isn't persisted on ExerciseSession, so an edit always opens at
+  // 가벼움. Track whether the user actually changed it so we don't silently
+  // recompute (and downgrade) a stored 보통/높음 record's calories.
+  bool _levelTouched = false;
   late double _minutes = widget.session?.minutes.toDouble() ?? 30;
   bool _saving = false;
 
@@ -135,7 +139,6 @@ class _ExerciseAddSheetState extends ConsumerState<_ExerciseAddSheet> {
       return;
     }
     final ExerciseType type = _typeFromIndex(_type);
-    final int calories = _estimateCalories(type, minutes, _level);
     final ExerciseSession? editing = widget.session;
     if (editing != null && editing.id == null) {
       // No id → PUT impossible; don't silently create a duplicate session.
@@ -144,6 +147,12 @@ class _ExerciseAddSheetState extends ConsumerState<_ExerciseAddSheet> {
       );
       return;
     }
+    // On edit, keep the stored calories unless the user actually changed the
+    // intensity — recomputing at the defaulted 가벼움 would corrupt a 보통/높음
+    // record (intensity isn't persisted yet; see the follow-up issue).
+    final int calories = (editing != null && !_levelTouched)
+        ? editing.calories
+        : _estimateCalories(type, minutes, _level);
     setState(() => _saving = true);
     try {
       // 서버(mock 모드는 drift)에 저장 → 주간 데이터 무효화로 통계·차트·목록 반영.
@@ -273,7 +282,10 @@ class _ExerciseAddSheetState extends ConsumerState<_ExerciseAddSheet> {
                         child: _chip(
                           _levels[i],
                           _level == i,
-                          () => setState(() => _level = i),
+                          () => setState(() {
+                            _level = i;
+                            _levelTouched = true;
+                          }),
                           center: true,
                         ),
                       ),
