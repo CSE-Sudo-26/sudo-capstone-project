@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:oncare_trainer/design_system/tokens/colors.dart';
+import 'package:oncare_trainer/design_system/tokens/layout.dart';
 import 'package:oncare_trainer/shared/widgets/brand_header.dart';
 
 /// Persistent [Scaffold] hosting the trainer bottom navigation bar.
@@ -17,8 +18,17 @@ class MainShell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.background,
       appBar: const BrandHeader(),
-      body: navigationShell,
+      // Web-first: cap + center the content column so wide viewports
+      // don't stretch lists/chat edge-to-edge.
+      body: Center(
+        child: ConstrainedBox(
+          constraints:
+              const BoxConstraints(maxWidth: AppLayout.contentMaxWidth),
+          child: navigationShell,
+        ),
+      ),
       bottomNavigationBar: Container(
         decoration: const BoxDecoration(
           color: AppColors.card,
@@ -30,7 +40,11 @@ class MainShell extends StatelessWidget {
           top: false,
           child: SizedBox(
             height: 64,
-            child: Row(
+            child: Center(
+              child: ConstrainedBox(
+                constraints:
+                    const BoxConstraints(maxWidth: AppLayout.contentMaxWidth),
+                child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
                 _Destination(
@@ -62,6 +76,8 @@ class MainShell extends StatelessWidget {
                   onTap: () => _onTap(3),
                 ),
               ],
+                ),
+              ),
             ),
           ),
         ),
