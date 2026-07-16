@@ -348,6 +348,7 @@ def test_update_entry_hides_other_users_record(client, db_session):
         name="Other User",
         hashed_password="",
     ))
+    db_session.flush()
     db_session.add(DietEntry(
         id=other_entry_id,
         user_id=other_user_id,
