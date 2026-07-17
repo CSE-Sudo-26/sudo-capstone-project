@@ -281,12 +281,31 @@ class _AddClientSheetState extends ConsumerState<_AddClientSheet> {
             ),
           ),
           const SizedBox(height: AppSpacing.lg),
+          Row(
+            children: <Widget>[
+              const Text(
+                '이름',
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.subtleForeground,
+                ),
+              ),
+              const SizedBox(width: 3),
+              Text(
+                '*필수',
+                style: TextStyle(
+                  fontSize: 9,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.destructive.withValues(alpha: 0.85),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.xs),
           TextField(
             controller: _name,
-            decoration: const InputDecoration(
-              hintText: '이름 (필수)',
-              isDense: true,
-            ),
+            decoration: const InputDecoration(hintText: '고객 이름', isDense: true),
           ),
           const SizedBox(height: AppSpacing.sm),
           TextField(
