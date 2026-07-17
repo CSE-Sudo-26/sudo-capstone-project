@@ -17,6 +17,7 @@ class _ThrowingScheduleRepository extends ScheduleRepository {
 
   @override
   Future<void> addSession({
+    required String date,
     required String clientName,
     required String time,
     required String type,

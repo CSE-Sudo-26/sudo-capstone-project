@@ -19,13 +19,15 @@ class _SlowCountingRoutineRepository extends AiRoutineRepository {
   int registerCalls = 0;
 
   @override
-  Future<bool> registerToTodaySchedule({
+  Future<bool> registerToSchedule({
+    required String date,
     required String clientName,
     required List<Map<String, Object?>> program,
   }) async {
     registerCalls++;
     await Future<void>.delayed(const Duration(milliseconds: 300));
-    return super.registerToTodaySchedule(
+    return super.registerToSchedule(
+      date: date,
       clientName: clientName,
       program: program,
     );
