@@ -84,10 +84,10 @@ lib/
 | 브랜치 | 내용 |
 | --- | --- |
 | `feature/trainer-split-view` | 고객 탭 마스터-디테일 스플릿(URL 동기화·닫기 버튼), 나트륨 초과 우선 정렬(동순위 → 최근 채팅순), 채팅 초안 고객 간 누수 수정, 포맷/LF 정규화 |
-| `fix/trainer-chat-send-guard` | 채팅 중복 전송 가드(`_sending`)·dispose 후 접근 방지·메시지 도착 시에만 자동 스크롤 (codex 리뷰 1) |
-| `fix/trainer-client-detail-states` | 고객 상세 로딩/오류/미존재 상태 분리 + 다시 시도 (codex 리뷰 2) |
+| `fix/trainer-chat-send-guard` | 채팅 중복 전송 가드(`_sending`)·dispose 후 접근 방지·메시지 도착 시에만 자동 스크롤 |
+| `fix/trainer-client-detail-states` | 고객 상세 로딩/오류/미존재 상태 분리 + 다시 시도 |
 | `feature/trainer-schedule-manage` | 스케줄 추가/수정/삭제(15분 단위 시간), 예정 세션 확장(계획 미리보기·계획 없음 안내·💬 채팅 바로가기), 오늘 중심 주간 스트립, 와이드 2컬럼 |
-| `feature/trainer-routine-programs` | AI 루틴 → 오늘 PT 스케줄 등록(예정 세션에 부착 or 신규 슬롯), AI 추천 항목 삭제, 고객 피커 가로 스크롤 (codex 리뷰 4), 와이드 분할 |
+| `feature/trainer-routine-programs` | AI 루틴 → 오늘 PT 스케줄 등록(예정 세션에 부착 or 신규 슬롯), AI 추천 항목 삭제, 고객 피커 가로 스크롤, 와이드 분할 |
 | `feature/trainer-session-complete` | 예정 세션 ✓ 완료 처리(메모 입력) → 고객 운동기록 자동 기록 — 예약→수업→기록 루프 완성 |
 | `feature/trainer-send-to-chat` | 숙제/PT 프로그램 전송 시 채팅 스레드에 영속 메시지 + 고객 카드 미리보기 갱신 (`ChatRepository` shared 승격) |
 | `feature/trainer-unread-badge` | 고객 카드 안읽은 메시지 뱃지(스레드 열람 시 해제, KV 마커 — 스키마 무변경) |
@@ -114,7 +114,7 @@ lib/
   `dart format --set-exit-if-changed` 포함)
 - 실 백엔드(FastAPI) 연동 — `TrainerAuthRepository`/`SessionTokenStore` 교체 지점 주석 참조
 - 자정 넘김 시 '오늘' 스케줄/예약 수 자동 갱신, DB JSON 역직렬화 방어
-  (codex 리뷰 3·5 — 백엔드 연동과 함께 처리)
+  (백엔드 연동과 함께 처리)
 - **복수 헬스장 소속**: 현재 트레이너는 헬스장 1곳(seedTrainerProfile.gym)에
   고정 — 여러 센터를 담당하려면 센터-트레이너 소속(N:N) 모델과 고객·스케줄의
   센터 스코프가 필요. 계정/권한과 함께 백엔드 단계에서 도입 예정
