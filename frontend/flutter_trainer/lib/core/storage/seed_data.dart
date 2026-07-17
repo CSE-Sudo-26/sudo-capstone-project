@@ -78,6 +78,7 @@ Future<void> seedIfEmpty(AppDatabase db) async {
               sugarG: client.sugarG,
               lastRoutine: client.lastRoutine,
               weekCompletionJson: jsonEncode(client.weekCompletion),
+              sodiumWeekJson: Value(jsonEncode(client.sodiumWeek)),
               sortOrder: Value(client.id),
             ),
           );
@@ -224,6 +225,7 @@ class _Client {
     required this.sugarG,
     required this.lastRoutine,
     required this.weekCompletion,
+    required this.sodiumWeek,
     required this.diet,
     required this.aiRoutine,
     required this.history,
@@ -241,6 +243,7 @@ class _Client {
   final int sugarG;
   final String lastRoutine;
   final List<int> weekCompletion;
+  final List<int> sodiumWeek;
   final List<_Meal> diet;
   final List<_Routine> aiRoutine;
   final List<_History> history;
@@ -280,6 +283,7 @@ const List<_Client> _clients = <_Client>[
     sugarG: 45,
     lastRoutine: '오늘',
     weekCompletion: <int>[100, 67, 100, 0, 100, 67, 100],
+    sodiumWeek: <int>[2400, 2200, 1900, 2050, 2300, 1850, 2100],
     diet: <_Meal>[
       _Meal('아침', '오트밀, 바나나', 315, 380),
       _Meal('점심', '닭가슴살 샐러드, 현미밥', 620, 890),
@@ -345,6 +349,7 @@ const List<_Client> _clients = <_Client>[
     sugarG: 38,
     lastRoutine: '어제',
     weekCompletion: <int>[67, 100, 100, 100, 100, 0, 0],
+    sodiumWeek: <int>[1700, 1950, 1600, 1800, 2100, 1750, 1800],
     diet: <_Meal>[
       _Meal('아침', '그릭요거트, 과일', 280, 200),
       _Meal('점심', '현미밥, 불고기, 나물', 750, 980),
@@ -408,6 +413,7 @@ const List<_Client> _clients = <_Client>[
     sugarG: 55,
     lastRoutine: '5일 전',
     weekCompletion: <int>[0, 33, 100, 0, 0, 0, 0],
+    sodiumWeek: <int>[2600, 2500, 2300, 2450, 2200, 2550, 2400],
     diet: <_Meal>[
       _Meal('아침', '계란 3개, 토스트', 480, 520),
       _Meal('점심', '짜장면', 890, 1200),
