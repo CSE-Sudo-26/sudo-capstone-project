@@ -1,11 +1,13 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import 'package:oncare/app/router/routes.dart';
 import 'package:oncare/design_system/figma/figma_kit.dart';
+import 'package:oncare/features/account/presentation/controllers/account_controller.dart';
 import 'package:oncare/gen/l10n/app_localizations.dart';
 import 'package:oncare/shared/widgets/coaching_sheet.dart';
 
@@ -41,13 +43,23 @@ class DashboardContent extends StatelessWidget {
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(24, 0, 24, 16),
-              child: Text(
-                l.homeGreeting,
-                style: const TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w700,
-                  color: FigmaColors.textMuted,
-                ),
+              child: Consumer(
+                builder: (BuildContext context, WidgetRef ref, _) {
+                  // Greet by the signed-in user's name; fall back to a
+                  // name-less greeting while the profile loads or is empty.
+                  final String name =
+                      ref.watch(profileProvider).valueOrNull?.name.trim() ?? '';
+                  return Text(
+                    name.isEmpty
+                        ? l.homeGreetingGeneric
+                        : l.homeGreeting(name),
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w700,
+                      color: FigmaColors.textMuted,
+                    ),
+                  );
+                },
               ),
             ),
             Padding(
@@ -971,8 +983,12 @@ class _NutData {
   final bool warn;
 }
 
-const Map<String, _NutData> _nutrition = <String, _NutData>{
-  '칼로리': _NutData(
+/// Stable identity for a nutrition tab, decoupled from its displayed label
+/// so the shown language never becomes an internal key.
+enum _NutTabKind { calories, sodium, sugar }
+
+const Map<_NutTabKind, _NutData> _nutrition = <_NutTabKind, _NutData>{
+  _NutTabKind.calories: _NutData(
     cur: <double>[1650, 2100, 1480, 1720, 1390, 1860, 1420],
     prev: <double>[1820, 1950, 1700, 1800, 1650, 2050, 1610],
     unit: 'kcal',
@@ -980,7 +996,7 @@ const Map<String, _NutData> _nutrition = <String, _NutData>{
     color: FigmaColors.primary,
     warn: false,
   ),
-  '나트륨': _NutData(
+  _NutTabKind.sodium: _NutData(
     cur: <double>[2050, 2280, 2120, 2400, 2200, 2550, 2100],
     prev: <double>[1900, 2000, 1950, 2100, 2050, 2200, 2180],
     unit: 'mg',
@@ -988,7 +1004,7 @@ const Map<String, _NutData> _nutrition = <String, _NutData>{
     color: FigmaColors.orange,
     warn: true,
   ),
-  '당류': _NutData(
+  _NutTabKind.sugar: _NutData(
     cur: <double>[28, 42, 22, 31, 18, 38, 45],
     prev: <double>[35, 38, 30, 40, 28, 44, 32],
     unit: 'g',
@@ -1010,16 +1026,11 @@ List<String> _weekDayLabels(AppLocalizations l) => <String>[
 
 /// Maps an internal nutrition key (used for tab identity) to its localized
 /// display label.
-String _nutLabel(AppLocalizations l, String key) {
-  switch (key) {
-    case '나트륨':
-      return l.dietSodium;
-    case '당류':
-      return l.dietSugar;
-    default:
-      return l.dashboardMetricCalories;
-  }
-}
+String _nutLabel(AppLocalizations l, _NutTabKind key) => switch (key) {
+  _NutTabKind.calories => l.dashboardMetricCalories,
+  _NutTabKind.sodium => l.dietSodium,
+  _NutTabKind.sugar => l.dietSugar,
+};
 
 class _NutritionSection extends StatefulWidget {
   const _NutritionSection();
@@ -1029,7 +1040,7 @@ class _NutritionSection extends StatefulWidget {
 }
 
 class _NutritionSectionState extends State<_NutritionSection> {
-  String _tab = '칼로리';
+  _NutTabKind _tab = _NutTabKind.calories;
 
   @override
   Widget build(BuildContext context) {
@@ -1154,7 +1165,7 @@ class _NutritionSectionState extends State<_NutritionSection> {
             children: <Widget>[
               Row(
                 children: <Widget>[
-                  for (final String t in _nutrition.keys) ...<Widget>[
+                  for (final _NutTabKind t in _nutrition.keys) ...<Widget>[
                     _NutTab(
                       label: _nutLabel(l, t),
                       active: _tab == t,

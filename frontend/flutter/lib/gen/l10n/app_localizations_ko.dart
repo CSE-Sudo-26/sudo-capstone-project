@@ -127,7 +127,12 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
-  String get homeGreeting => '민수님, 오늘도 가볍게 시작해요 👋';
+  String homeGreeting(String name) {
+    return '$name님, 오늘도 가볍게 시작해요 👋';
+  }
+
+  @override
+  String get homeGreetingGeneric => '오늘도 가볍게 시작해요 👋';
 
   @override
   String get homeCoachingPill => '✦ AI 코칭';
@@ -956,7 +961,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String myComingSoon(String label) {
-    return '$label은(는) 준비 중이에요';
+    return '$label 기능은 준비 중이에요';
   }
 
   @override

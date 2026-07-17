@@ -666,16 +666,23 @@ class _MealEditSheetState extends ConsumerState<_MealEditSheet> {
     }
     setState(() => _busy = true);
     try {
+      // Drop empty draft rows (see `dietNewFood` placeholder) so a
+      // translation string never lands in stored food names.
+      final List<FoodItem> foods = <FoodItem>[
+        for (final DietFood f in _foods)
+          if (f.name.trim().isNotEmpty)
+            FoodItem(name: f.name.trim(), calories: f.kcal),
+      ];
       await ref
           .read(dietRepositoryProvider)
           .updateEntry(
             id: id,
             mealType: _type.name,
-            foods: <FoodItem>[
-              for (final DietFood f in _foods)
-                FoodItem(name: f.name, calories: f.kcal),
-            ],
-            totalCalories: _total,
+            foods: foods,
+            totalCalories: foods.fold<int>(
+              0,
+              (int a, FoodItem f) => a + f.calories,
+            ),
           );
       // Sheet dismissed mid-save → don't pop the page below.
       if (!mounted) return;
@@ -877,7 +884,9 @@ class _MealEditSheetState extends ConsumerState<_MealEditSheet> {
                         onTap: () => setState(
                           () => _foods = <DietFood>[
                             ..._foods,
-                            DietFood(l.dietNewFood, 0),
+                            // Empty draft name; the localized label is shown
+                            // only as a placeholder and is validated out on save.
+                            const DietFood('', 0),
                           ],
                         ),
                         child: Text(
@@ -1058,7 +1067,7 @@ class _FoodRow extends StatelessWidget {
           const SizedBox(width: 10),
           Expanded(
             child: Text(
-              food.name,
+              food.name.trim().isEmpty ? l.dietNewFood : food.name,
               style: const TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w700,

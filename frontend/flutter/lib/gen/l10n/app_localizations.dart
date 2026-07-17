@@ -329,8 +329,14 @@ abstract class AppLocalizations {
   /// No description provided for @homeGreeting.
   ///
   /// In en, this message translates to:
-  /// **'Minsu, let\'s ease into the day 👋'**
-  String get homeGreeting;
+  /// **'{name}, let\'s ease into the day 👋'**
+  String homeGreeting(String name);
+
+  /// No description provided for @homeGreetingGeneric.
+  ///
+  /// In en, this message translates to:
+  /// **'Let\'s ease into the day 👋'**
+  String get homeGreetingGeneric;
 
   /// No description provided for @homeCoachingPill.
   ///

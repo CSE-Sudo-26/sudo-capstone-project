@@ -128,7 +128,12 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get homeGreeting => 'Minsu, let\'s ease into the day 👋';
+  String homeGreeting(String name) {
+    return '$name, let\'s ease into the day 👋';
+  }
+
+  @override
+  String get homeGreetingGeneric => 'Let\'s ease into the day 👋';
 
   @override
   String get homeCoachingPill => '✦ AI Coaching';
