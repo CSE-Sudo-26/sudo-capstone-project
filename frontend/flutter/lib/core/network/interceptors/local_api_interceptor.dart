@@ -371,15 +371,42 @@ class LocalApiInterceptor extends Interceptor {
   /// drift so it shows up in GET /diet/days/today. `diet-` id (not
   /// `seed-`) means seedIfEmpty never wipes it.
   Future<Response<Object?>> _dietAnalyze(RequestOptions options) async {
-    // meal_type 은 multipart FormData 또는 Map 에서 추출.
+    // meal_type·idempotency_key 는 multipart FormData 또는 Map 에서 추출.
     String mealType = 'lunch';
+    String? idempotencyKey;
     final data = options.data;
     if (data is FormData) {
       for (final MapEntry<String, String> f in data.fields) {
         if (f.key == 'meal_type' && f.value.isNotEmpty) mealType = f.value;
+        if (f.key == 'idempotency_key' && f.value.isNotEmpty) {
+          idempotencyKey = f.value;
+        }
       }
     } else if (data is Map) {
       mealType = (data['meal_type'] as String?) ?? 'lunch';
+      idempotencyKey = data['idempotency_key'] as String?;
+    }
+
+    // 같은 멱등키가 이미 저장돼 있으면 새로 저장하지 않고 기존 entry 를 반환(재시도 중복 방지).
+    if (idempotencyKey != null) {
+      final existing = await (_db.select(
+        _db.dietEntries,
+      )..where((t) => t.idempotencyKey.equals(idempotencyKey!))).getSingleOrNull();
+      if (existing != null) {
+        final storedFoods = (jsonDecode(existing.foodsJson) as List<Object?>)
+            .cast<Map<String, Object?>>();
+        return _ok(options, <String, Object?>{
+          'entry_id': existing.id,
+          'analysis': <String, Object?>{
+            'engine': 'stub',
+            'foods': storedFoods,
+            'total_calories': existing.totalCalories,
+            'total_sodium_mg': existing.sodiumMg,
+            'total_sugar_g': existing.sugarG,
+            'coach_comment': '',
+          },
+        });
+      }
     }
 
     final foods = <Map<String, Object?>>[
@@ -418,6 +445,7 @@ class LocalApiInterceptor extends Interceptor {
             totalCalories: totalCal,
             sodiumMg: const Value(totalNa),
             sugarG: const Value(totalSugar),
+            idempotencyKey: Value(idempotencyKey),
           ),
         );
 
