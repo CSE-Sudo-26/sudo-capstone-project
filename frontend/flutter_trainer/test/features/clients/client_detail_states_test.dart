@@ -55,4 +55,29 @@ void main() {
     await settle(tester);
     expect(tester.takeException(), isNull);
   });
+
+  testWidgets('sub-tabs are focusable buttons (keyboard-accessible)', (
+    tester,
+  ) async {
+    await pumpTrainerApp(tester, token: 'demo-trainer-token');
+    await tester.tap(find.text('김민수'));
+    await settle(tester);
+    expect(find.text('채팅'), findsOneWidget);
+
+    // Each sub-tab now sits in an InkWell (focus traversal + Enter/Space
+    // activation) wrapped in Semantics(button: true), not a bare
+    // GestureDetector — so it is keyboard-reachable on desktop/web.
+    for (final label in <String>['채팅', '식단', '운동기록']) {
+      expect(
+        find.ancestor(of: find.text(label), matching: find.byType(InkWell)),
+        findsOneWidget,
+        reason: '$label 탭이 포커스 가능한 InkWell 안에 있어야 함',
+      );
+    }
+
+    // Activation still switches the tab (pointer path unchanged).
+    await tester.tap(find.text('식단'));
+    await settle(tester);
+    expect(find.text('오늘 영양 요약'), findsOneWidget);
+  });
 }
