@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:oncare_trainer/core/utils/date_format.dart';
 import 'package:oncare_trainer/design_system/tokens/colors.dart';
 import 'package:oncare_trainer/design_system/tokens/layout.dart';
 import 'package:oncare_trainer/design_system/tokens/radius.dart';
@@ -62,6 +63,9 @@ class _AiRoutinePageState extends ConsumerState<AiRoutinePage> {
   bool _registered = false;
   Timer? _registerTimer;
 
+  /// Day offset (0 = 오늘 … 6) the routine gets registered on.
+  int _registerOffset = 0;
+
   @override
   void dispose() {
     _sentTimer?.cancel();
@@ -82,6 +86,7 @@ class _AiRoutinePageState extends ConsumerState<AiRoutinePage> {
       _showAddForm = false;
       _sent = false;
       _registered = false;
+      _registerOffset = 0;
     });
     _sentTimer?.cancel();
     _registerTimer?.cancel();
@@ -159,10 +164,15 @@ class _AiRoutinePageState extends ConsumerState<AiRoutinePage> {
     final program = _composeProgram(items);
     if (program.isEmpty) return;
     final messenger = ScaffoldMessenger.of(context);
+    final date = ymd(DateTime.now().add(Duration(days: _registerOffset)));
     try {
       await ref
           .read(aiRoutineRepositoryProvider)
-          .registerToTodaySchedule(clientName: client.name, program: program);
+          .registerToSchedule(
+            date: date,
+            clientName: client.name,
+            program: program,
+          );
     } catch (_) {
       messenger.showSnackBar(
         const SnackBar(content: Text('스케줄 등록에 실패했어요. 다시 시도해 주세요')),
@@ -440,8 +450,30 @@ class _AiRoutinePageState extends ConsumerState<AiRoutinePage> {
                 ),
               ),
             const SizedBox(height: AppSpacing.sm),
+            // Which day the routine lands on (오늘 … +6일).
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: <Widget>[
+                  for (var i = 0; i < 7; i++) ...<Widget>[
+                    _DateChip(
+                      offset: i,
+                      selected: _registerOffset == i,
+                      onTap: () => setState(() {
+                        _registerOffset = i;
+                        _registered = false;
+                      }),
+                    ),
+                    const SizedBox(width: AppSpacing.xs),
+                  ],
+                ],
+              ),
+            ),
+            const SizedBox(height: AppSpacing.sm),
             OutlinedActionButton(
-              label: _registered ? '✓ 오늘 스케줄에 등록됨' : '📅 오늘 PT 스케줄에 등록',
+              label: _registered
+                  ? '✓ ${_dateChipLabel(_registerOffset)} 스케줄에 등록됨'
+                  : '📅 ${_dateChipLabel(_registerOffset)} PT 스케줄에 등록',
               color: _registered ? AppColors.success : AppColors.accent,
               onTap: _registered
                   ? null
@@ -1095,6 +1127,54 @@ class _FormButton extends StatelessWidget {
               fontWeight: FontWeight.w700,
               color: foreground,
             ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Label for a register-day offset (오늘/내일/M/D).
+String _dateChipLabel(int offset) {
+  if (offset == 0) return '오늘';
+  if (offset == 1) return '내일';
+  final d = DateTime.now().add(Duration(days: offset));
+  return '${d.month}/${d.day}';
+}
+
+/// One selectable register-day chip.
+class _DateChip extends StatelessWidget {
+  const _DateChip({
+    required this.offset,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final int offset;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.md,
+          vertical: 4,
+        ),
+        decoration: BoxDecoration(
+          color: selected ? AppColors.primary : AppColors.inputBackground,
+          borderRadius: const BorderRadius.all(AppRadius.pill),
+        ),
+        child: Text(
+          _dateChipLabel(offset),
+          style: TextStyle(
+            fontSize: 10.5,
+            fontWeight: FontWeight.w700,
+            color: selected
+                ? AppColors.primaryForeground
+                : AppColors.subtleForeground,
           ),
         ),
       ),

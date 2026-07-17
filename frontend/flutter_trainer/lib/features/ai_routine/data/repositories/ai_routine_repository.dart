@@ -37,24 +37,24 @@ class AiRoutineRepository {
   }
 
   /// Registers the composed routine as [clientName]'s PT program on
-  /// today's schedule (스케줄 탭 watches the same table, so it updates
-  /// live). Attaches to the client's earliest 예정 session when one
-  /// exists; otherwise books a new one-hour 예정 slot at the next full
-  /// hour. Returns `true` when attached to an existing session.
+  /// [date]'s schedule (스케줄 탭 watches the same table, so it updates
+  /// live). Attaches to the client's earliest 예정 session on that date
+  /// when one exists; otherwise books a new one-hour 예정 slot.
+  /// Returns `true` when attached to an existing session.
   ///
   /// [program] entries follow the schedule programJson shape
   /// (`{name, sets, reps, weight}`).
-  Future<bool> registerToTodaySchedule({
+  Future<bool> registerToSchedule({
+    required String date,
     required String clientName,
     required List<Map<String, Object?>> program,
   }) async {
     final table = _db.trainerScheduleEntries;
-    final today = ymd(DateTime.now());
     final existing =
         await (_db.select(table)
               ..where(
                 (t) =>
-                    t.date.equals(today) &
+                    t.date.equals(date) &
                     t.clientName.equals(clientName) &
                     t.status.equals('예정'),
               )
@@ -74,13 +74,14 @@ class AiRoutineRepository {
     }
 
     final now = DateTime.now();
-    final hour = (now.hour + 1).clamp(6, 22);
+    // 오늘이면 다음 정시, 다른 날짜면 오전 10시가 기본 슬롯.
+    final hour = date == ymd(now) ? (now.hour + 1).clamp(6, 22) : 10;
     await _db
         .into(table)
         .insert(
           TrainerScheduleEntriesCompanion.insert(
             id: 'sched-${now.microsecondsSinceEpoch}',
-            date: today,
+            date: date,
             time: '${hour.toString().padLeft(2, '0')}:00',
             clientName: Value(clientName),
             type: const Value('1:1 PT'),

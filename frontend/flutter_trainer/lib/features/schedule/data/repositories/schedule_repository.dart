@@ -19,9 +19,12 @@ class ScheduleRepository {
   /// NOTE: `ymd(DateTime.now())`는 스트림 구독 시점에 고정된다 — 앱을
   /// 자정 넘겨 켜두면 '오늘'이 갱신되지 않음(예약 카운트와 동일 패턴,
   /// 로컬 mock 데모 범위에선 허용). 실 백엔드 전환 시 서버가 판단한다.
-  Stream<List<ScheduleSession>> watchToday() {
+  Stream<List<ScheduleSession>> watchToday() => watchDate(ymd(DateTime.now()));
+
+  /// The timeline for one calendar [date] (`YYYY-MM-DD`).
+  Stream<List<ScheduleSession>> watchDate(String date) {
     final query = _db.select(_db.trainerScheduleEntries)
-      ..where((t) => t.date.equals(ymd(DateTime.now())))
+      ..where((t) => t.date.equals(date))
       // Time first (zero-padded HH:MM sorts lexicographically) so
       // trainer-added sessions land at the right timeline position;
       // sortOrder only breaks ties between seed rows.
@@ -32,9 +35,23 @@ class ScheduleRepository {
     return query.watch().map((rows) => rows.map(_toEntity).toList());
   }
 
-  /// Books a new session on today's timeline (status 예정). The
+  /// Dates (`YYYY-MM-DD`) that have at least one booked (non-공백)
+  /// session — drives the week strip's dot markers.
+  Stream<Set<String>> watchBookedDates() {
+    final t = _db.trainerScheduleEntries;
+    final query = _db.selectOnly(t, distinct: true)
+      ..addColumns(<Expression<Object>>[t.date])
+      ..where(t.status.equals('공백').not());
+    return query
+        .map((row) => row.read(t.date)!)
+        .watch()
+        .map((rows) => rows.toSet());
+  }
+
+  /// Books a new session on [date]'s timeline (status 예정). The
   /// non-`seed-` id survives the daily re-seed.
   Future<void> addSession({
+    required String date,
     required String clientName,
     required String time,
     required String type,
@@ -45,7 +62,7 @@ class ScheduleRepository {
         .insert(
           TrainerScheduleEntriesCompanion.insert(
             id: 'sched-${DateTime.now().microsecondsSinceEpoch}',
-            date: ymd(DateTime.now()),
+            date: date,
             time: time,
             clientName: Value(clientName),
             type: Value(type),
@@ -114,13 +131,17 @@ class ScheduleRepository {
           .map((e) => e! as Map<String, Object?>)
           .toList();
       final now = DateTime.now();
+      // Label with the SESSION's calendar day — completing a session
+      // browsed on another date must not claim '오늘'.
+      final day = DateTime.tryParse(session.date) ?? now;
+      final isToday = session.date == ymd(now);
       await _db
           .into(_db.clientRoutineHistory)
           .insert(
             ClientRoutineHistoryCompanion.insert(
               id: 'hist-${now.microsecondsSinceEpoch}',
               clientId: client.id,
-              dateLabel: '${now.month}/${now.day} (오늘)',
+              dateLabel: '${day.month}/${day.day}${isToday ? ' (오늘)' : ''}',
               label: 'PT 세션 · 트레이너 지도',
               completionRate: 100,
               exercisesJson: jsonEncode(<String>[
@@ -171,4 +192,15 @@ final scheduleRepositoryProvider = Provider<ScheduleRepository>((ref) {
 /// Streams today's timeline for the 스케줄 tab.
 final todayScheduleProvider = StreamProvider<List<ScheduleSession>>((ref) {
   return ref.watch(scheduleRepositoryProvider).watchToday();
+});
+
+/// Streams the timeline for one calendar date (`YYYY-MM-DD`).
+final scheduleForDateProvider =
+    StreamProvider.family<List<ScheduleSession>, String>((ref, date) {
+      return ref.watch(scheduleRepositoryProvider).watchDate(date);
+    });
+
+/// Streams the set of dates that have booked sessions (strip dots).
+final bookedDatesProvider = StreamProvider<Set<String>>((ref) {
+  return ref.watch(scheduleRepositoryProvider).watchBookedDates();
 });

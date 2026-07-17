@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:oncare_trainer/app/router/routes.dart';
+import 'package:oncare_trainer/core/utils/date_format.dart';
 import 'package:oncare_trainer/design_system/tokens/colors.dart';
 import 'package:oncare_trainer/design_system/tokens/layout.dart';
 import 'package:oncare_trainer/design_system/tokens/radius.dart';
@@ -31,6 +32,9 @@ class SchedulePage extends ConsumerStatefulWidget {
 }
 
 class _SchedulePageState extends ConsumerState<SchedulePage> {
+  /// The calendar day being browsed (defaults to today).
+  DateTime _selectedDay = DateTime.now();
+
   final Set<String> _expanded = <String>{};
   final Set<String> _sent = <String>{};
   // 단일 플래시: 연속 전송 시 직전 카드의 확인 플래시는 새 플래시로
@@ -91,6 +95,7 @@ class _SchedulePageState extends ConsumerState<SchedulePage> {
       ),
       builder: (context) => _SessionSheet(
         clientNames: clients.map((c) => c.name).toList(),
+        date: _selectedYmd,
         existing: existing,
       ),
     );
@@ -159,9 +164,11 @@ class _SchedulePageState extends ConsumerState<SchedulePage> {
     }
   }
 
+  String get _selectedYmd => ymd(_selectedDay);
+
   @override
   Widget build(BuildContext context) {
-    final schedule = ref.watch(todayScheduleProvider);
+    final schedule = ref.watch(scheduleForDateProvider(_selectedYmd));
     // Keep the client stream live so the booking sheet and the chat
     // shortcut have data even when this tab is the first one opened.
     ref.watch(clientsProvider);
@@ -210,9 +217,20 @@ class _SchedulePageState extends ConsumerState<SchedulePage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
-                  const _Header(),
+                  _Header(date: _selectedDay),
                   const SizedBox(height: AppSpacing.lg),
-                  _WeekStrip(hasScheduleToday: sessions.isNotEmpty),
+                  _ScheduleWeekStrip(
+                    selectedDay: _selectedDay,
+                    bookedDates:
+                        ref.watch(bookedDatesProvider).valueOrNull ??
+                        const <String>{},
+                    onSelect: (d) => setState(() => _selectedDay = d),
+                    onShiftWeek: (dir) => setState(
+                      () => _selectedDay = _selectedDay.add(
+                        Duration(days: 7 * dir),
+                      ),
+                    ),
+                  ),
                   const SizedBox(height: AppSpacing.lg),
                   OutlinedActionButton(
                     label: '＋ 새 일정 추가',
@@ -242,9 +260,17 @@ class _SchedulePageState extends ConsumerState<SchedulePage> {
       ),
       children: <Widget>[
         if (withOverview) ...<Widget>[
-          const _Header(),
+          _Header(date: _selectedDay),
           const SizedBox(height: AppSpacing.lg),
-          _WeekStrip(hasScheduleToday: sessions.isNotEmpty),
+          _ScheduleWeekStrip(
+            selectedDay: _selectedDay,
+            bookedDates:
+                ref.watch(bookedDatesProvider).valueOrNull ?? const <String>{},
+            onSelect: (d) => setState(() => _selectedDay = d),
+            onShiftWeek: (dir) => setState(
+              () => _selectedDay = _selectedDay.add(Duration(days: 7 * dir)),
+            ),
+          ),
           const SizedBox(height: AppSpacing.lg),
           OutlinedActionButton(
             label: '＋ 새 일정 추가',
@@ -253,6 +279,28 @@ class _SchedulePageState extends ConsumerState<SchedulePage> {
           ),
           const SizedBox(height: AppSpacing.lg),
         ],
+        if (sessions.isEmpty)
+          Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.lg,
+              vertical: AppSpacing.xl,
+            ),
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              borderRadius: const BorderRadius.all(AppRadius.card),
+              border: Border.all(color: AppColors.borderStrong),
+            ),
+            child: const Text(
+              '이 날짜에는 일정이 없어요.\n아래에서 새 일정을 추가해 보세요.',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+                color: AppColors.mutedForeground,
+                height: 1.5,
+              ),
+            ),
+          ),
         for (final s in sessions) ...<Widget>[
           _TimelineRow(
             session: s,
@@ -339,9 +387,17 @@ class _CompleteDialogState extends State<_CompleteDialog> {
 /// Bottom sheet for booking or editing a session: client, type, time
 /// (15-minute steps), and duration.
 class _SessionSheet extends ConsumerStatefulWidget {
-  const _SessionSheet({required this.clientNames, required this.existing});
+  const _SessionSheet({
+    required this.clientNames,
+    required this.date,
+    required this.existing,
+  });
 
   final List<String> clientNames;
+
+  /// The browsed calendar day new sessions are booked on (`YYYY-MM-DD`).
+  final String date;
+
   final ScheduleSession? existing;
 
   @override
@@ -392,6 +448,7 @@ class _SessionSheetState extends ConsumerState<_SessionSheet> {
       final e = widget.existing;
       if (e == null) {
         await repo.addSession(
+          date: widget.date,
           clientName: _client,
           time: _time,
           type: _type,
@@ -561,9 +618,12 @@ class _SessionSheetState extends ConsumerState<_SessionSheet> {
   }
 }
 
-/// "스케줄" title + "{오늘 날짜} · {헬스장}" subtitle.
+/// "스케줄" title + "{선택 날짜} · {헬스장}" subtitle.
 class _Header extends StatelessWidget {
-  const _Header();
+  const _Header({required this.date});
+
+  /// The calendar day being browsed.
+  final DateTime date;
 
   static const List<String> _weekdays = <String>[
     '월요일',
@@ -578,9 +638,11 @@ class _Header extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final now = DateTime.now();
+    final isToday =
+        date.year == now.year && date.month == now.month && date.day == now.day;
     final subtitle =
-        '${now.month}월 ${now.day}일 ${_weekdays[now.weekday - 1]}'
-        ' · ${seedTrainerProfile.gym.name}';
+        '${date.month}월 ${date.day}일 ${_weekdays[date.weekday - 1]}'
+        '${isToday ? ' (오늘)' : ''} · ${seedTrainerProfile.gym.name}';
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
@@ -604,97 +666,176 @@ class _Header extends StatelessWidget {
   }
 }
 
-/// 7-day strip **centered on today** (D-3 … D+3) with today highlighted
-/// in the middle; a dot marks days that have schedule entries (seed
-/// data covers today only).
-class _WeekStrip extends StatelessWidget {
-  const _WeekStrip({required this.hasScheduleToday});
+/// Sunday-to-Saturday week picker, mirroring the user app's Diet tab
+/// strip (chevrons scrub the week, the selected day fills primary,
+/// today reads primary). A dot marks days with booked sessions.
+class _ScheduleWeekStrip extends StatelessWidget {
+  const _ScheduleWeekStrip({
+    required this.selectedDay,
+    required this.bookedDates,
+    required this.onSelect,
+    required this.onShiftWeek,
+  });
 
-  final bool hasScheduleToday;
+  /// The day currently highlighted and shown on the timeline.
+  final DateTime selectedDay;
 
-  static const List<String> _days = <String>['월', '화', '수', '목', '금', '토', '일'];
+  /// `YYYY-MM-DD` dates that have at least one booked session.
+  final Set<String> bookedDates;
+
+  /// Called when the user taps a day cell.
+  final ValueChanged<DateTime> onSelect;
+
+  /// `-1` = previous week, `+1` = next week.
+  final ValueChanged<int> onShiftWeek;
+
+  static const List<String> _weekdayShort = <String>[
+    '일',
+    '월',
+    '화',
+    '수',
+    '목',
+    '금',
+    '토',
+  ];
+
+  DateTime _sundayOf(DateTime d) {
+    final dayDate = DateTime(d.year, d.month, d.day);
+    // weekday: Mon=1..Sun=7; offset back to Sunday.
+    return dayDate.subtract(Duration(days: dayDate.weekday % 7));
+  }
+
+  bool _isSameDay(DateTime a, DateTime b) =>
+      a.year == b.year && a.month == b.month && a.day == b.day;
 
   @override
   Widget build(BuildContext context) {
-    final now = DateTime.now();
-    final today = DateTime(now.year, now.month, now.day);
+    final sunday = _sundayOf(selectedDay);
+    final today = DateTime.now();
+    final week = <DateTime>[
+      for (var i = 0; i < 7; i++) sunday.add(Duration(days: i)),
+    ];
 
     return Row(
       children: <Widget>[
-        for (var i = -3; i <= 3; i++)
-          Expanded(
-            child: Builder(
-              builder: (context) {
-                final date = today.add(Duration(days: i));
-                return _DayCell(
-                  label: _days[date.weekday - 1],
-                  date: date,
-                  isToday: i == 0,
-                  hasDot: i == 0 && hasScheduleToday,
-                );
-              },
-            ),
+        _ChevronButton(icon: Icons.chevron_left, onTap: () => onShiftWeek(-1)),
+        Expanded(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              for (final d in week)
+                _DayCell(
+                  date: d,
+                  label: _weekdayShort[d.weekday % 7],
+                  selected: _isSameDay(d, selectedDay),
+                  isToday: _isSameDay(d, today),
+                  hasDot: bookedDates.contains(ymd(d)),
+                  onTap: () => onSelect(d),
+                ),
+            ],
           ),
+        ),
+        _ChevronButton(icon: Icons.chevron_right, onTap: () => onShiftWeek(1)),
       ],
+    );
+  }
+}
+
+class _ChevronButton extends StatelessWidget {
+  const _ChevronButton({required this.icon, required this.onTap});
+
+  final IconData icon;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 32,
+      height: 36,
+      child: Material(
+        color: Colors.transparent,
+        shape: const CircleBorder(),
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
+          onTap: onTap,
+          child: Icon(icon, size: 20, color: AppColors.mutedForeground),
+        ),
+      ),
     );
   }
 }
 
 class _DayCell extends StatelessWidget {
   const _DayCell({
-    required this.label,
     required this.date,
+    required this.label,
+    required this.selected,
     required this.isToday,
     required this.hasDot,
+    required this.onTap,
   });
 
-  final String label;
   final DateTime date;
+  final String label;
+  final bool selected;
   final bool isToday;
   final bool hasDot;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 10,
-            fontWeight: FontWeight.w600,
-            color: isToday ? AppColors.primary : AppColors.subtleForeground,
-          ),
+    final dayColor = selected
+        ? AppColors.primaryForeground
+        : (isToday ? AppColors.primary : AppColors.foreground);
+    final labelColor = selected
+        ? AppColors.primaryForeground.withValues(alpha: 0.85)
+        : AppColors.subtleForeground;
+
+    return InkWell(
+      onTap: onTap,
+      borderRadius: const BorderRadius.all(AppRadius.lg),
+      child: Container(
+        width: 36,
+        padding: const EdgeInsets.symmetric(vertical: 6),
+        decoration: BoxDecoration(
+          color: selected ? AppColors.primary : Colors.transparent,
+          borderRadius: const BorderRadius.all(AppRadius.lg),
         ),
-        const SizedBox(height: AppSpacing.xs),
-        Container(
-          width: 32,
-          height: 32,
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            color: isToday ? AppColors.primary : Colors.transparent,
-            borderRadius: const BorderRadius.all(AppRadius.md),
-          ),
-          child: Text(
-            '${date.day}',
-            style: TextStyle(
-              fontSize: 12.5,
-              fontWeight: FontWeight.w700,
-              color: isToday
-                  ? AppColors.primaryForeground
-                  : AppColors.mutedForeground,
+        child: Column(
+          children: <Widget>[
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 10,
+                fontWeight: FontWeight.w600,
+                color: labelColor,
+              ),
             ),
-          ),
+            const SizedBox(height: 3),
+            Text(
+              '${date.day}',
+              style: TextStyle(
+                fontSize: 12.5,
+                fontWeight: FontWeight.w700,
+                color: dayColor,
+              ),
+            ),
+            const SizedBox(height: 3),
+            Container(
+              width: 4,
+              height: 4,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: hasDot
+                    ? (selected
+                          ? AppColors.primaryForeground
+                          : AppColors.primary)
+                    : Colors.transparent,
+              ),
+            ),
+          ],
         ),
-        const SizedBox(height: 3),
-        Container(
-          width: 5,
-          height: 5,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: hasDot ? AppColors.primary : Colors.transparent,
-          ),
-        ),
-      ],
+      ),
     );
   }
 }
