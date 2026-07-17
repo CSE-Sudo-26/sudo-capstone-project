@@ -26,6 +26,18 @@ class ClientsPage extends ConsumerWidget {
   /// Creates the clients tab.
   const ClientsPage({super.key});
 
+  Future<void> _openAddClientSheet(BuildContext context) {
+    return showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: AppColors.card,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: AppRadius.card),
+      ),
+      builder: (context) => const _AddClientSheet(),
+    );
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // Priority ordering: sodium-over clients first, then recent chat.
@@ -71,6 +83,7 @@ class ClientsPage extends ConsumerWidget {
                     onOpen: (id) => wide
                         ? context.go('${AppRoutes.clients}?c=$id')
                         : context.push(AppRoutes.clientDetail(id)),
+                    onAddClient: () => _openAddClientSheet(context),
                   ),
                 );
               }
@@ -91,6 +104,7 @@ class ClientsPage extends ConsumerWidget {
                         // instead of pushing a new screen.
                         onOpen: (id) =>
                             context.go('${AppRoutes.clients}?c=$id'),
+                        onAddClient: () => _openAddClientSheet(context),
                       ),
                     ),
                     const VerticalDivider(
@@ -122,6 +136,7 @@ class _ClientsView extends StatelessWidget {
     required this.unread,
     required this.selectedId,
     required this.onOpen,
+    required this.onAddClient,
   });
 
   final List<TrainerClient> clients;
@@ -135,6 +150,9 @@ class _ClientsView extends StatelessWidget {
 
   /// Invoked with the tapped client's id.
   final ValueChanged<String> onOpen;
+
+  /// Opens the 신규 고객 등록 sheet.
+  final VoidCallback onAddClient;
 
   @override
   Widget build(BuildContext context) {
@@ -193,7 +211,143 @@ class _ClientsView extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.md),
         ],
+        _AddClientButton(onTap: onAddClient),
       ],
+    );
+  }
+}
+
+/// "＋ 신규 고객 등록" — opens the add-client sheet (e.g. after a 상담).
+class _AddClientButton extends StatelessWidget {
+  const _AddClientButton({required this.onTap});
+
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: const BorderRadius.all(AppRadius.card),
+        child: Container(
+          height: 44,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            borderRadius: const BorderRadius.all(AppRadius.card),
+            border: Border.all(color: AppColors.accent.withValues(alpha: 0.4)),
+          ),
+          child: const Text(
+            '＋ 신규 고객 등록',
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w700,
+              color: AppColors.accent,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Bottom sheet collecting the new client's 이름/목표.
+class _AddClientSheet extends ConsumerStatefulWidget {
+  const _AddClientSheet();
+
+  @override
+  ConsumerState<_AddClientSheet> createState() => _AddClientSheetState();
+}
+
+class _AddClientSheetState extends ConsumerState<_AddClientSheet> {
+  final TextEditingController _name = TextEditingController();
+  final TextEditingController _goal = TextEditingController();
+  bool _saving = false;
+
+  @override
+  void dispose() {
+    _name.dispose();
+    _goal.dispose();
+    super.dispose();
+  }
+
+  Future<void> _save() async {
+    if (_saving) return;
+    final name = _name.text.trim();
+    if (name.isEmpty) return;
+    setState(() => _saving = true);
+    final navigator = Navigator.of(context);
+    try {
+      await ref
+          .read(clientRepositoryProvider)
+          .addClient(name: name, goal: _goal.text);
+    } finally {
+      if (mounted) setState(() => _saving = false);
+    }
+    if (!mounted) return;
+    navigator.pop();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.fromLTRB(
+        AppSpacing.xl,
+        AppSpacing.lg,
+        AppSpacing.xl,
+        AppSpacing.xl + MediaQuery.viewInsetsOf(context).bottom,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          const Text(
+            '신규 고객 등록',
+            style: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.w800,
+              color: AppColors.foreground,
+            ),
+          ),
+          const SizedBox(height: AppSpacing.lg),
+          TextField(
+            controller: _name,
+            decoration: const InputDecoration(
+              hintText: '이름 (필수)',
+              isDense: true,
+            ),
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          TextField(
+            controller: _goal,
+            decoration: const InputDecoration(
+              hintText: '목표 (예: 체중 감량 · 근력 향상)',
+              isDense: true,
+            ),
+          ),
+          const SizedBox(height: AppSpacing.lg),
+          Material(
+            color: AppColors.primary,
+            borderRadius: const BorderRadius.all(AppRadius.lg),
+            child: InkWell(
+              onTap: _saving ? null : _save,
+              borderRadius: const BorderRadius.all(AppRadius.lg),
+              child: Container(
+                height: 44,
+                alignment: Alignment.center,
+                child: const Text(
+                  '등록하기',
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.primaryForeground,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
