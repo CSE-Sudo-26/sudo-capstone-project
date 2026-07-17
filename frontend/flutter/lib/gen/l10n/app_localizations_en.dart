@@ -844,4 +844,126 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get exMessageHint => 'Type a message';
+
+  @override
+  String get myTabTitle => 'MY';
+
+  @override
+  String get myDefaultUserName => 'User';
+
+  @override
+  String myRank(int rank) {
+    return 'Rank $rank';
+  }
+
+  @override
+  String get mySettingsTitle => 'Settings';
+
+  @override
+  String get myProfileTitle => 'My Profile';
+
+  @override
+  String get myGoalsTitle => 'Health Goals';
+
+  @override
+  String get myNotifTitle => 'Notification Settings';
+
+  @override
+  String get mySupportTitle => 'Customer Support';
+
+  @override
+  String get myLogout => 'Log out';
+
+  @override
+  String get myLogoutConfirm => 'Log out of your account?';
+
+  @override
+  String get myCancel => 'Cancel';
+
+  @override
+  String get mySave => 'Save';
+
+  @override
+  String get myProfileSaved => 'Profile saved';
+
+  @override
+  String get myGoalsSaved => 'Health goals saved';
+
+  @override
+  String get mySaveFailed => 'Couldn\'t save. Please try again in a moment';
+
+  @override
+  String get myFieldName => 'Name';
+
+  @override
+  String get myFieldEmail => 'Email';
+
+  @override
+  String get myFieldPhone => 'Phone';
+
+  @override
+  String get myFieldBirth => 'Date of birth';
+
+  @override
+  String get myGoalsDesc =>
+      'Summaries and feedback across the app are based on these goals.';
+
+  @override
+  String get myGoalWeight => 'Target weight';
+
+  @override
+  String get myGoalBp => 'Target blood pressure (systolic)';
+
+  @override
+  String get myGoalBloodSugar => 'Target blood sugar';
+
+  @override
+  String get myGoalCalories => 'Daily calories';
+
+  @override
+  String get myGoalSodium => 'Sodium limit';
+
+  @override
+  String get myNotifDietLog => 'Diet log reminder';
+
+  @override
+  String get myNotifExercise => 'Exercise reminder';
+
+  @override
+  String get myNotifTrainer => 'Trainer message';
+
+  @override
+  String get myNotifAiCoaching => 'AI coaching tips';
+
+  @override
+  String get myNotifWeeklyReport => 'Weekly report';
+
+  @override
+  String get mySupportFaq => 'FAQ';
+
+  @override
+  String get mySupportInquiry => '1:1 Inquiry';
+
+  @override
+  String get myLegalTermsTitle => 'Terms of Service';
+
+  @override
+  String get myLegalPrivacyTitle => 'Privacy Policy';
+
+  @override
+  String get myLegalTermsBody => 'Terms of Service (Korean original governs).';
+
+  @override
+  String get myLegalPrivacyBody => 'Privacy Policy (Korean original governs).';
+
+  @override
+  String get myLegalEffectiveDate => 'Effective Jan 1, 2026';
+
+  @override
+  String get myAppVersion => 'On-Care · Version 1.0.0';
+
+  @override
+  String myComingSoon(String label) {
+    return '$label is coming soon';
+  }
 }

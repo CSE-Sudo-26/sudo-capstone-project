@@ -444,5 +444,58 @@
       }
     }
   },
-  "exMessageHint": "Type a message"
+  "exMessageHint": "Type a message",
+  "myTabTitle": "MY",
+  "myDefaultUserName": "User",
+  "myRank": "Rank {rank}",
+  "@myRank": {
+    "placeholders": {
+      "rank": {
+        "type": "int"
+      }
+    }
+  },
+  "mySettingsTitle": "Settings",
+  "myProfileTitle": "My Profile",
+  "myGoalsTitle": "Health Goals",
+  "myNotifTitle": "Notification Settings",
+  "mySupportTitle": "Customer Support",
+  "myLogout": "Log out",
+  "myLogoutConfirm": "Log out of your account?",
+  "myCancel": "Cancel",
+  "mySave": "Save",
+  "myProfileSaved": "Profile saved",
+  "myGoalsSaved": "Health goals saved",
+  "mySaveFailed": "Couldn't save. Please try again in a moment",
+  "myFieldName": "Name",
+  "myFieldEmail": "Email",
+  "myFieldPhone": "Phone",
+  "myFieldBirth": "Date of birth",
+  "myGoalsDesc": "Summaries and feedback across the app are based on these goals.",
+  "myGoalWeight": "Target weight",
+  "myGoalBp": "Target blood pressure (systolic)",
+  "myGoalBloodSugar": "Target blood sugar",
+  "myGoalCalories": "Daily calories",
+  "myGoalSodium": "Sodium limit",
+  "myNotifDietLog": "Diet log reminder",
+  "myNotifExercise": "Exercise reminder",
+  "myNotifTrainer": "Trainer message",
+  "myNotifAiCoaching": "AI coaching tips",
+  "myNotifWeeklyReport": "Weekly report",
+  "mySupportFaq": "FAQ",
+  "mySupportInquiry": "1:1 Inquiry",
+  "myLegalTermsTitle": "Terms of Service",
+  "myLegalPrivacyTitle": "Privacy Policy",
+  "myLegalTermsBody": "Terms of Service (Korean original governs).",
+  "myLegalPrivacyBody": "Privacy Policy (Korean original governs).",
+  "myLegalEffectiveDate": "Effective Jan 1, 2026",
+  "myAppVersion": "On-Care · Version 1.0.0",
+  "myComingSoon": "{label} is coming soon",
+  "@myComingSoon": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  }
 }

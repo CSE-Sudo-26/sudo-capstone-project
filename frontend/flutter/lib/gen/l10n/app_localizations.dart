@@ -1663,6 +1663,240 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Type a message'**
   String get exMessageHint;
+
+  /// No description provided for @myTabTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'MY'**
+  String get myTabTitle;
+
+  /// No description provided for @myDefaultUserName.
+  ///
+  /// In en, this message translates to:
+  /// **'User'**
+  String get myDefaultUserName;
+
+  /// No description provided for @myRank.
+  ///
+  /// In en, this message translates to:
+  /// **'Rank {rank}'**
+  String myRank(int rank);
+
+  /// No description provided for @mySettingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get mySettingsTitle;
+
+  /// No description provided for @myProfileTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'My Profile'**
+  String get myProfileTitle;
+
+  /// No description provided for @myGoalsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Health Goals'**
+  String get myGoalsTitle;
+
+  /// No description provided for @myNotifTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Notification Settings'**
+  String get myNotifTitle;
+
+  /// No description provided for @mySupportTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Customer Support'**
+  String get mySupportTitle;
+
+  /// No description provided for @myLogout.
+  ///
+  /// In en, this message translates to:
+  /// **'Log out'**
+  String get myLogout;
+
+  /// No description provided for @myLogoutConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Log out of your account?'**
+  String get myLogoutConfirm;
+
+  /// No description provided for @myCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get myCancel;
+
+  /// No description provided for @mySave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get mySave;
+
+  /// No description provided for @myProfileSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile saved'**
+  String get myProfileSaved;
+
+  /// No description provided for @myGoalsSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Health goals saved'**
+  String get myGoalsSaved;
+
+  /// No description provided for @mySaveFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t save. Please try again in a moment'**
+  String get mySaveFailed;
+
+  /// No description provided for @myFieldName.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get myFieldName;
+
+  /// No description provided for @myFieldEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get myFieldEmail;
+
+  /// No description provided for @myFieldPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone'**
+  String get myFieldPhone;
+
+  /// No description provided for @myFieldBirth.
+  ///
+  /// In en, this message translates to:
+  /// **'Date of birth'**
+  String get myFieldBirth;
+
+  /// No description provided for @myGoalsDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Summaries and feedback across the app are based on these goals.'**
+  String get myGoalsDesc;
+
+  /// No description provided for @myGoalWeight.
+  ///
+  /// In en, this message translates to:
+  /// **'Target weight'**
+  String get myGoalWeight;
+
+  /// No description provided for @myGoalBp.
+  ///
+  /// In en, this message translates to:
+  /// **'Target blood pressure (systolic)'**
+  String get myGoalBp;
+
+  /// No description provided for @myGoalBloodSugar.
+  ///
+  /// In en, this message translates to:
+  /// **'Target blood sugar'**
+  String get myGoalBloodSugar;
+
+  /// No description provided for @myGoalCalories.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily calories'**
+  String get myGoalCalories;
+
+  /// No description provided for @myGoalSodium.
+  ///
+  /// In en, this message translates to:
+  /// **'Sodium limit'**
+  String get myGoalSodium;
+
+  /// No description provided for @myNotifDietLog.
+  ///
+  /// In en, this message translates to:
+  /// **'Diet log reminder'**
+  String get myNotifDietLog;
+
+  /// No description provided for @myNotifExercise.
+  ///
+  /// In en, this message translates to:
+  /// **'Exercise reminder'**
+  String get myNotifExercise;
+
+  /// No description provided for @myNotifTrainer.
+  ///
+  /// In en, this message translates to:
+  /// **'Trainer message'**
+  String get myNotifTrainer;
+
+  /// No description provided for @myNotifAiCoaching.
+  ///
+  /// In en, this message translates to:
+  /// **'AI coaching tips'**
+  String get myNotifAiCoaching;
+
+  /// No description provided for @myNotifWeeklyReport.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekly report'**
+  String get myNotifWeeklyReport;
+
+  /// No description provided for @mySupportFaq.
+  ///
+  /// In en, this message translates to:
+  /// **'FAQ'**
+  String get mySupportFaq;
+
+  /// No description provided for @mySupportInquiry.
+  ///
+  /// In en, this message translates to:
+  /// **'1:1 Inquiry'**
+  String get mySupportInquiry;
+
+  /// No description provided for @myLegalTermsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Terms of Service'**
+  String get myLegalTermsTitle;
+
+  /// No description provided for @myLegalPrivacyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy Policy'**
+  String get myLegalPrivacyTitle;
+
+  /// No description provided for @myLegalTermsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Terms of Service (Korean original governs).'**
+  String get myLegalTermsBody;
+
+  /// No description provided for @myLegalPrivacyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy Policy (Korean original governs).'**
+  String get myLegalPrivacyBody;
+
+  /// No description provided for @myLegalEffectiveDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Effective Jan 1, 2026'**
+  String get myLegalEffectiveDate;
+
+  /// No description provided for @myAppVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'On-Care · Version 1.0.0'**
+  String get myAppVersion;
+
+  /// No description provided for @myComingSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'{label} is coming soon'**
+  String myComingSoon(String label);
 }
 
 class _AppLocalizationsDelegate

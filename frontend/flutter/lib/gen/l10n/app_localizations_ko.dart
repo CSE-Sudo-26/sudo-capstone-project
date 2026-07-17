@@ -835,4 +835,127 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get exMessageHint => '메시지를 입력하세요';
+
+  @override
+  String get myTabTitle => 'MY';
+
+  @override
+  String get myDefaultUserName => '사용자';
+
+  @override
+  String myRank(int rank) {
+    return '$rank위 랭킹';
+  }
+
+  @override
+  String get mySettingsTitle => '설정';
+
+  @override
+  String get myProfileTitle => '내 프로필';
+
+  @override
+  String get myGoalsTitle => '건강 목표';
+
+  @override
+  String get myNotifTitle => '알림 설정';
+
+  @override
+  String get mySupportTitle => '고객 지원';
+
+  @override
+  String get myLogout => '로그아웃';
+
+  @override
+  String get myLogoutConfirm => '로그아웃 하시겠어요?';
+
+  @override
+  String get myCancel => '취소';
+
+  @override
+  String get mySave => '저장';
+
+  @override
+  String get myProfileSaved => '프로필이 저장되었어요';
+
+  @override
+  String get myGoalsSaved => '건강 목표가 저장되었어요';
+
+  @override
+  String get mySaveFailed => '저장에 실패했어요. 잠시 후 다시 시도해 주세요';
+
+  @override
+  String get myFieldName => '이름';
+
+  @override
+  String get myFieldEmail => '이메일';
+
+  @override
+  String get myFieldPhone => '전화번호';
+
+  @override
+  String get myFieldBirth => '생년월일';
+
+  @override
+  String get myGoalsDesc => '앱 곳곳의 요약·피드백이 이 목표를 기준으로 계산돼요.';
+
+  @override
+  String get myGoalWeight => '목표 체중';
+
+  @override
+  String get myGoalBp => '목표 혈압 (수축기)';
+
+  @override
+  String get myGoalBloodSugar => '목표 혈당';
+
+  @override
+  String get myGoalCalories => '일일 칼로리';
+
+  @override
+  String get myGoalSodium => '나트륨 제한';
+
+  @override
+  String get myNotifDietLog => '식단 기록 알림';
+
+  @override
+  String get myNotifExercise => '운동 리마인더';
+
+  @override
+  String get myNotifTrainer => '트레이너 메시지';
+
+  @override
+  String get myNotifAiCoaching => 'AI 코칭 조언';
+
+  @override
+  String get myNotifWeeklyReport => '주간 리포트';
+
+  @override
+  String get mySupportFaq => '자주 묻는 질문';
+
+  @override
+  String get mySupportInquiry => '1:1 문의';
+
+  @override
+  String get myLegalTermsTitle => '이용약관';
+
+  @override
+  String get myLegalPrivacyTitle => '개인정보 처리방침';
+
+  @override
+  String get myLegalTermsBody =>
+      '제1조 (목적)\n이 약관은 On-Care(이하 \"회사\")가 제공하는 건강 관리 서비스(이하 \"서비스\")의 이용과 관련하여 회사와 회원 간의 권리, 의무 및 책임사항을 규정함을 목적으로 합니다.\n\n제2조 (약관의 효력 및 변경)\n① 이 약관은 서비스를 이용하는 모든 회원에게 효력이 발생합니다.\n② 회사는 관련 법령을 위반하지 않는 범위에서 이 약관을 변경할 수 있으며, 변경 시 적용일자와 변경 사유를 명시하여 서비스 내에 공지합니다.\n\n제3조 (서비스의 제공)\n회사는 식단 기록, 운동 기록, 건강 지표 관리, AI 코칭 등 회원의 건강 관리를 돕는 기능을 제공합니다. 서비스의 구체적인 내용은 회사의 정책에 따라 변경될 수 있습니다.\n\n제4조 (회원의 의무)\n회원은 본인의 건강 정보를 정확하게 입력하여야 하며, 서비스가 제공하는 정보는 의학적 진단이나 치료를 대체하지 않습니다. 건강상 문제가 있는 경우 반드시 전문 의료기관의 진료를 받으시기 바랍니다.\n\n제5조 (책임의 제한)\n회사는 회원이 서비스를 통해 얻은 정보에 기반하여 내린 판단과 그 결과에 대하여 법령이 허용하는 범위 내에서 책임을 부담하지 않습니다.\n\n부칙\n이 약관은 2026년 1월 1일부터 시행합니다.';
+
+  @override
+  String get myLegalPrivacyBody =>
+      'On-Care(이하 \"회사\")는 「개인정보 보호법」 등 관련 법령을 준수하며, 회원의 개인정보를 소중히 보호합니다.\n\n1. 수집하는 개인정보 항목\n회사는 회원가입 및 서비스 제공을 위하여 이름, 이메일, 전화번호, 생년월일과 함께 식단·운동·건강 지표 등 건강 관련 정보를 수집합니다.\n\n2. 개인정보의 수집 및 이용 목적\n수집한 개인정보는 회원 식별, 건강 관리 기능 제공, 맞춤형 AI 코칭, 서비스 개선 및 고객 문의 응대의 목적으로만 이용됩니다.\n\n3. 개인정보의 보유 및 이용 기간\n회원의 개인정보는 원칙적으로 회원 탈퇴 시 지체 없이 파기합니다. 다만 관련 법령에 따라 보존할 필요가 있는 경우 해당 기간 동안 안전하게 보관합니다.\n\n4. 개인정보의 제3자 제공\n회사는 회원의 동의 없이 개인정보를 외부에 제공하지 않습니다. 다만 법령에 특별한 규정이 있는 경우는 예외로 합니다.\n\n5. 이용자의 권리\n회원은 언제든지 자신의 개인정보를 조회·수정하거나 처리 정지 및 삭제를 요청할 수 있습니다.\n\n6. 개인정보 보호책임자\n개인정보와 관련한 문의는 고객 지원(support@oncare.com)으로 연락하실 수 있습니다.\n\n시행일: 2026년 1월 1일';
+
+  @override
+  String get myLegalEffectiveDate => '시행일 2026. 01. 01.';
+
+  @override
+  String get myAppVersion => 'On-Care · 버전 1.0.0';
+
+  @override
+  String myComingSoon(String label) {
+    return '$label은(는) 준비 중이에요';
+  }
 }
