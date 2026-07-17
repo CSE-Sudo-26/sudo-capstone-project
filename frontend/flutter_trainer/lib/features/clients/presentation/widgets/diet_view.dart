@@ -122,7 +122,15 @@ class _SodiumTrendCard extends StatelessWidget {
 
   final TrainerClient client;
 
-  static const List<String> _days = <String>['월', '화', '수', '목', '금', '토', '일'];
+  static const List<String> _weekdayShort = <String>[
+    '월',
+    '화',
+    '수',
+    '목',
+    '금',
+    '토',
+    '일',
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -133,6 +141,16 @@ class _SodiumTrendCard extends StatelessWidget {
     ].reduce((a, b) => a > b ? a : b);
     final overDays = client.sodiumOverDays;
     final avg = client.sodiumWeekAvg;
+
+    // The series ends at today (last entry == today's total), so label
+    // each bar with its own weekday counting back from today — a fixed
+    // 월→일 axis would mislabel every day the tab is opened on a
+    // non-Sunday.
+    final today = DateTime.now();
+    final labels = <String>[
+      for (var i = week.length - 1; i >= 0; i--)
+        _weekdayShort[today.subtract(Duration(days: i)).weekday - 1],
+    ];
 
     return Container(
       padding: const EdgeInsets.all(AppSpacing.lg),
@@ -173,10 +191,10 @@ class _SodiumTrendCard extends StatelessWidget {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: <Widget>[
-                for (var i = 0; i < week.length && i < _days.length; i++)
+                for (var i = 0; i < week.length; i++)
                   Expanded(
                     child: _TrendBar(
-                      label: _days[i],
+                      label: labels[i],
                       value: week[i],
                       maxValue: maxMg,
                       over: week[i] > sodiumTargetMg,

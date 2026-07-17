@@ -62,8 +62,9 @@ class TrainerClient {
   /// This week's daily completion rates (7 entries, 월→일).
   final List<int> weekCompletion;
 
-  /// Last 7 days of daily sodium (mg), 월→일. Empty for pre-v2 rows
-  /// (before the next re-seed backfills it).
+  /// Last 7 days of daily sodium (mg), oldest→today (index 6 == today's
+  /// [sodiumMg]). Empty for pre-v2 rows (before the next re-seed
+  /// backfills it).
   final List<int> sodiumWeek;
 
   /// Sodium exceeds the [sodiumTargetMg] daily target — surfaced as a

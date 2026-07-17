@@ -31,10 +31,12 @@ class TrainerClients extends Table {
   IntColumn get sugarG => integer()();
   TextColumn get lastRoutine => text()();
   TextColumn get weekCompletionJson => text()(); // [100, 67, ...] length 7
-  // Last 7 days of daily sodium (mg), 월→일. Added in schema v2; the
-  // default keeps pre-v2 rows valid until the next re-seed backfills it.
-  TextColumn get sodiumWeekJson =>
-      text().withDefault(const Constant('[]'))(); // [2100, 1800, ...] len 7
+  // Last 7 days of daily sodium (mg), oldest→today (last == today).
+  // Added in schema v2; the default keeps pre-v2 rows valid until the
+  // next re-seed backfills it.
+  TextColumn get sodiumWeekJson => text().withDefault(
+    const Constant('[]'),
+  )(); // [.., 2100] len 7, ends today
   IntColumn get sortOrder => integer().withDefault(const Constant(0))();
 
   @override
