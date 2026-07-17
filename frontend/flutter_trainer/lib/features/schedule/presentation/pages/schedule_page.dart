@@ -122,7 +122,15 @@ class _SchedulePageState extends ConsumerState<SchedulePage> {
       ),
     );
     if (ok != true || !mounted) return;
-    await ref.read(scheduleRepositoryProvider).deleteSession(s.id);
+    final messenger = ScaffoldMessenger.of(context);
+    try {
+      await ref.read(scheduleRepositoryProvider).deleteSession(s.id);
+    } catch (_) {
+      if (!mounted) return;
+      messenger.showSnackBar(
+        const SnackBar(content: Text('일정 삭제에 실패했어요. 다시 시도해 주세요')),
+      );
+    }
   }
 
   /// 완료 처리 — asks for an optional trainer memo, then flips the
@@ -388,6 +396,7 @@ class _SessionSheetState extends ConsumerState<_SessionSheet> {
     setState(() => _saving = true);
     final repo = ref.read(scheduleRepositoryProvider);
     final navigator = Navigator.of(context);
+    final messenger = ScaffoldMessenger.of(context);
     try {
       final e = widget.existing;
       if (e == null) {
@@ -406,9 +415,16 @@ class _SessionSheetState extends ConsumerState<_SessionSheet> {
           durationMinutes: _duration,
         );
       }
-    } finally {
+    } catch (_) {
+      // Surface the failure and keep the sheet open so the input isn't
+      // lost (review PR 218).
       if (mounted) setState(() => _saving = false);
+      messenger.showSnackBar(
+        const SnackBar(content: Text('일정 저장에 실패했어요. 다시 시도해 주세요')),
+      );
+      return;
     }
+    if (mounted) setState(() => _saving = false);
     if (!mounted) return;
     navigator.pop();
   }
