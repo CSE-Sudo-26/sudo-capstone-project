@@ -29,6 +29,58 @@ void main() {
       final jisu = await repo.watchRoutine('seed-client-2').first;
       expect(jisu.first.name, '인터벌 런닝');
     });
+
+    test(
+      'registerToTodaySchedule attaches to an existing 예정 session',
+      () async {
+        final repo = AiRoutineRepository(db);
+        // 박성호 has a seeded 15:00 예정 session.
+        final attached = await repo.registerToTodaySchedule(
+          clientName: '박성호',
+          program: <Map<String, Object?>>[
+            <String, Object?>{
+              'name': '저강도 유산소',
+              'sets': 1,
+              'reps': '30분',
+              'weight': '-',
+            },
+          ],
+        );
+        expect(attached, isTrue);
+
+        final rows = await db.select(db.trainerScheduleEntries).get();
+        final his = rows.where((r) => r.clientName == '박성호').toList();
+        expect(his.length, 1); // no extra slot booked
+        expect(his.single.programJson, contains('저강도 유산소'));
+      },
+    );
+
+    test(
+      'registerToTodaySchedule books a new slot when no 예정 exists',
+      () async {
+        final repo = AiRoutineRepository(db);
+        // 김민수's only session today is 완료 — a new slot gets booked.
+        final attached = await repo.registerToTodaySchedule(
+          clientName: '김민수',
+          program: <Map<String, Object?>>[
+            <String, Object?>{
+              'name': '코어 강화',
+              'sets': 1,
+              'reps': '10분',
+              'weight': '-',
+            },
+          ],
+        );
+        expect(attached, isFalse);
+
+        final rows = await db.select(db.trainerScheduleEntries).get();
+        final his = rows.where((r) => r.clientName == '김민수').toList();
+        expect(his.length, 2);
+        final booked = his.firstWhere((r) => r.status == '예정');
+        expect(booked.programJson, contains('코어 강화'));
+        expect(booked.id.startsWith('seed-'), isFalse);
+      },
+    );
   });
 
   group('AiRoutinePage', () {
@@ -67,7 +119,11 @@ void main() {
     testWidgets('adding and deleting a custom exercise', (tester) async {
       await openTab(tester);
 
-      await tester.scrollUntilVisible(find.text('＋ 운동 직접 추가'), 150);
+      await tester.scrollUntilVisible(
+        find.text('＋ 운동 직접 추가'),
+        150,
+        scrollable: find.byType(Scrollable).first,
+      );
       await tester.ensureVisible(find.text('＋ 운동 직접 추가'));
       await tester.pump();
       await tester.tap(find.text('＋ 운동 직접 추가'));
@@ -79,13 +135,17 @@ void main() {
       await tester.tap(find.text('추가하기'));
       await tester.pump();
       // The new custom card may land below the fold.
-      await tester.scrollUntilVisible(find.text('레그프레스 5세트'), 150);
+      await tester.scrollUntilVisible(
+        find.text('레그프레스 5세트'),
+        150,
+        scrollable: find.byType(Scrollable).first,
+      );
 
       expect(find.text('레그프레스 5세트'), findsOneWidget);
       expect(find.text('💡 트레이너 추가'), findsOneWidget);
 
       // Delete it again.
-      await tester.tap(find.byIcon(Icons.close));
+      await tester.tap(find.byIcon(Icons.close).last);
       await tester.pump();
       expect(find.text('레그프레스 5세트'), findsNothing);
     });
@@ -94,7 +154,11 @@ void main() {
       await openTab(tester);
 
       // Open the add form, then send with it still open.
-      await tester.scrollUntilVisible(find.text('＋ 운동 직접 추가'), 150);
+      await tester.scrollUntilVisible(
+        find.text('＋ 운동 직접 추가'),
+        150,
+        scrollable: find.byType(Scrollable).first,
+      );
       await tester.ensureVisible(find.text('＋ 운동 직접 추가'));
       await tester.pump();
       await tester.tap(find.text('＋ 운동 직접 추가'));
@@ -116,14 +180,76 @@ void main() {
       await tester.pump(const Duration(seconds: 4)); // reset window
       // The add form must be closed again after the reset.
       expect(find.text('운동 추가'), findsNothing);
-      await tester.scrollUntilVisible(find.text('＋ 운동 직접 추가'), 150);
+      await tester.scrollUntilVisible(
+        find.text('＋ 운동 직접 추가'),
+        150,
+        scrollable: find.byType(Scrollable).first,
+      );
       expect(find.text('＋ 운동 직접 추가'), findsOneWidget);
+    });
+
+    testWidgets('an AI suggestion can be removed for this round', (
+      tester,
+    ) async {
+      await openTab(tester);
+
+      expect(find.text('저강도 유산소 (걷기)'), findsOneWidget);
+      // Every card carries an X now — the first belongs to the first
+      // AI suggestion.
+      await tester.tap(find.byIcon(Icons.close).first);
+      await tester.pump();
+      expect(find.text('저강도 유산소 (걷기)'), findsNothing);
+
+      // Switching clients and back restores the full suggestion list.
+      await tester.tap(find.text('이지수'));
+      await settle(tester);
+      await tester.tap(find.text('김민수'));
+      await settle(tester);
+      expect(find.text('저강도 유산소 (걷기)'), findsOneWidget);
+    });
+
+    testWidgets('오늘 스케줄에 등록 writes the routine onto the schedule tab', (
+      tester,
+    ) async {
+      await openTab(tester);
+
+      // 박성호 → his 15:00 예정 session receives the program.
+      await tester.tap(find.text('박성호'));
+      await settle(tester);
+
+      await tester.scrollUntilVisible(
+        find.text('📅 오늘 PT 스케줄에 등록'),
+        150,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.ensureVisible(find.text('📅 오늘 PT 스케줄에 등록'));
+      await tester.pump();
+      await tester.tap(find.text('📅 오늘 PT 스케줄에 등록'));
+      await settle(tester);
+
+      expect(find.text('✓ 오늘 스케줄에 등록됨'), findsOneWidget);
+      expect(find.text('스케줄 탭에서 오늘 세션의 프로그램으로 확인할 수 있어요'), findsOneWidget);
+
+      // The 스케줄 tab shows the registered plan on his 예정 session.
+      await tester.tap(find.text('스케줄'));
+      await settle(tester);
+      await tester.scrollUntilVisible(find.text('박성호'), 120);
+      await tester.ensureVisible(find.text('박성호'));
+      await tester.pump();
+      await tester.tap(find.text('박성호'));
+      await tester.pump();
+      await tester.scrollUntilVisible(find.text('벤치프레스 4세트'), 120);
+      expect(find.text('벤치프레스 4세트'), findsOneWidget); // AI routine item
     });
 
     testWidgets('send shows confirmation then resets edits', (tester) async {
       await openTab(tester);
 
-      await tester.scrollUntilVisible(find.textContaining('님에게 전송'), 150);
+      await tester.scrollUntilVisible(
+        find.textContaining('님에게 전송'),
+        150,
+        scrollable: find.byType(Scrollable).first,
+      );
       await tester.ensureVisible(find.textContaining('님에게 전송'));
       await tester.pump();
       await tester.tap(find.textContaining('님에게 전송'));
