@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
@@ -56,27 +57,43 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('sub-tabs are focusable buttons (keyboard-accessible)', (
+  testWidgets('sub-tabs are keyboard-reachable and activate on Enter', (
     tester,
   ) async {
     await pumpTrainerApp(tester, token: 'demo-trainer-token');
     await tester.tap(find.text('김민수'));
     await settle(tester);
     expect(find.text('채팅'), findsOneWidget);
+    // Start on the 채팅 sub-tab (default), not the 식단 view.
+    expect(find.text('오늘 영양 요약'), findsNothing);
 
-    // Each sub-tab now sits in an InkWell (focus traversal + Enter/Space
-    // activation) wrapped in Semantics(button: true), not a bare
-    // GestureDetector — so it is keyboard-reachable on desktop/web.
-    for (final label in <String>['채팅', '식단', '운동기록']) {
-      expect(
-        find.ancestor(of: find.text(label), matching: find.byType(InkWell)),
-        findsOneWidget,
-        reason: '$label 탭이 포커스 가능한 InkWell 안에 있어야 함',
-      );
+    // Whether the 식단 sub-tab currently holds keyboard focus.
+    bool sikdanFocused() {
+      final ctx = FocusManager.instance.primaryFocus?.context;
+      if (ctx == null) return false;
+      return find
+          .descendant(
+            of: find.byElementPredicate((e) => e == ctx),
+            matching: find.text('식단'),
+          )
+          .evaluate()
+          .isNotEmpty;
     }
 
-    // Activation still switches the tab (pointer path unchanged).
-    await tester.tap(find.text('식단'));
+    // Tab through the focus order until the 식단 sub-tab is focused —
+    // proves it participates in keyboard traversal (was unreachable as a
+    // bare GestureDetector).
+    var reached = false;
+    for (var i = 0; i < 12 && !reached; i++) {
+      await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+      await tester.pump();
+      reached = sikdanFocused();
+    }
+    expect(reached, isTrue, reason: '키보드 Tab으로 식단 탭에 도달할 수 있어야 함');
+
+    // Enter activates the focused tab — the 식단 view appears with no
+    // pointer tap.
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
     await settle(tester);
     expect(find.text('오늘 영양 요약'), findsOneWidget);
   });
