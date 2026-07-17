@@ -83,6 +83,60 @@ class ScheduleRepository {
     )..where((t) => t.id.equals(id))).go();
   }
 
+  /// Marks an 예정 session 완료 (with the trainer's [note]) and, when the
+  /// client exists, logs it to their 운동기록 history — closing the
+  /// 예약 → 수업 → 기록 loop. Both writes run in one transaction.
+  Future<void> completeSession(String id, {String note = ''}) async {
+    final table = _db.trainerScheduleEntries;
+    final session = await (_db.select(
+      table,
+    )..where((t) => t.id.equals(id))).getSingleOrNull();
+    if (session == null || session.status != '예정') return;
+
+    final client =
+        await (_db.select(_db.trainerClients)
+              ..where((t) => t.name.equals(session.clientName))
+              ..limit(1))
+            .getSingleOrNull();
+
+    await _db.transaction(() async {
+      await (_db.update(table)..where((t) => t.id.equals(id))).write(
+        TrainerScheduleEntriesCompanion(
+          status: const Value('완료'),
+          note: Value(note),
+        ),
+      );
+
+      // 상담 등 미등록 고객은 기록 없이 완료만 처리한다.
+      if (client == null) return;
+      final program = (jsonDecode(session.programJson) as List<Object?>)
+          .map((e) => e! as Map<String, Object?>)
+          .toList();
+      final now = DateTime.now();
+      await _db
+          .into(_db.clientRoutineHistory)
+          .insert(
+            ClientRoutineHistoryCompanion.insert(
+              id: 'hist-${now.microsecondsSinceEpoch}',
+              clientId: client.id,
+              dateLabel: '${now.month}/${now.day} (오늘)',
+              label: 'PT 세션 · 트레이너 지도',
+              completionRate: 100,
+              exercisesJson: jsonEncode(<String>[
+                for (final m in program)
+                  (m['sets'] as int? ?? 1) > 1
+                      ? '${m['name']} ${m['sets']}세트'
+                      : '${m['name']} ${m['reps']}',
+              ]),
+              trainerNote: Value(note),
+              // Seed rows use ascending sortOrder from 0; a negative,
+              // decreasing key keeps runtime completions newest-first.
+              sortOrder: Value(-now.millisecondsSinceEpoch),
+            ),
+          );
+    });
+  }
+
   ScheduleSession _toEntity(TrainerScheduleRow row) {
     final program = (jsonDecode(row.programJson) as List<Object?>)
         .map((e) => e! as Map<String, Object?>)

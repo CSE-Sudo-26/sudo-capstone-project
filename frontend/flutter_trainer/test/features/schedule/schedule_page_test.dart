@@ -1,4 +1,5 @@
 import 'package:drift/native.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:oncare_trainer/core/storage/app_database.dart';
@@ -81,6 +82,49 @@ void main() {
       expect(moved.time, '19:30');
       expect(moved.durationMinutes, 90);
     });
+
+    test('completeSession flips 예정 to 완료 and logs the 운동기록', () async {
+      final repo = ScheduleRepository(db);
+      final before = await repo.watchToday().first;
+      final target = before.firstWhere((s) => s.clientName == '박성호');
+      expect(target.isUpcoming, isTrue);
+
+      await repo.completeSession(target.id, note: '벤치 폼 안정적');
+
+      final after = await repo.watchToday().first;
+      final done = after.firstWhere((s) => s.clientName == '박성호');
+      expect(done.isDone, isTrue);
+      expect(done.note, '벤치 폼 안정적');
+
+      // Logged newest-first into his history.
+      final history = await db.select(db.clientRoutineHistory).get()
+        ..sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
+      final logged = history.firstWhere((h) => h.id.startsWith('hist-'));
+      expect(logged.clientId, 'seed-client-3');
+      expect(logged.label, 'PT 세션 · 트레이너 지도');
+      expect(logged.trainerNote, '벤치 폼 안정적');
+      expect(logged.exercisesJson, contains('벤치프레스'));
+      expect(logged.sortOrder, lessThan(0)); // sorts before seed rows
+    });
+
+    test(
+      'completeSession without a known client only flips the status',
+      () async {
+        final repo = ScheduleRepository(db);
+        final before = await repo.watchToday().first;
+        final consult = before.firstWhere((s) => s.clientName == '신규 회원');
+        final histBefore =
+            (await db.select(db.clientRoutineHistory).get()).length;
+
+        await repo.completeSession(consult.id);
+
+        final after = await repo.watchToday().first;
+        expect(after.firstWhere((s) => s.clientName == '신규 회원').isDone, isTrue);
+        final histAfter =
+            (await db.select(db.clientRoutineHistory).get()).length;
+        expect(histAfter, histBefore); // no orphan history row
+      },
+    );
 
     test('deleteSession removes the slot', () async {
       final repo = ScheduleRepository(db);
@@ -250,6 +294,44 @@ void main() {
       await settle(tester);
 
       expect(find.text('신규 회원'), findsNothing);
+    });
+
+    testWidgets('✓ 완료 marks the session done and shows in 운동기록', (
+      tester,
+    ) async {
+      await openSchedule(tester);
+
+      await tester.scrollUntilVisible(find.text('박성호'), 120);
+      await tester.ensureVisible(find.text('박성호'));
+      await tester.pump();
+      await tester.tap(find.text('박성호'));
+      await tester.pump();
+
+      await tester.scrollUntilVisible(find.text('✓ 완료'), 120);
+      await tester.ensureVisible(find.text('✓ 완료'));
+      await tester.pump();
+      await tester.tap(find.text('✓ 완료'));
+      await settle(tester);
+
+      await tester.enterText(find.byType(TextField).last, '벤치 폼 안정적');
+      await tester.tap(find.text('완료 처리'));
+      await settle(tester);
+
+      // The card flipped to 완료 (the ✓ 완료 action is gone).
+      expect(find.text('✓ 완료'), findsNothing);
+
+      // …and the 운동기록 sub-tab shows the fresh PT entry on top.
+      await tester.tap(find.text('고객'));
+      await settle(tester);
+      await tester.scrollUntilVisible(find.text('박성호'), 150);
+      await tester.ensureVisible(find.text('박성호'));
+      await tester.pump();
+      await tester.tap(find.text('박성호'));
+      await settle(tester);
+      await tester.tap(find.text('운동기록'));
+      await settle(tester);
+      expect(find.textContaining('(오늘)'), findsWidgets);
+      expect(find.text('벤치 폼 안정적'), findsOneWidget);
     });
 
     testWidgets('💬 채팅 jumps to the client detail chat', (tester) async {
