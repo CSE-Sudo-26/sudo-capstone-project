@@ -74,8 +74,10 @@ class AiRoutineRepository {
     }
 
     final now = DateTime.now();
-    // 오늘이면 다음 정시, 다른 날짜면 오전 10시가 기본 슬롯.
-    final hour = date == ymd(now) ? (now.hour + 1).clamp(6, 22) : 10;
+    // For today, the next full hour capped at 23 so an evening
+    // registration lands on a FUTURE slot (22:xx → 23:00) instead of a
+    // past 22:00 (review PR 220); other dates default to 10:00.
+    final hour = date == ymd(now) ? (now.hour + 1).clamp(6, 23) : 10;
     await _db
         .into(table)
         .insert(
