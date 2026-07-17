@@ -326,6 +326,348 @@ abstract class AppLocalizations {
   /// **'{sign}{delta} vs last week'**
   String dashboardWeightDelta(String sign, String delta);
 
+  /// No description provided for @homeGreeting.
+  ///
+  /// In en, this message translates to:
+  /// **'Minsu, let\'s ease into the day 👋'**
+  String get homeGreeting;
+
+  /// No description provided for @homeCoachingPill.
+  ///
+  /// In en, this message translates to:
+  /// **'✦ AI Coaching'**
+  String get homeCoachingPill;
+
+  /// No description provided for @homeCoachingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s tailored advice'**
+  String get homeCoachingTitle;
+
+  /// No description provided for @homeCoachingBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Cut back on sodium at dinner and\ntake about a 20-minute walk'**
+  String get homeCoachingBody;
+
+  /// No description provided for @homeCoachingReady.
+  ///
+  /// In en, this message translates to:
+  /// **'AI prepared 3 tailored tips for you today'**
+  String get homeCoachingReady;
+
+  /// No description provided for @homeDietSodiumAlert.
+  ///
+  /// In en, this message translates to:
+  /// **'Sodium over limit detected'**
+  String get homeDietSodiumAlert;
+
+  /// No description provided for @homeMacroCarbs.
+  ///
+  /// In en, this message translates to:
+  /// **'Carbs'**
+  String get homeMacroCarbs;
+
+  /// No description provided for @homeMacroProtein.
+  ///
+  /// In en, this message translates to:
+  /// **'Protein'**
+  String get homeMacroProtein;
+
+  /// No description provided for @homeMacroFat.
+  ///
+  /// In en, this message translates to:
+  /// **'Fat'**
+  String get homeMacroFat;
+
+  /// No description provided for @homeDietRecBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'✦ AI dinner recommendation'**
+  String get homeDietRecBadge;
+
+  /// No description provided for @homeMealChickenSalad.
+  ///
+  /// In en, this message translates to:
+  /// **'Chicken breast salad'**
+  String get homeMealChickenSalad;
+
+  /// No description provided for @homeDietRecRice.
+  ///
+  /// In en, this message translates to:
+  /// **'Half bowl of brown rice'**
+  String get homeDietRecRice;
+
+  /// No description provided for @homeDietLogButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Log diet →'**
+  String get homeDietLogButton;
+
+  /// No description provided for @homeExerciseRoutineProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'AI routine 1/3 done'**
+  String get homeExerciseRoutineProgress;
+
+  /// No description provided for @homeExerciseBurnGoal.
+  ///
+  /// In en, this message translates to:
+  /// **'{unit} burned · Goal {goal}'**
+  String homeExerciseBurnGoal(String unit, int goal);
+
+  /// No description provided for @homeExerciseBrisk.
+  ///
+  /// In en, this message translates to:
+  /// **'Brisk walking'**
+  String get homeExerciseBrisk;
+
+  /// No description provided for @homeExerciseLegStretch.
+  ///
+  /// In en, this message translates to:
+  /// **'Lower-body stretch'**
+  String get homeExerciseLegStretch;
+
+  /// No description provided for @homeExerciseRecBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'✦ AI remaining routine'**
+  String get homeExerciseRecBadge;
+
+  /// No description provided for @homeExerciseRecStretch.
+  ///
+  /// In en, this message translates to:
+  /// **'Lower-body stretch 10 min'**
+  String get homeExerciseRecStretch;
+
+  /// No description provided for @homeExerciseRecStrength.
+  ///
+  /// In en, this message translates to:
+  /// **'Low-intensity strength 15 min'**
+  String get homeExerciseRecStrength;
+
+  /// No description provided for @homeExerciseLogButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Log exercise →'**
+  String get homeExerciseLogButton;
+
+  /// No description provided for @homeSummaryToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Today total'**
+  String get homeSummaryToday;
+
+  /// No description provided for @homeVsGoal.
+  ///
+  /// In en, this message translates to:
+  /// **'vs goal'**
+  String get homeVsGoal;
+
+  /// No description provided for @homeNutritionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Nutrition status'**
+  String get homeNutritionTitle;
+
+  /// No description provided for @homeAiAnalysisPill.
+  ///
+  /// In en, this message translates to:
+  /// **'✦ AI analysis'**
+  String get homeAiAnalysisPill;
+
+  /// No description provided for @homeNutritionSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekly trend · vs last week'**
+  String get homeNutritionSubtitle;
+
+  /// No description provided for @homeDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Details'**
+  String get homeDetails;
+
+  /// No description provided for @homeThisWeekAvg.
+  ///
+  /// In en, this message translates to:
+  /// **'This week avg'**
+  String get homeThisWeekAvg;
+
+  /// No description provided for @homeLastWeekAvg.
+  ///
+  /// In en, this message translates to:
+  /// **'Last week avg'**
+  String get homeLastWeekAvg;
+
+  /// No description provided for @homeGoal.
+  ///
+  /// In en, this message translates to:
+  /// **'Goal'**
+  String get homeGoal;
+
+  /// No description provided for @homeVsLastWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'vs last week'**
+  String get homeVsLastWeek;
+
+  /// No description provided for @homeSodiumInsightPre.
+  ///
+  /// In en, this message translates to:
+  /// **'Sodium intake has been '**
+  String get homeSodiumInsightPre;
+
+  /// No description provided for @homeSodiumInsightTrend.
+  ///
+  /// In en, this message translates to:
+  /// **'rising for 2 weeks'**
+  String get homeSodiumInsightTrend;
+
+  /// No description provided for @homeSodiumInsightMid.
+  ///
+  /// In en, this message translates to:
+  /// **'. Cut back on salt and turn on '**
+  String get homeSodiumInsightMid;
+
+  /// No description provided for @homeSodiumInsightAlert.
+  ///
+  /// In en, this message translates to:
+  /// **'high-sodium meal alerts'**
+  String get homeSodiumInsightAlert;
+
+  /// No description provided for @homeSodiumInsightPost.
+  ///
+  /// In en, this message translates to:
+  /// **'?'**
+  String get homeSodiumInsightPost;
+
+  /// No description provided for @homeAiPill.
+  ///
+  /// In en, this message translates to:
+  /// **'✦ AI'**
+  String get homeAiPill;
+
+  /// No description provided for @homeLegendThisWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'This week'**
+  String get homeLegendThisWeek;
+
+  /// No description provided for @homeLegendLastWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'Last week'**
+  String get homeLegendLastWeek;
+
+  /// No description provided for @homeLegendToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get homeLegendToday;
+
+  /// No description provided for @homeMealReasonSodium.
+  ///
+  /// In en, this message translates to:
+  /// **'Great for sodium control'**
+  String get homeMealReasonSodium;
+
+  /// No description provided for @homeMealTagLowSodium.
+  ///
+  /// In en, this message translates to:
+  /// **'Low sodium'**
+  String get homeMealTagLowSodium;
+
+  /// No description provided for @homeMealBrownRiceBox.
+  ///
+  /// In en, this message translates to:
+  /// **'Brown rice lunchbox'**
+  String get homeMealBrownRiceBox;
+
+  /// No description provided for @homeMealReasonGlucose.
+  ///
+  /// In en, this message translates to:
+  /// **'Helps steady blood sugar'**
+  String get homeMealReasonGlucose;
+
+  /// No description provided for @homeMealTagLowGi.
+  ///
+  /// In en, this message translates to:
+  /// **'Low GI'**
+  String get homeMealTagLowGi;
+
+  /// No description provided for @homeMealSalmon.
+  ///
+  /// In en, this message translates to:
+  /// **'Grilled salmon + greens'**
+  String get homeMealSalmon;
+
+  /// No description provided for @homeMealReasonOmega.
+  ///
+  /// In en, this message translates to:
+  /// **'Omega-3 + fiber'**
+  String get homeMealReasonOmega;
+
+  /// No description provided for @homeMealTagHighProtein.
+  ///
+  /// In en, this message translates to:
+  /// **'High protein'**
+  String get homeMealTagHighProtein;
+
+  /// No description provided for @homeMealTofu.
+  ///
+  /// In en, this message translates to:
+  /// **'Stir-fried tofu & veggies'**
+  String get homeMealTofu;
+
+  /// No description provided for @homeMealReasonLowCal.
+  ///
+  /// In en, this message translates to:
+  /// **'Low calorie, keeps you full'**
+  String get homeMealReasonLowCal;
+
+  /// No description provided for @homeMealTagLowCal.
+  ///
+  /// In en, this message translates to:
+  /// **'Low calorie'**
+  String get homeMealTagLowCal;
+
+  /// No description provided for @homeRecMealsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'This week\'s AI meal picks'**
+  String get homeRecMealsTitle;
+
+  /// No description provided for @homeViewAll.
+  ///
+  /// In en, this message translates to:
+  /// **'View all'**
+  String get homeViewAll;
+
+  /// No description provided for @homeScheduleDate.
+  ///
+  /// In en, this message translates to:
+  /// **'{weekday}, {month}/{day}'**
+  String homeScheduleDate(String weekday, int month, int day);
+
+  /// No description provided for @homeScheduleTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s schedule'**
+  String get homeScheduleTitle;
+
+  /// No description provided for @homeScheduleEveningWalk.
+  ///
+  /// In en, this message translates to:
+  /// **'Evening walk'**
+  String get homeScheduleEveningWalk;
+
+  /// No description provided for @homeScheduleWalkDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'Around home · 20 min'**
+  String get homeScheduleWalkDetail;
+
   /// No description provided for @unitKcal.
   ///
   /// In en, this message translates to:

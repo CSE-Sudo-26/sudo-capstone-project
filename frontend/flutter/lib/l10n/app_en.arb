@@ -61,6 +61,86 @@
       }
     }
   },
+  "homeGreeting": "Minsu, let's ease into the day 👋",
+  "homeCoachingPill": "✦ AI Coaching",
+  "homeCoachingTitle": "Today's tailored advice",
+  "homeCoachingBody": "Cut back on sodium at dinner and\ntake about a 20-minute walk",
+  "homeCoachingReady": "AI prepared 3 tailored tips for you today",
+  "homeDietSodiumAlert": "Sodium over limit detected",
+  "homeMacroCarbs": "Carbs",
+  "homeMacroProtein": "Protein",
+  "homeMacroFat": "Fat",
+  "homeDietRecBadge": "✦ AI dinner recommendation",
+  "homeMealChickenSalad": "Chicken breast salad",
+  "homeDietRecRice": "Half bowl of brown rice",
+  "homeDietLogButton": "Log diet →",
+  "homeExerciseRoutineProgress": "AI routine 1/3 done",
+  "homeExerciseBurnGoal": "{unit} burned · Goal {goal}",
+  "@homeExerciseBurnGoal": {
+    "placeholders": {
+      "unit": {
+        "type": "String"
+      },
+      "goal": {
+        "type": "int"
+      }
+    }
+  },
+  "homeExerciseBrisk": "Brisk walking",
+  "homeExerciseLegStretch": "Lower-body stretch",
+  "homeExerciseRecBadge": "✦ AI remaining routine",
+  "homeExerciseRecStretch": "Lower-body stretch 10 min",
+  "homeExerciseRecStrength": "Low-intensity strength 15 min",
+  "homeExerciseLogButton": "Log exercise →",
+  "homeSummaryToday": "Today total",
+  "homeVsGoal": "vs goal",
+  "homeNutritionTitle": "Nutrition status",
+  "homeAiAnalysisPill": "✦ AI analysis",
+  "homeNutritionSubtitle": "Weekly trend · vs last week",
+  "homeDetails": "Details",
+  "homeThisWeekAvg": "This week avg",
+  "homeLastWeekAvg": "Last week avg",
+  "homeGoal": "Goal",
+  "homeVsLastWeek": "vs last week",
+  "homeSodiumInsightPre": "Sodium intake has been ",
+  "homeSodiumInsightTrend": "rising for 2 weeks",
+  "homeSodiumInsightMid": ". Cut back on salt and turn on ",
+  "homeSodiumInsightAlert": "high-sodium meal alerts",
+  "homeSodiumInsightPost": "?",
+  "homeAiPill": "✦ AI",
+  "homeLegendThisWeek": "This week",
+  "homeLegendLastWeek": "Last week",
+  "homeLegendToday": "Today",
+  "homeMealReasonSodium": "Great for sodium control",
+  "homeMealTagLowSodium": "Low sodium",
+  "homeMealBrownRiceBox": "Brown rice lunchbox",
+  "homeMealReasonGlucose": "Helps steady blood sugar",
+  "homeMealTagLowGi": "Low GI",
+  "homeMealSalmon": "Grilled salmon + greens",
+  "homeMealReasonOmega": "Omega-3 + fiber",
+  "homeMealTagHighProtein": "High protein",
+  "homeMealTofu": "Stir-fried tofu & veggies",
+  "homeMealReasonLowCal": "Low calorie, keeps you full",
+  "homeMealTagLowCal": "Low calorie",
+  "homeRecMealsTitle": "This week's AI meal picks",
+  "homeViewAll": "View all",
+  "homeScheduleDate": "{weekday}, {month}/{day}",
+  "@homeScheduleDate": {
+    "placeholders": {
+      "weekday": {
+        "type": "String"
+      },
+      "month": {
+        "type": "int"
+      },
+      "day": {
+        "type": "int"
+      }
+    }
+  },
+  "homeScheduleTitle": "Today's schedule",
+  "homeScheduleEveningWalk": "Evening walk",
+  "homeScheduleWalkDetail": "Around home · 20 min",
   "unitKcal": "kcal",
   "unitMinutes": "min",
   "unitKg": "kg",

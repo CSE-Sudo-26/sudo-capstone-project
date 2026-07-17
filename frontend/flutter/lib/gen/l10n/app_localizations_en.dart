@@ -128,6 +128,182 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get homeGreeting => 'Minsu, let\'s ease into the day 👋';
+
+  @override
+  String get homeCoachingPill => '✦ AI Coaching';
+
+  @override
+  String get homeCoachingTitle => 'Today\'s tailored advice';
+
+  @override
+  String get homeCoachingBody =>
+      'Cut back on sodium at dinner and\ntake about a 20-minute walk';
+
+  @override
+  String get homeCoachingReady => 'AI prepared 3 tailored tips for you today';
+
+  @override
+  String get homeDietSodiumAlert => 'Sodium over limit detected';
+
+  @override
+  String get homeMacroCarbs => 'Carbs';
+
+  @override
+  String get homeMacroProtein => 'Protein';
+
+  @override
+  String get homeMacroFat => 'Fat';
+
+  @override
+  String get homeDietRecBadge => '✦ AI dinner recommendation';
+
+  @override
+  String get homeMealChickenSalad => 'Chicken breast salad';
+
+  @override
+  String get homeDietRecRice => 'Half bowl of brown rice';
+
+  @override
+  String get homeDietLogButton => 'Log diet →';
+
+  @override
+  String get homeExerciseRoutineProgress => 'AI routine 1/3 done';
+
+  @override
+  String homeExerciseBurnGoal(String unit, int goal) {
+    return '$unit burned · Goal $goal';
+  }
+
+  @override
+  String get homeExerciseBrisk => 'Brisk walking';
+
+  @override
+  String get homeExerciseLegStretch => 'Lower-body stretch';
+
+  @override
+  String get homeExerciseRecBadge => '✦ AI remaining routine';
+
+  @override
+  String get homeExerciseRecStretch => 'Lower-body stretch 10 min';
+
+  @override
+  String get homeExerciseRecStrength => 'Low-intensity strength 15 min';
+
+  @override
+  String get homeExerciseLogButton => 'Log exercise →';
+
+  @override
+  String get homeSummaryToday => 'Today total';
+
+  @override
+  String get homeVsGoal => 'vs goal';
+
+  @override
+  String get homeNutritionTitle => 'Nutrition status';
+
+  @override
+  String get homeAiAnalysisPill => '✦ AI analysis';
+
+  @override
+  String get homeNutritionSubtitle => 'Weekly trend · vs last week';
+
+  @override
+  String get homeDetails => 'Details';
+
+  @override
+  String get homeThisWeekAvg => 'This week avg';
+
+  @override
+  String get homeLastWeekAvg => 'Last week avg';
+
+  @override
+  String get homeGoal => 'Goal';
+
+  @override
+  String get homeVsLastWeek => 'vs last week';
+
+  @override
+  String get homeSodiumInsightPre => 'Sodium intake has been ';
+
+  @override
+  String get homeSodiumInsightTrend => 'rising for 2 weeks';
+
+  @override
+  String get homeSodiumInsightMid => '. Cut back on salt and turn on ';
+
+  @override
+  String get homeSodiumInsightAlert => 'high-sodium meal alerts';
+
+  @override
+  String get homeSodiumInsightPost => '?';
+
+  @override
+  String get homeAiPill => '✦ AI';
+
+  @override
+  String get homeLegendThisWeek => 'This week';
+
+  @override
+  String get homeLegendLastWeek => 'Last week';
+
+  @override
+  String get homeLegendToday => 'Today';
+
+  @override
+  String get homeMealReasonSodium => 'Great for sodium control';
+
+  @override
+  String get homeMealTagLowSodium => 'Low sodium';
+
+  @override
+  String get homeMealBrownRiceBox => 'Brown rice lunchbox';
+
+  @override
+  String get homeMealReasonGlucose => 'Helps steady blood sugar';
+
+  @override
+  String get homeMealTagLowGi => 'Low GI';
+
+  @override
+  String get homeMealSalmon => 'Grilled salmon + greens';
+
+  @override
+  String get homeMealReasonOmega => 'Omega-3 + fiber';
+
+  @override
+  String get homeMealTagHighProtein => 'High protein';
+
+  @override
+  String get homeMealTofu => 'Stir-fried tofu & veggies';
+
+  @override
+  String get homeMealReasonLowCal => 'Low calorie, keeps you full';
+
+  @override
+  String get homeMealTagLowCal => 'Low calorie';
+
+  @override
+  String get homeRecMealsTitle => 'This week\'s AI meal picks';
+
+  @override
+  String get homeViewAll => 'View all';
+
+  @override
+  String homeScheduleDate(String weekday, int month, int day) {
+    return '$weekday, $month/$day';
+  }
+
+  @override
+  String get homeScheduleTitle => 'Today\'s schedule';
+
+  @override
+  String get homeScheduleEveningWalk => 'Evening walk';
+
+  @override
+  String get homeScheduleWalkDetail => 'Around home · 20 min';
+
+  @override
   String get unitKcal => 'kcal';
 
   @override

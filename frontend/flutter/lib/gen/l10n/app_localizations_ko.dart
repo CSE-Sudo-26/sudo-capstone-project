@@ -127,6 +127,181 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
+  String get homeGreeting => '민수님, 오늘도 가볍게 시작해요 👋';
+
+  @override
+  String get homeCoachingPill => '✦ AI 코칭';
+
+  @override
+  String get homeCoachingTitle => '오늘의 맞춤 조언';
+
+  @override
+  String get homeCoachingBody => '저녁은 나트륨을 줄이고\n20분 정도 걸어보세요';
+
+  @override
+  String get homeCoachingReady => 'AI가 오늘 3개의 맞춤 조언을 준비했어요';
+
+  @override
+  String get homeDietSodiumAlert => '나트륨 초과 감지됨';
+
+  @override
+  String get homeMacroCarbs => '탄수화물';
+
+  @override
+  String get homeMacroProtein => '단백질';
+
+  @override
+  String get homeMacroFat => '지방';
+
+  @override
+  String get homeDietRecBadge => '✦ AI 추천 저녁 식단';
+
+  @override
+  String get homeMealChickenSalad => '닭가슴살 샐러드';
+
+  @override
+  String get homeDietRecRice => '현미밥 반 공기';
+
+  @override
+  String get homeDietLogButton => '식단 기록 →';
+
+  @override
+  String get homeExerciseRoutineProgress => 'AI 추천 루틴 1/3 완료';
+
+  @override
+  String homeExerciseBurnGoal(String unit, int goal) {
+    return '$unit 소모 · 목표 $goal';
+  }
+
+  @override
+  String get homeExerciseBrisk => '빠르게 걷기';
+
+  @override
+  String get homeExerciseLegStretch => '하체 스트레칭';
+
+  @override
+  String get homeExerciseRecBadge => '✦ AI 추천 남은 루틴';
+
+  @override
+  String get homeExerciseRecStretch => '하체 스트레칭 10분';
+
+  @override
+  String get homeExerciseRecStrength => '저강도 근력 15분';
+
+  @override
+  String get homeExerciseLogButton => '운동 기록 →';
+
+  @override
+  String get homeSummaryToday => '오늘 종합';
+
+  @override
+  String get homeVsGoal => '목표 대비';
+
+  @override
+  String get homeNutritionTitle => '영양 현황';
+
+  @override
+  String get homeAiAnalysisPill => '✦ AI 분석';
+
+  @override
+  String get homeNutritionSubtitle => '주간 누적 추이 · 지난주 대비';
+
+  @override
+  String get homeDetails => '자세히';
+
+  @override
+  String get homeThisWeekAvg => '이번주 평균';
+
+  @override
+  String get homeLastWeekAvg => '지난주 평균';
+
+  @override
+  String get homeGoal => '목표';
+
+  @override
+  String get homeVsLastWeek => '지난주 대비';
+
+  @override
+  String get homeSodiumInsightPre => '나트륨 섭취가 ';
+
+  @override
+  String get homeSodiumInsightTrend => '2주 연속 증가';
+
+  @override
+  String get homeSodiumInsightMid => ' 추세예요. 소금 사용량을 줄이고, ';
+
+  @override
+  String get homeSodiumInsightAlert => '고염분 식단 알림';
+
+  @override
+  String get homeSodiumInsightPost => '을 켜볼까요?';
+
+  @override
+  String get homeAiPill => '✦ AI';
+
+  @override
+  String get homeLegendThisWeek => '이번 주';
+
+  @override
+  String get homeLegendLastWeek => '지난 주';
+
+  @override
+  String get homeLegendToday => '오늘';
+
+  @override
+  String get homeMealReasonSodium => '나트륨 조절에 좋아요';
+
+  @override
+  String get homeMealTagLowSodium => '저나트륨';
+
+  @override
+  String get homeMealBrownRiceBox => '현미 도시락';
+
+  @override
+  String get homeMealReasonGlucose => '혈당 안정에 도움돼요';
+
+  @override
+  String get homeMealTagLowGi => '저GI';
+
+  @override
+  String get homeMealSalmon => '연어 구이 + 나물';
+
+  @override
+  String get homeMealReasonOmega => '오메가3 + 식이섬유';
+
+  @override
+  String get homeMealTagHighProtein => '고단백';
+
+  @override
+  String get homeMealTofu => '두부 채소 볶음';
+
+  @override
+  String get homeMealReasonLowCal => '칼로리 낮고 포만감↑';
+
+  @override
+  String get homeMealTagLowCal => '저칼로리';
+
+  @override
+  String get homeRecMealsTitle => '이번 주 AI 추천 식단';
+
+  @override
+  String get homeViewAll => '전체 보기';
+
+  @override
+  String homeScheduleDate(String weekday, int month, int day) {
+    return '$month월 $day일 $weekday요일';
+  }
+
+  @override
+  String get homeScheduleTitle => '오늘의 일정';
+
+  @override
+  String get homeScheduleEveningWalk => '저녁 산책';
+
+  @override
+  String get homeScheduleWalkDetail => '집 주변 · 20분';
+
+  @override
   String get unitKcal => 'kcal';
 
   @override
