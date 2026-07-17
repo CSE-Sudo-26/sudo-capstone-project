@@ -1,4 +1,5 @@
 import 'package:drift/native.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:oncare_trainer/core/storage/app_database.dart';
@@ -6,6 +7,22 @@ import 'package:oncare_trainer/core/storage/seed_data.dart';
 import 'package:oncare_trainer/features/schedule/data/repositories/schedule_repository.dart';
 
 import '../../helpers/pump_app.dart';
+
+/// A repository whose writes always fail — to exercise error handling.
+class _ThrowingScheduleRepository extends ScheduleRepository {
+  const _ThrowingScheduleRepository(super.db);
+
+  @override
+  Future<void> addSession({
+    required String clientName,
+    required String time,
+    required String type,
+    required int durationMinutes,
+  }) async => throw Exception('add failed');
+
+  @override
+  Future<void> deleteSession(String id) async => throw Exception('del failed');
+}
 
 void main() {
   group('ScheduleRepository.watchToday', () {
@@ -271,6 +288,63 @@ void main() {
       expect(find.text('채팅'), findsOneWidget);
       expect(find.text('운동기록'), findsOneWidget);
       expect(find.textContaining('AI가 박성호님의'), findsOneWidget);
+    });
+
+    testWidgets('a failed save shows a snackbar and keeps the sheet open', (
+      tester,
+    ) async {
+      await pumpTrainerApp(
+        tester,
+        token: 'demo-trainer-token',
+        extraOverrides: <Override>[
+          scheduleRepositoryProvider.overrideWith(
+            (ref) =>
+                _ThrowingScheduleRepository(ref.watch(appDatabaseProvider)),
+          ),
+        ],
+      );
+      await tester.tap(find.text('스케줄'));
+      await settle(tester);
+
+      await tester.tap(find.text('＋ 새 일정 추가'));
+      await settle(tester);
+      await tester.tap(find.text('추가하기'));
+      await settle(tester);
+
+      expect(find.text('일정 저장에 실패했어요. 다시 시도해 주세요'), findsOneWidget);
+      // Sheet stays open (its title is still present) so input isn't lost.
+      expect(find.text('새 일정 추가'), findsOneWidget);
+    });
+
+    testWidgets('a failed delete shows a snackbar', (tester) async {
+      await pumpTrainerApp(
+        tester,
+        token: 'demo-trainer-token',
+        extraOverrides: <Override>[
+          scheduleRepositoryProvider.overrideWith(
+            (ref) =>
+                _ThrowingScheduleRepository(ref.watch(appDatabaseProvider)),
+          ),
+        ],
+      );
+      await tester.tap(find.text('스케줄'));
+      await settle(tester);
+
+      await tester.scrollUntilVisible(find.text('박성호'), 120);
+      await tester.ensureVisible(find.text('박성호'));
+      await tester.pump();
+      await tester.tap(find.text('박성호'));
+      await tester.pump();
+
+      await tester.scrollUntilVisible(find.text('삭제'), 120);
+      await tester.ensureVisible(find.text('삭제'));
+      await tester.pump();
+      await tester.tap(find.text('삭제'));
+      await settle(tester);
+      await tester.tap(find.text('삭제').last); // confirm in dialog
+      await settle(tester);
+
+      expect(find.text('일정 삭제에 실패했어요. 다시 시도해 주세요'), findsOneWidget);
     });
   });
 }
