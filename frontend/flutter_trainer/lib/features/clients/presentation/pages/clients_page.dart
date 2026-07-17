@@ -10,6 +10,7 @@ import 'package:oncare_trainer/design_system/tokens/spacing.dart';
 import 'package:oncare_trainer/features/clients/presentation/widgets/client_card.dart';
 import 'package:oncare_trainer/features/clients/presentation/widgets/client_detail_view.dart';
 import 'package:oncare_trainer/shared/models/trainer_client.dart';
+import 'package:oncare_trainer/shared/services/chat_repository.dart';
 import 'package:oncare_trainer/shared/services/client_repository.dart';
 import 'package:oncare_trainer/shared/widgets/content_frame.dart';
 import 'package:oncare_trainer/shared/widgets/oni_avatar.dart';
@@ -30,6 +31,8 @@ class ClientsPage extends ConsumerWidget {
     // Priority ordering: sodium-over clients first, then recent chat.
     final clients = ref.watch(prioritizedClientsProvider);
     final reservations = ref.watch(todayReservationCountProvider).valueOrNull;
+    final unread =
+        ref.watch(unreadCountsProvider).valueOrNull ?? const <String, int>{};
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -61,6 +64,7 @@ class ClientsPage extends ConsumerWidget {
                   child: _ClientsView(
                     clients: list,
                     reservations: reservations,
+                    unread: unread,
                     selectedId: null,
                     // Wide: open the side panel via the URL. Narrow:
                     // keep the full-screen push.
@@ -81,6 +85,7 @@ class ClientsPage extends ConsumerWidget {
                       child: _ClientsView(
                         clients: list,
                         reservations: reservations,
+                        unread: unread,
                         selectedId: selected,
                         // Selecting swaps the right panel (and the URL)
                         // instead of pushing a new screen.
@@ -114,12 +119,16 @@ class _ClientsView extends StatelessWidget {
   const _ClientsView({
     required this.clients,
     required this.reservations,
+    required this.unread,
     required this.selectedId,
     required this.onOpen,
   });
 
   final List<TrainerClient> clients;
   final int? reservations;
+
+  /// Unread chat counts by client id (absent = 0).
+  final Map<String, int> unread;
 
   /// Highlighted client in the split layout (null on narrow viewports).
   final String? selectedId;
@@ -179,6 +188,7 @@ class _ClientsView extends StatelessWidget {
           ClientCard(
             client: client,
             selected: client.id == selectedId,
+            unread: unread[client.id] ?? 0,
             onTap: () => onOpen(client.id),
           ),
           const SizedBox(height: AppSpacing.md),

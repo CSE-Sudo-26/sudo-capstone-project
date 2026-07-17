@@ -81,6 +81,46 @@ void main() {
       expect(row.lastTime, '방금');
     });
 
+    test(
+      'watchUnreadCounts counts client messages until marked read',
+      () async {
+        final repo = ChatRepository(db);
+
+        // Seeded client replies: 김민수 2 · 이지수 1 · 박성호 1.
+        var counts = await repo.watchUnreadCounts().first;
+        expect(counts['seed-client-1'], 2);
+        expect(counts['seed-client-2'], 1);
+        expect(counts['seed-client-3'], 1);
+
+        // Opening 김민수's thread clears his badge only.
+        await repo.markThreadRead('seed-client-1');
+        counts = await repo.watchUnreadCounts().first;
+        expect(counts.containsKey('seed-client-1'), isFalse);
+        expect(counts['seed-client-2'], 1);
+
+        // A trainer message never counts as unread.
+        await repo.sendTrainerMessage(clientId: 'seed-client-1', text: '확인!');
+        counts = await repo.watchUnreadCounts().first;
+        expect(counts.containsKey('seed-client-1'), isFalse);
+
+        // A NEW client reply after the marker counts again.
+        await db
+            .into(db.clientChatMessages)
+            .insert(
+              ClientChatMessagesCompanion.insert(
+                id: 'chat-reply-1',
+                clientId: 'seed-client-1',
+                sender: 'client',
+                body: '네 감사합니다!',
+                timeLabel: '09:00',
+                createdAt: DateTime.now().add(const Duration(seconds: 2)),
+              ),
+            );
+        counts = await repo.watchUnreadCounts().first;
+        expect(counts['seed-client-1'], 1);
+      },
+    );
+
     test('sendTrainerMessage ignores empty/whitespace input', () async {
       final repo = ChatRepository(db);
       final before = (await repo.watchThread('seed-client-1').first).length;

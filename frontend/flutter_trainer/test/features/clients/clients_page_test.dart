@@ -1,5 +1,6 @@
 import 'package:drift/drift.dart' show Value;
 import 'package:drift/native.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:oncare_trainer/core/storage/app_database.dart';
@@ -87,6 +88,23 @@ void main() {
       expect(find.text('박성호'), findsOneWidget);
       await tester.scrollUntilVisible(find.text('이지수'), 150);
       expect(find.text('이지수'), findsOneWidget);
+    });
+
+    testWidgets('unread badges show and clear after reading the thread', (
+      tester,
+    ) async {
+      await pumpTrainerApp(tester, token: 'demo-trainer-token');
+
+      // 김민수 has 2 unseen client replies in the seed.
+      expect(find.text('2'), findsOneWidget);
+
+      // Open his chat, then come back — badge cleared.
+      await tester.tap(find.text('김민수'));
+      await settle(tester);
+      await tester.tap(find.byIcon(Icons.arrow_back_ios_new));
+      await settle(tester);
+
+      expect(find.text('2'), findsNothing);
     });
 
     testWidgets('tapping a client card opens the detail screen', (
