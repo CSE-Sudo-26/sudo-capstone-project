@@ -4,12 +4,10 @@
   "@appTitle": {
     "description": "Application name shown in window/AppBar titles."
   },
-
   "navDashboard": "Home",
   "navDiet": "Diet",
   "navExercise": "Exercise",
   "navMyHealth": "MY",
-
   "pageDashboardTitle": "Home",
   "pageDietTitle": "Diet",
   "pageExerciseTitle": "Exercise",
@@ -18,12 +16,10 @@
   "pageNotificationTitle": "Notifications",
   "pagePlaceTitle": "Place",
   "pageSignInTitle": "Sign in",
-
   "actionOpenAiCoach": "Open AI Coach",
   "actionFindPlace": "Find a place",
   "actionSignInPlaceholder": "Sign in (placeholder)",
   "actionRetry": "Retry",
-
   "placeholderDashboard": "Dashboard (placeholder)",
   "placeholderDiet": "Diet Record (placeholder)",
   "placeholderExercise": "Exercise (placeholder)",
@@ -32,14 +28,12 @@
   "placeholderNotification": "Notifications (placeholder)",
   "placeholderPlace": "Place (placeholder, Google Maps in Stage 4)",
   "placeholderSignIn": "Sign in (placeholder, social SDKs in Stage 4)",
-
   "errorNetwork": "Network problem",
   "errorUnauthorized": "Sign in required",
   "errorNotFound": "Not found",
   "errorServer": "Server error",
   "errorCancelled": "Cancelled",
   "errorUnknown": "Something went wrong",
-
   "dashboardSectionToday": "Today",
   "dashboardMetricCalories": "Calories",
   "dashboardMetricExercise": "Exercise",
@@ -48,19 +42,125 @@
   "dashboardCaloriesProgress": "{pct}% of {goal}",
   "@dashboardCaloriesProgress": {
     "placeholders": {
-      "pct": {"type": "int"},
-      "goal": {"type": "int"}
+      "pct": {
+        "type": "int"
+      },
+      "goal": {
+        "type": "int"
+      }
     }
   },
   "dashboardWeightDelta": "{sign}{delta} vs last week",
   "@dashboardWeightDelta": {
     "placeholders": {
-      "sign": {"type": "String"},
-      "delta": {"type": "String"}
+      "sign": {
+        "type": "String"
+      },
+      "delta": {
+        "type": "String"
+      }
     }
   },
-
   "unitKcal": "kcal",
   "unitMinutes": "min",
-  "unitKg": "kg"
+  "unitKg": "kg",
+  "dietTitle": "Diet",
+  "dietToday": "Today",
+  "dietWeekLabel": "Month {month}, Week {week}",
+  "@dietWeekLabel": {
+    "placeholders": {
+      "month": {
+        "type": "int"
+      },
+      "week": {
+        "type": "int"
+      }
+    }
+  },
+  "dietWeekdayMon": "Mon",
+  "dietWeekdayTue": "Tue",
+  "dietWeekdayWed": "Wed",
+  "dietWeekdayThu": "Thu",
+  "dietWeekdayFri": "Fri",
+  "dietWeekdaySat": "Sat",
+  "dietWeekdaySun": "Sun",
+  "dietNutritionSummary": "Today's Nutrition",
+  "dietCalories": "Calories",
+  "dietSodium": "Sodium",
+  "dietSugar": "Sugar",
+  "dietUnitMg": "mg",
+  "dietUnitG": "g",
+  "dietAiFeedback": "AI Feedback",
+  "dietTodayMeals": "Today's Meals",
+  "dietAddMeal": "Add Meal",
+  "dietEmptyLog": "No meals logged yet.\nAdd your first meal with a photo!",
+  "dietPhotoAnalysis": "Photo Analysis",
+  "dietLoadError": "Couldn't load your diet.",
+  "dietOtherDateEmpty": "Records for the selected date aren't available yet.\nPlease check your diet on today's date.",
+  "dietTagSodium": "Sodium {mg}mg",
+  "@dietTagSodium": {
+    "placeholders": {
+      "mg": {
+        "type": "int"
+      }
+    }
+  },
+  "dietTagSugar": "Sugar {g}g",
+  "@dietTagSugar": {
+    "placeholders": {
+      "g": {
+        "type": "int"
+      }
+    }
+  },
+  "dietMealBreakfast": "Breakfast",
+  "dietMealLunch": "Lunch",
+  "dietMealDinner": "Dinner",
+  "dietMealSnack": "Snack",
+  "dietMealSheetTitle": "{meal}",
+  "@dietMealSheetTitle": {
+    "placeholders": {
+      "meal": {
+        "type": "String"
+      }
+    }
+  },
+  "dietAddSheetTitle": "Add a Meal",
+  "dietAddSheetSubtitle": "Analyze your food from a photo",
+  "dietPickPhoto": "Choose a Photo",
+  "dietPickPhotoSub": "Pick a food photo from your gallery",
+  "dietTakePhoto": "Take a Photo",
+  "dietTakePhotoSub": "Snap your food with the camera",
+  "dietPhotoLoadError": "Couldn't load the photo. Please try again in a moment.",
+  "dietAnalyzing": "Analyzing…",
+  "dietAnalysisFailed": "Analysis failed",
+  "dietAnalysisDone": "Analysis complete!",
+  "dietAiNutritionResult": "AI Nutrition Result",
+  "dietAnalyzingBody": "Analyzing the food in your photo",
+  "dietAnalysisFailedBody": "Analysis failed. Please try again in a moment.",
+  "dietRecognizedFood": "Recognized Food",
+  "dietNoRecognizedFood": "No food recognized",
+  "dietNutritionResult": "Nutrition Result",
+  "dietSaved": "Meal saved",
+  "dietDone": "Done",
+  "dietSaveFailed": "Couldn't save. Please try again in a moment.",
+  "dietDeleteTitle": "Delete Meal Record",
+  "dietDeleteConfirm": "Delete this meal record?",
+  "dietCancel": "Cancel",
+  "dietDelete": "Delete",
+  "dietDeleted": "Meal deleted",
+  "dietDeleteFailed": "Couldn't delete. Please try again in a moment.",
+  "dietSave": "Save",
+  "dietMealInfo": "Meal Info",
+  "dietEatenTime": "Time Eaten",
+  "dietEatenFood": "Food Eaten",
+  "dietNewFood": "New food",
+  "dietAddFood": "+ Add Food",
+  "dietEditFoodHint": "You can edit the food name and calories",
+  "dietTotalCalories": "Total Calories",
+  "dietNutritionInfo": "Nutrition Info",
+  "dietEditNutritionHint": "You can edit the analyzed values directly",
+  "dietSodiumHint": "Recommended under 2,000mg/day",
+  "dietSugarHint": "Recommended under 50g/day",
+  "dietDeleteMeal": "Delete Meal"
 }

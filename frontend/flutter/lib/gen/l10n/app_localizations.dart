@@ -343,6 +343,414 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'kg'**
   String get unitKg;
+
+  /// No description provided for @dietTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Diet'**
+  String get dietTitle;
+
+  /// No description provided for @dietToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get dietToday;
+
+  /// No description provided for @dietWeekLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Month {month}, Week {week}'**
+  String dietWeekLabel(int month, int week);
+
+  /// No description provided for @dietWeekdayMon.
+  ///
+  /// In en, this message translates to:
+  /// **'Mon'**
+  String get dietWeekdayMon;
+
+  /// No description provided for @dietWeekdayTue.
+  ///
+  /// In en, this message translates to:
+  /// **'Tue'**
+  String get dietWeekdayTue;
+
+  /// No description provided for @dietWeekdayWed.
+  ///
+  /// In en, this message translates to:
+  /// **'Wed'**
+  String get dietWeekdayWed;
+
+  /// No description provided for @dietWeekdayThu.
+  ///
+  /// In en, this message translates to:
+  /// **'Thu'**
+  String get dietWeekdayThu;
+
+  /// No description provided for @dietWeekdayFri.
+  ///
+  /// In en, this message translates to:
+  /// **'Fri'**
+  String get dietWeekdayFri;
+
+  /// No description provided for @dietWeekdaySat.
+  ///
+  /// In en, this message translates to:
+  /// **'Sat'**
+  String get dietWeekdaySat;
+
+  /// No description provided for @dietWeekdaySun.
+  ///
+  /// In en, this message translates to:
+  /// **'Sun'**
+  String get dietWeekdaySun;
+
+  /// No description provided for @dietNutritionSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s Nutrition'**
+  String get dietNutritionSummary;
+
+  /// No description provided for @dietCalories.
+  ///
+  /// In en, this message translates to:
+  /// **'Calories'**
+  String get dietCalories;
+
+  /// No description provided for @dietSodium.
+  ///
+  /// In en, this message translates to:
+  /// **'Sodium'**
+  String get dietSodium;
+
+  /// No description provided for @dietSugar.
+  ///
+  /// In en, this message translates to:
+  /// **'Sugar'**
+  String get dietSugar;
+
+  /// No description provided for @dietUnitMg.
+  ///
+  /// In en, this message translates to:
+  /// **'mg'**
+  String get dietUnitMg;
+
+  /// No description provided for @dietUnitG.
+  ///
+  /// In en, this message translates to:
+  /// **'g'**
+  String get dietUnitG;
+
+  /// No description provided for @dietAiFeedback.
+  ///
+  /// In en, this message translates to:
+  /// **'AI Feedback'**
+  String get dietAiFeedback;
+
+  /// No description provided for @dietTodayMeals.
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s Meals'**
+  String get dietTodayMeals;
+
+  /// No description provided for @dietAddMeal.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Meal'**
+  String get dietAddMeal;
+
+  /// No description provided for @dietEmptyLog.
+  ///
+  /// In en, this message translates to:
+  /// **'No meals logged yet.\nAdd your first meal with a photo!'**
+  String get dietEmptyLog;
+
+  /// No description provided for @dietPhotoAnalysis.
+  ///
+  /// In en, this message translates to:
+  /// **'Photo Analysis'**
+  String get dietPhotoAnalysis;
+
+  /// No description provided for @dietLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t load your diet.'**
+  String get dietLoadError;
+
+  /// No description provided for @dietOtherDateEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Records for the selected date aren\'t available yet.\nPlease check your diet on today\'s date.'**
+  String get dietOtherDateEmpty;
+
+  /// No description provided for @dietTagSodium.
+  ///
+  /// In en, this message translates to:
+  /// **'Sodium {mg}mg'**
+  String dietTagSodium(int mg);
+
+  /// No description provided for @dietTagSugar.
+  ///
+  /// In en, this message translates to:
+  /// **'Sugar {g}g'**
+  String dietTagSugar(int g);
+
+  /// No description provided for @dietMealBreakfast.
+  ///
+  /// In en, this message translates to:
+  /// **'Breakfast'**
+  String get dietMealBreakfast;
+
+  /// No description provided for @dietMealLunch.
+  ///
+  /// In en, this message translates to:
+  /// **'Lunch'**
+  String get dietMealLunch;
+
+  /// No description provided for @dietMealDinner.
+  ///
+  /// In en, this message translates to:
+  /// **'Dinner'**
+  String get dietMealDinner;
+
+  /// No description provided for @dietMealSnack.
+  ///
+  /// In en, this message translates to:
+  /// **'Snack'**
+  String get dietMealSnack;
+
+  /// No description provided for @dietMealSheetTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{meal}'**
+  String dietMealSheetTitle(String meal);
+
+  /// No description provided for @dietAddSheetTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a Meal'**
+  String get dietAddSheetTitle;
+
+  /// No description provided for @dietAddSheetSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Analyze your food from a photo'**
+  String get dietAddSheetSubtitle;
+
+  /// No description provided for @dietPickPhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a Photo'**
+  String get dietPickPhoto;
+
+  /// No description provided for @dietPickPhotoSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick a food photo from your gallery'**
+  String get dietPickPhotoSub;
+
+  /// No description provided for @dietTakePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Take a Photo'**
+  String get dietTakePhoto;
+
+  /// No description provided for @dietTakePhotoSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Snap your food with the camera'**
+  String get dietTakePhotoSub;
+
+  /// No description provided for @dietPhotoLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t load the photo. Please try again in a moment.'**
+  String get dietPhotoLoadError;
+
+  /// No description provided for @dietAnalyzing.
+  ///
+  /// In en, this message translates to:
+  /// **'Analyzing…'**
+  String get dietAnalyzing;
+
+  /// No description provided for @dietAnalysisFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Analysis failed'**
+  String get dietAnalysisFailed;
+
+  /// No description provided for @dietAnalysisDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Analysis complete!'**
+  String get dietAnalysisDone;
+
+  /// No description provided for @dietAiNutritionResult.
+  ///
+  /// In en, this message translates to:
+  /// **'AI Nutrition Result'**
+  String get dietAiNutritionResult;
+
+  /// No description provided for @dietAnalyzingBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Analyzing the food in your photo'**
+  String get dietAnalyzingBody;
+
+  /// No description provided for @dietAnalysisFailedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Analysis failed. Please try again in a moment.'**
+  String get dietAnalysisFailedBody;
+
+  /// No description provided for @dietRecognizedFood.
+  ///
+  /// In en, this message translates to:
+  /// **'Recognized Food'**
+  String get dietRecognizedFood;
+
+  /// No description provided for @dietNoRecognizedFood.
+  ///
+  /// In en, this message translates to:
+  /// **'No food recognized'**
+  String get dietNoRecognizedFood;
+
+  /// No description provided for @dietNutritionResult.
+  ///
+  /// In en, this message translates to:
+  /// **'Nutrition Result'**
+  String get dietNutritionResult;
+
+  /// No description provided for @dietSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Meal saved'**
+  String get dietSaved;
+
+  /// No description provided for @dietDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get dietDone;
+
+  /// No description provided for @dietSaveFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t save. Please try again in a moment.'**
+  String get dietSaveFailed;
+
+  /// No description provided for @dietDeleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Meal Record'**
+  String get dietDeleteTitle;
+
+  /// No description provided for @dietDeleteConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this meal record?'**
+  String get dietDeleteConfirm;
+
+  /// No description provided for @dietCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get dietCancel;
+
+  /// No description provided for @dietDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get dietDelete;
+
+  /// No description provided for @dietDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Meal deleted'**
+  String get dietDeleted;
+
+  /// No description provided for @dietDeleteFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t delete. Please try again in a moment.'**
+  String get dietDeleteFailed;
+
+  /// No description provided for @dietSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get dietSave;
+
+  /// No description provided for @dietMealInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Meal Info'**
+  String get dietMealInfo;
+
+  /// No description provided for @dietEatenTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Time Eaten'**
+  String get dietEatenTime;
+
+  /// No description provided for @dietEatenFood.
+  ///
+  /// In en, this message translates to:
+  /// **'Food Eaten'**
+  String get dietEatenFood;
+
+  /// No description provided for @dietNewFood.
+  ///
+  /// In en, this message translates to:
+  /// **'New food'**
+  String get dietNewFood;
+
+  /// No description provided for @dietAddFood.
+  ///
+  /// In en, this message translates to:
+  /// **'+ Add Food'**
+  String get dietAddFood;
+
+  /// No description provided for @dietEditFoodHint.
+  ///
+  /// In en, this message translates to:
+  /// **'You can edit the food name and calories'**
+  String get dietEditFoodHint;
+
+  /// No description provided for @dietTotalCalories.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Calories'**
+  String get dietTotalCalories;
+
+  /// No description provided for @dietNutritionInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Nutrition Info'**
+  String get dietNutritionInfo;
+
+  /// No description provided for @dietEditNutritionHint.
+  ///
+  /// In en, this message translates to:
+  /// **'You can edit the analyzed values directly'**
+  String get dietEditNutritionHint;
+
+  /// No description provided for @dietSodiumHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Recommended under 2,000mg/day'**
+  String get dietSodiumHint;
+
+  /// No description provided for @dietSugarHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Recommended under 50g/day'**
+  String get dietSugarHint;
+
+  /// No description provided for @dietDeleteMeal.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Meal'**
+  String get dietDeleteMeal;
 }
 
 class _AppLocalizationsDelegate
