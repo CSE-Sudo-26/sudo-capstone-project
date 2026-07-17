@@ -74,7 +74,11 @@ class AiRoutineRepository {
     }
 
     final now = DateTime.now();
-    final hour = (now.hour + 1).clamp(6, 22);
+    // Next full hour, capped at 23 so an evening registration lands on a
+    // FUTURE slot (22:xx → 23:00) instead of clamping down to a past
+    // 22:00 (review PR 220). Late-night bookings should use the date
+    // picker to target the next day.
+    final hour = (now.hour + 1).clamp(6, 23);
     await _db
         .into(table)
         .insert(
