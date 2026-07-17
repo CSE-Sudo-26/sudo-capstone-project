@@ -58,6 +58,9 @@ class _AiRoutinePageState extends ConsumerState<AiRoutinePage> {
 
   /// A schedule registration just succeeded (drives the 3s flash).
   bool _registered = false;
+  // In-flight guard: set before the await so a second tap can't create a
+  // duplicate session while the first is still saving (review PR 220).
+  bool _registering = false;
   Timer? _registerTimer;
 
   @override
@@ -134,22 +137,34 @@ class _AiRoutinePageState extends ConsumerState<AiRoutinePage> {
     TrainerClient client,
     List<AiRoutineItem> items,
   ) async {
-    if (_registered) return;
-    final program = _composeProgram(items);
-    if (program.isEmpty) return;
+    if (_registered || _registering) return;
     final messenger = ScaffoldMessenger.of(context);
+    final program = _composeProgram(items);
+    if (program.isEmpty) {
+      // Every exercise was removed — tell the trainer instead of a
+      // silent no-op (review PR 220).
+      messenger.showSnackBar(
+        const SnackBar(content: Text('운동을 하나 이상 추가해 주세요')),
+      );
+      return;
+    }
+    setState(() => _registering = true);
     try {
       await ref
           .read(aiRoutineRepositoryProvider)
           .registerToTodaySchedule(clientName: client.name, program: program);
     } catch (_) {
+      if (mounted) setState(() => _registering = false);
       messenger.showSnackBar(
         const SnackBar(content: Text('스케줄 등록에 실패했어요. 다시 시도해 주세요')),
       );
       return;
     }
     if (!mounted) return;
-    setState(() => _registered = true);
+    setState(() {
+      _registering = false;
+      _registered = true;
+    });
     _registerTimer?.cancel();
     _registerTimer = Timer(const Duration(seconds: 3), () {
       if (mounted) setState(() => _registered = false);
@@ -416,7 +431,9 @@ class _AiRoutinePageState extends ConsumerState<AiRoutinePage> {
               ),
             const SizedBox(height: AppSpacing.sm),
             _RegisterButton(
-              registered: _registered,
+              // Disabled while registering (or after) so a second tap
+              // can't queue a duplicate session.
+              registered: _registered || _registering,
               onTap: () => _registerToSchedule(client, items),
             ),
             if (_registered)

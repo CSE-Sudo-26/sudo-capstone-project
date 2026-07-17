@@ -1,5 +1,6 @@
 import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:oncare_trainer/core/storage/app_database.dart';
@@ -7,6 +8,27 @@ import 'package:oncare_trainer/core/storage/seed_data.dart';
 import 'package:oncare_trainer/features/ai_routine/data/repositories/ai_routine_repository.dart';
 
 import '../../helpers/pump_app.dart';
+
+/// Counts registration calls and delays them, to test the in-flight
+/// double-tap guard.
+class _SlowCountingRoutineRepository extends AiRoutineRepository {
+  _SlowCountingRoutineRepository(super.db);
+
+  int registerCalls = 0;
+
+  @override
+  Future<bool> registerToTodaySchedule({
+    required String clientName,
+    required List<Map<String, Object?>> program,
+  }) async {
+    registerCalls++;
+    await Future<void>.delayed(const Duration(milliseconds: 300));
+    return super.registerToTodaySchedule(
+      clientName: clientName,
+      program: program,
+    );
+  }
+}
 
 void main() {
   group('AiRoutineRepository.watchRoutine', () {
@@ -260,6 +282,68 @@ void main() {
 
       await tester.pump(const Duration(seconds: 4)); // reset window
       expect(find.textContaining('검토 완료'), findsOneWidget);
+    });
+
+    testWidgets('mashing 스케줄 등록 registers only once', (tester) async {
+      final container = await pumpTrainerApp(
+        tester,
+        token: 'demo-trainer-token',
+        extraOverrides: <Override>[
+          // Shares the app's seeded DB so the AI suggestions load.
+          aiRoutineRepositoryProvider.overrideWith(
+            (ref) =>
+                _SlowCountingRoutineRepository(ref.watch(appDatabaseProvider)),
+          ),
+        ],
+      );
+      await tester.tap(find.text('AI루틴'));
+      await settle(tester);
+
+      await tester.scrollUntilVisible(
+        find.text('📅 오늘 PT 스케줄에 등록'),
+        150,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.ensureVisible(find.text('📅 오늘 PT 스케줄에 등록'));
+      await tester.pump();
+      await tester.tap(find.text('📅 오늘 PT 스케줄에 등록'));
+      await tester.pump(const Duration(milliseconds: 50));
+      // Second tap lands mid-flight — the button is now disabled and its
+      // label has flipped, so this must NOT trigger a second register.
+      await tester.tap(
+        find.textContaining('스케줄에 등록').first,
+        warnIfMissed: false,
+      );
+      await settle(tester);
+
+      final repo =
+          container.read(aiRoutineRepositoryProvider)
+              as _SlowCountingRoutineRepository;
+      expect(repo.registerCalls, 1);
+    });
+
+    testWidgets('registering with every exercise removed shows a hint', (
+      tester,
+    ) async {
+      await openTab(tester);
+
+      // Remove all three seeded AI suggestions for 김민수.
+      for (var i = 0; i < 3; i++) {
+        await tester.tap(find.byIcon(Icons.close).first);
+        await tester.pump();
+      }
+
+      await tester.scrollUntilVisible(
+        find.text('📅 오늘 PT 스케줄에 등록'),
+        150,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.ensureVisible(find.text('📅 오늘 PT 스케줄에 등록'));
+      await tester.pump();
+      await tester.tap(find.text('📅 오늘 PT 스케줄에 등록'));
+      await tester.pump();
+
+      expect(find.text('운동을 하나 이상 추가해 주세요'), findsOneWidget);
     });
   });
 }
