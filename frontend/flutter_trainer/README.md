@@ -84,10 +84,10 @@ lib/
 | 브랜치 | 내용 |
 | --- | --- |
 | `feature/trainer-split-view` | 고객 탭 마스터-디테일 스플릿(URL 동기화·닫기 버튼), 나트륨 초과 우선 정렬(동순위 → 최근 채팅순), 채팅 초안 고객 간 누수 수정, 포맷/LF 정규화 |
-| `fix/trainer-chat-send-guard` | 채팅 중복 전송 가드(`_sending`)·dispose 후 접근 방지·메시지 도착 시에만 자동 스크롤 (codex 리뷰 1) |
-| `fix/trainer-client-detail-states` | 고객 상세 로딩/오류/미존재 상태 분리 + 다시 시도 (codex 리뷰 2) |
+| `fix/trainer-chat-send-guard` | 채팅 중복 전송 가드(`_sending`)·dispose 후 접근 방지·메시지 도착 시에만 자동 스크롤 |
+| `fix/trainer-client-detail-states` | 고객 상세 로딩/오류/미존재 상태 분리 + 다시 시도 |
 | `feature/trainer-schedule-manage` | 스케줄 추가/수정/삭제(15분 단위 시간), 예정 세션 확장(계획 미리보기·계획 없음 안내·💬 채팅 바로가기), 오늘 중심 주간 스트립, 와이드 2컬럼 |
-| `feature/trainer-routine-programs` | AI 루틴 → 오늘 PT 스케줄 등록(예정 세션에 부착 or 신규 슬롯), AI 추천 항목 삭제, 고객 피커 가로 스크롤 (codex 리뷰 4), 와이드 분할 |
+| `feature/trainer-routine-programs` | AI 루틴 → 오늘 PT 스케줄 등록(예정 세션에 부착 or 신규 슬롯), AI 추천 항목 삭제, 고객 피커 가로 스크롤, 와이드 분할 |
 
 ## 주요 결정
 
@@ -109,5 +109,5 @@ lib/
   `dart format --set-exit-if-changed` 포함)
 - 실 백엔드(FastAPI) 연동 — `TrainerAuthRepository`/`SessionTokenStore` 교체 지점 주석 참조
 - 자정 넘김 시 '오늘' 스케줄/예약 수 자동 갱신, DB JSON 역직렬화 방어
-  (codex 리뷰 3·5 — 백엔드 연동과 함께 처리)
+  ( 백엔드 연동과 함께 처리)
 - AI 루틴 날짜 선택(미래 스케줄 등록·과거 조회)
