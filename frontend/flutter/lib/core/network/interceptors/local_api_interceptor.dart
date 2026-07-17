@@ -153,6 +153,7 @@ class LocalApiInterceptor extends Interceptor {
     final type = (body['type'] as String? ?? existing.type).trim();
     final minutes = (body['minutes'] as num?)?.toInt() ?? existing.minutes;
     final calories = (body['calories'] as num?)?.toInt() ?? existing.calories;
+    final intensity = (body['intensity'] as String? ?? existing.intensity).trim();
     final dayRaw = (body['day_label'] as String? ?? '').trim();
     final dayLabel = dayRaw.isEmpty ? existing.dayLabel : dayRaw;
     await (_db.update(
@@ -162,6 +163,7 @@ class LocalApiInterceptor extends Interceptor {
         type: Value(type),
         minutes: Value(minutes),
         calories: Value(calories),
+        intensity: Value(intensity),
         dayLabel: Value(dayLabel),
       ),
     );
@@ -171,6 +173,7 @@ class LocalApiInterceptor extends Interceptor {
       'type': type,
       'minutes': minutes,
       'calories': calories,
+      'intensity': intensity,
       'date_label': _dateLabelForDayLabel(dayLabel),
       'time_label': _defaultTimeLabel(type),
       'items': _defaultItems(type),
@@ -493,6 +496,7 @@ class LocalApiInterceptor extends Interceptor {
         'type': r.type,
         'minutes': r.minutes,
         'calories': r.calories,
+        'intensity': r.intensity,
         // Date/time labels are synthesized here so the React-style
         // session list ("오늘", "어제", "MM월 DD일") works without
         // a schema migration on the drift `exerciseSessions` table.
@@ -593,6 +597,7 @@ class LocalApiInterceptor extends Interceptor {
       return _badRequest(options, 'minutes must be > 0');
     }
     final calories = (payload['calories'] as num?)?.toInt() ?? 0;
+    final intensity = (payload['intensity'] as String?) ?? 'moderate';
     final dayLabel =
         (payload['day_label'] as String?) ??
         _weekdayLabels[DateTime.now().weekday - 1];
@@ -608,6 +613,7 @@ class LocalApiInterceptor extends Interceptor {
             type: type,
             minutes: minutes,
             calories: calories,
+            intensity: Value(intensity),
           ),
         );
 
@@ -617,6 +623,7 @@ class LocalApiInterceptor extends Interceptor {
       'type': type,
       'minutes': minutes,
       'calories': calories,
+      'intensity': intensity,
       'date_label': _dateLabelForDayLabel(dayLabel),
       'time_label': _defaultTimeLabel(type),
       'items': _defaultItems(type),

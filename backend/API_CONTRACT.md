@@ -58,8 +58,11 @@
 | Method | Path | 응답 핵심 필드 |
 |---|---|---|
 | GET | `/exercise/weeks/current` | `{ sessions[], daily_minutes[7], cardio_minutes[7], strength_minutes[7], stretching_minutes[7], day_labels[7], total_minutes, total_calories, streak_days, ai_coach_message }` |
+| POST | `/exercise/sessions` | 입력 `{ type, minutes(>0), calories, intensity(light\|moderate\|high), day_label? }` → 생성된 `sessions[]` 항목 |
+| PUT | `/exercise/sessions/{id}` | 입력 동일(부분 갱신) → 갱신된 항목 |
 
-`sessions[]`: `{ id(str), day_label, type(cardio|strength|yoga|walking), minutes, calories, date_label, time_label, items[str] }`
+`sessions[]`: `{ id(str), day_label, type(cardio|strength|yoga|walking), minutes, calories, intensity(light|moderate|high), date_label, time_label, items[str] }`
+`intensity`: 생략 시 `moderate`. 수정 시트가 저장된 강도로 복원되고 칼로리 추정 배수(0.85/1.0/1.2)의 근거가 된다.
 `day_labels`: `["월","화","수","목","금","토","일"]`
 
 ### 일정
