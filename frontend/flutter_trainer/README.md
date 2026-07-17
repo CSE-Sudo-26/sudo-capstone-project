@@ -109,5 +109,5 @@ lib/
   `dart format --set-exit-if-changed` 포함)
 - 실 백엔드(FastAPI) 연동 — `TrainerAuthRepository`/`SessionTokenStore` 교체 지점 주석 참조
 - 자정 넘김 시 '오늘' 스케줄/예약 수 자동 갱신, DB JSON 역직렬화 방어
-  (codex 리뷰 3·5 — 백엔드 연동과 함께 처리)
+  ( 백엔드 연동과 함께 처리)
 - AI 루틴 날짜 선택(미래 스케줄 등록·과거 조회)
