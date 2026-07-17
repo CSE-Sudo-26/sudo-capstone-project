@@ -958,4 +958,81 @@ class AppLocalizationsKo extends AppLocalizations {
   String myComingSoon(String label) {
     return '$label은(는) 준비 중이에요';
   }
+
+  @override
+  String get coachHeaderPill => 'AI 건강 도우미';
+
+  @override
+  String get coachHeaderSubtitle => '오늘의 맞춤 조언을 모아봤어요';
+
+  @override
+  String get coachCardDietTag => '식단';
+
+  @override
+  String get coachCardDietTitle => '저녁은 나트륨을 조금 줄여보세요.';
+
+  @override
+  String get coachCardDietBody => '구이나 샐러드가 좋아요.';
+
+  @override
+  String get coachCardExerciseTag => '운동';
+
+  @override
+  String get coachCardExerciseTitle => '저녁 산책 20분.';
+
+  @override
+  String get coachCardExerciseBody => '식후 가벼운 산책은 혈당 관리에 도움이 돼요.';
+
+  @override
+  String get coachCardWaterTag => '수분';
+
+  @override
+  String get coachCardWaterTitle => '물 한 잔 더 마시기.';
+
+  @override
+  String get coachCardWaterBody => '오늘 활동량이 많았어요.';
+
+  @override
+  String get coachProgressLabel => '오늘의 추천 진행도';
+
+  @override
+  String coachProgressDone(int done, int total) {
+    return '$done/$total 완료';
+  }
+
+  @override
+  String get coachCtaChat => 'AI와 대화하기';
+
+  @override
+  String get navAddRecordTitle => '새 기록 추가';
+
+  @override
+  String get navAddRecordSubtitle => '식단 또는 운동을 선택해 주세요';
+
+  @override
+  String get navDietOptionSub => '사진으로 영양 분석';
+
+  @override
+  String get navExerciseOptionSub => '종류와 시간 기록';
+
+  @override
+  String get aicHeaderSubtitle => '언제든 물어보세요';
+
+  @override
+  String get aicDatePillToday => '오늘';
+
+  @override
+  String get aicInputHint => 'AI에게 무엇이든 물어보세요';
+
+  @override
+  String get aicQuickRepliesLabel => '이런 걸 물어보세요';
+
+  @override
+  String get aicQuickReply1 => '오늘 저녁 메뉴 추천해줘';
+
+  @override
+  String get aicQuickReply2 => '오늘 운동은 얼마나 하면 좋을까?';
+
+  @override
+  String get aicQuickReply3 => '내 혈당 기록은 괜찮아?';
 }

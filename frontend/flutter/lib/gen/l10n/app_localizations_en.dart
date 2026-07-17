@@ -966,4 +966,82 @@ class AppLocalizationsEn extends AppLocalizations {
   String myComingSoon(String label) {
     return '$label is coming soon';
   }
+
+  @override
+  String get coachHeaderPill => 'AI Health Assistant';
+
+  @override
+  String get coachHeaderSubtitle => 'Here are today\'s tailored tips';
+
+  @override
+  String get coachCardDietTag => 'Diet';
+
+  @override
+  String get coachCardDietTitle => 'Try easing back on sodium at dinner.';
+
+  @override
+  String get coachCardDietBody => 'Grilled dishes or a salad are great.';
+
+  @override
+  String get coachCardExerciseTag => 'Exercise';
+
+  @override
+  String get coachCardExerciseTitle => 'A 20-minute evening walk.';
+
+  @override
+  String get coachCardExerciseBody =>
+      'A light walk after meals helps manage blood sugar.';
+
+  @override
+  String get coachCardWaterTag => 'Hydration';
+
+  @override
+  String get coachCardWaterTitle => 'Drink one more glass of water.';
+
+  @override
+  String get coachCardWaterBody => 'You\'ve been quite active today.';
+
+  @override
+  String get coachProgressLabel => 'Today\'s recommendation progress';
+
+  @override
+  String coachProgressDone(int done, int total) {
+    return '$done/$total done';
+  }
+
+  @override
+  String get coachCtaChat => 'Chat with AI';
+
+  @override
+  String get navAddRecordTitle => 'Add a record';
+
+  @override
+  String get navAddRecordSubtitle => 'Choose diet or exercise';
+
+  @override
+  String get navDietOptionSub => 'Nutrition analysis from a photo';
+
+  @override
+  String get navExerciseOptionSub => 'Log the type and duration';
+
+  @override
+  String get aicHeaderSubtitle => 'Ask me anytime';
+
+  @override
+  String get aicDatePillToday => 'Today';
+
+  @override
+  String get aicInputHint => 'Ask the AI anything';
+
+  @override
+  String get aicQuickRepliesLabel => 'Try asking';
+
+  @override
+  String get aicQuickReply1 => 'Recommend a dinner menu for today';
+
+  @override
+  String get aicQuickReply2 => 'How much should I exercise today?';
+
+  @override
+  String get aicQuickReply3 => 'How are my blood sugar readings?';
 }

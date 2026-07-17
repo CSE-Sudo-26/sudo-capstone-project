@@ -1897,6 +1897,156 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{label} is coming soon'**
   String myComingSoon(String label);
+
+  /// No description provided for @coachHeaderPill.
+  ///
+  /// In en, this message translates to:
+  /// **'AI Health Assistant'**
+  String get coachHeaderPill;
+
+  /// No description provided for @coachHeaderSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Here are today\'s tailored tips'**
+  String get coachHeaderSubtitle;
+
+  /// No description provided for @coachCardDietTag.
+  ///
+  /// In en, this message translates to:
+  /// **'Diet'**
+  String get coachCardDietTag;
+
+  /// No description provided for @coachCardDietTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Try easing back on sodium at dinner.'**
+  String get coachCardDietTitle;
+
+  /// No description provided for @coachCardDietBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Grilled dishes or a salad are great.'**
+  String get coachCardDietBody;
+
+  /// No description provided for @coachCardExerciseTag.
+  ///
+  /// In en, this message translates to:
+  /// **'Exercise'**
+  String get coachCardExerciseTag;
+
+  /// No description provided for @coachCardExerciseTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'A 20-minute evening walk.'**
+  String get coachCardExerciseTitle;
+
+  /// No description provided for @coachCardExerciseBody.
+  ///
+  /// In en, this message translates to:
+  /// **'A light walk after meals helps manage blood sugar.'**
+  String get coachCardExerciseBody;
+
+  /// No description provided for @coachCardWaterTag.
+  ///
+  /// In en, this message translates to:
+  /// **'Hydration'**
+  String get coachCardWaterTag;
+
+  /// No description provided for @coachCardWaterTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Drink one more glass of water.'**
+  String get coachCardWaterTitle;
+
+  /// No description provided for @coachCardWaterBody.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ve been quite active today.'**
+  String get coachCardWaterBody;
+
+  /// No description provided for @coachProgressLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s recommendation progress'**
+  String get coachProgressLabel;
+
+  /// No description provided for @coachProgressDone.
+  ///
+  /// In en, this message translates to:
+  /// **'{done}/{total} done'**
+  String coachProgressDone(int done, int total);
+
+  /// No description provided for @coachCtaChat.
+  ///
+  /// In en, this message translates to:
+  /// **'Chat with AI'**
+  String get coachCtaChat;
+
+  /// No description provided for @navAddRecordTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a record'**
+  String get navAddRecordTitle;
+
+  /// No description provided for @navAddRecordSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose diet or exercise'**
+  String get navAddRecordSubtitle;
+
+  /// No description provided for @navDietOptionSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Nutrition analysis from a photo'**
+  String get navDietOptionSub;
+
+  /// No description provided for @navExerciseOptionSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Log the type and duration'**
+  String get navExerciseOptionSub;
+
+  /// No description provided for @aicHeaderSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask me anytime'**
+  String get aicHeaderSubtitle;
+
+  /// No description provided for @aicDatePillToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get aicDatePillToday;
+
+  /// No description provided for @aicInputHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask the AI anything'**
+  String get aicInputHint;
+
+  /// No description provided for @aicQuickRepliesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Try asking'**
+  String get aicQuickRepliesLabel;
+
+  /// No description provided for @aicQuickReply1.
+  ///
+  /// In en, this message translates to:
+  /// **'Recommend a dinner menu for today'**
+  String get aicQuickReply1;
+
+  /// No description provided for @aicQuickReply2.
+  ///
+  /// In en, this message translates to:
+  /// **'How much should I exercise today?'**
+  String get aicQuickReply2;
+
+  /// No description provided for @aicQuickReply3.
+  ///
+  /// In en, this message translates to:
+  /// **'How are my blood sugar readings?'**
+  String get aicQuickReply3;
 }
 
 class _AppLocalizationsDelegate

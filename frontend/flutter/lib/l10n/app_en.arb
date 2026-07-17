@@ -497,5 +497,40 @@
         "type": "String"
       }
     }
-  }
+  },
+  "coachHeaderPill": "AI Health Assistant",
+  "coachHeaderSubtitle": "Here are today's tailored tips",
+  "coachCardDietTag": "Diet",
+  "coachCardDietTitle": "Try easing back on sodium at dinner.",
+  "coachCardDietBody": "Grilled dishes or a salad are great.",
+  "coachCardExerciseTag": "Exercise",
+  "coachCardExerciseTitle": "A 20-minute evening walk.",
+  "coachCardExerciseBody": "A light walk after meals helps manage blood sugar.",
+  "coachCardWaterTag": "Hydration",
+  "coachCardWaterTitle": "Drink one more glass of water.",
+  "coachCardWaterBody": "You've been quite active today.",
+  "coachProgressLabel": "Today's recommendation progress",
+  "coachProgressDone": "{done}/{total} done",
+  "@coachProgressDone": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "coachCtaChat": "Chat with AI",
+  "navAddRecordTitle": "Add a record",
+  "navAddRecordSubtitle": "Choose diet or exercise",
+  "navDietOptionSub": "Nutrition analysis from a photo",
+  "navExerciseOptionSub": "Log the type and duration",
+  "aicHeaderSubtitle": "Ask me anytime",
+  "aicDatePillToday": "Today",
+  "aicInputHint": "Ask the AI anything",
+  "aicQuickRepliesLabel": "Try asking",
+  "aicQuickReply1": "Recommend a dinner menu for today",
+  "aicQuickReply2": "How much should I exercise today?",
+  "aicQuickReply3": "How are my blood sugar readings?"
 }
