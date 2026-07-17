@@ -63,6 +63,9 @@ class _ChatViewState extends ConsumerState<ChatView> {
           .read(chatRepositoryProvider)
           .sendTrainerMessage(clientId: widget.clientId, text: text);
     } catch (_) {
+      // Guard the failure path too: a slow send that fails after the
+      // user left would otherwise touch a disposed messenger.
+      if (!mounted) return;
       // Keep the draft in the input and tell the user it didn't go out.
       messenger.showSnackBar(
         const SnackBar(content: Text('메시지 전송에 실패했어요. 다시 시도해 주세요')),
