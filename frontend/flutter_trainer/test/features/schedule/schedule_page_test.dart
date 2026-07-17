@@ -1,9 +1,11 @@
+import 'package:drift/drift.dart' show Value;
 import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:oncare_trainer/core/storage/app_database.dart';
 import 'package:oncare_trainer/core/storage/seed_data.dart';
+import 'package:oncare_trainer/core/utils/date_format.dart';
 import 'package:oncare_trainer/features/schedule/data/repositories/schedule_repository.dart';
 
 import '../../helpers/pump_app.dart';
@@ -106,6 +108,36 @@ void main() {
       expect(logged.exercisesJson, contains('벤치프레스'));
       expect(logged.sortOrder, lessThan(0)); // sorts before seed rows
     });
+
+    test(
+      'completeSession with an empty memo keeps the existing note',
+      () async {
+        final repo = ScheduleRepository(db);
+        // A booked 예정 session that already carries a note.
+        await db
+            .into(db.trainerScheduleEntries)
+            .insert(
+              TrainerScheduleEntriesCompanion.insert(
+                id: 'sched-noted',
+                date: ymd(DateTime.now()),
+                time: '18:00',
+                clientName: const Value('이지수'),
+                type: const Value('1:1 PT'),
+                durationMinutes: const Value(60),
+                status: '예정',
+                note: const Value('허리 통증 주의'),
+                programJson: const Value('[]'),
+              ),
+            );
+
+        await repo.completeSession('sched-noted'); // no memo entered
+
+        final after = await repo.watchToday().first;
+        final done = after.firstWhere((s) => s.id == 'sched-noted');
+        expect(done.isDone, isTrue);
+        expect(done.note, '허리 통증 주의'); // preserved, not wiped
+      },
+    );
 
     test(
       'completeSession without a known client only flips the status',

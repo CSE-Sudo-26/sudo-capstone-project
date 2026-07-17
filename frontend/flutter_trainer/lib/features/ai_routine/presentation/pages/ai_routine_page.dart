@@ -15,6 +15,7 @@ import 'package:oncare_trainer/shared/services/client_repository.dart';
 import 'package:oncare_trainer/shared/widgets/client_avatar.dart';
 import 'package:oncare_trainer/shared/widgets/content_frame.dart';
 import 'package:oncare_trainer/shared/widgets/metric_tile.dart';
+import 'package:oncare_trainer/shared/widgets/outlined_action_button.dart';
 
 /// Minute options offered for every routine item (mock: 10~45분 chips).
 const List<int> _minuteOptions = <int>[10, 15, 20, 30, 45];
@@ -439,9 +440,12 @@ class _AiRoutinePageState extends ConsumerState<AiRoutinePage> {
                 ),
               ),
             const SizedBox(height: AppSpacing.sm),
-            _RegisterButton(
-              registered: _registered,
-              onTap: () => _registerToSchedule(client, items),
+            OutlinedActionButton(
+              label: _registered ? '✓ 오늘 스케줄에 등록됨' : '📅 오늘 PT 스케줄에 등록',
+              color: _registered ? AppColors.success : AppColors.accent,
+              onTap: _registered
+                  ? null
+                  : () => _registerToSchedule(client, items),
             ),
             if (_registered)
               const Padding(
@@ -1090,44 +1094,6 @@ class _FormButton extends StatelessWidget {
               fontSize: 12,
               fontWeight: FontWeight.w700,
               color: foreground,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-/// Secondary action — registers the routine as today's PT session
-/// program on the 스케줄 tab.
-class _RegisterButton extends StatelessWidget {
-  const _RegisterButton({required this.registered, required this.onTap});
-
-  final bool registered;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final color = registered ? AppColors.success : AppColors.accent;
-    return Material(
-      color: Colors.transparent,
-      borderRadius: const BorderRadius.all(AppRadius.card),
-      child: InkWell(
-        onTap: registered ? null : onTap,
-        borderRadius: const BorderRadius.all(AppRadius.card),
-        child: Container(
-          height: 44,
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            borderRadius: const BorderRadius.all(AppRadius.card),
-            border: Border.all(color: color.withValues(alpha: 0.5)),
-          ),
-          child: Text(
-            registered ? '✓ 오늘 스케줄에 등록됨' : '📅 오늘 PT 스케줄에 등록',
-            style: TextStyle(
-              fontSize: 12.5,
-              fontWeight: FontWeight.w700,
-              color: color,
             ),
           ),
         ),

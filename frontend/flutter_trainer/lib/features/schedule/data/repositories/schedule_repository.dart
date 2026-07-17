@@ -103,7 +103,8 @@ class ScheduleRepository {
       await (_db.update(table)..where((t) => t.id.equals(id))).write(
         TrainerScheduleEntriesCompanion(
           status: const Value('완료'),
-          note: Value(note),
+          // An empty memo must not wipe a note the session already had.
+          note: note.isEmpty ? const Value.absent() : Value(note),
         ),
       );
 

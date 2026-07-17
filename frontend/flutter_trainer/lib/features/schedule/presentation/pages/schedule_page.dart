@@ -16,6 +16,7 @@ import 'package:oncare_trainer/shared/services/chat_repository.dart';
 import 'package:oncare_trainer/shared/services/client_repository.dart';
 import 'package:oncare_trainer/shared/widgets/client_avatar.dart';
 import 'package:oncare_trainer/shared/widgets/content_frame.dart';
+import 'package:oncare_trainer/shared/widgets/outlined_action_button.dart';
 
 /// 스케줄 tab — today's PT timeline. Every booked session expands:
 /// 완료 shows the finished program and can be sent to the client (mock),
@@ -213,7 +214,11 @@ class _SchedulePageState extends ConsumerState<SchedulePage> {
                   const SizedBox(height: AppSpacing.lg),
                   _WeekStrip(hasScheduleToday: sessions.isNotEmpty),
                   const SizedBox(height: AppSpacing.lg),
-                  _AddSessionButton(onTap: () => _openSessionSheet()),
+                  OutlinedActionButton(
+                    label: '＋ 새 일정 추가',
+                    color: AppColors.accent,
+                    onTap: () => _openSessionSheet(),
+                  ),
                 ],
               ),
             ),
@@ -241,7 +246,11 @@ class _SchedulePageState extends ConsumerState<SchedulePage> {
           const SizedBox(height: AppSpacing.lg),
           _WeekStrip(hasScheduleToday: sessions.isNotEmpty),
           const SizedBox(height: AppSpacing.lg),
-          _AddSessionButton(onTap: () => _openSessionSheet()),
+          OutlinedActionButton(
+            label: '＋ 새 일정 추가',
+            color: AppColors.accent,
+            onTap: () => _openSessionSheet(),
+          ),
           const SizedBox(height: AppSpacing.lg),
         ],
         for (final s in sessions) ...<Widget>[
@@ -323,40 +332,6 @@ class _CompleteDialogState extends State<_CompleteDialog> {
           child: const Text('완료 처리'),
         ),
       ],
-    );
-  }
-}
-
-/// "＋ 새 일정 추가" — opens the booking sheet.
-class _AddSessionButton extends StatelessWidget {
-  const _AddSessionButton({required this.onTap});
-
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: const BorderRadius.all(AppRadius.card),
-        child: Container(
-          height: 42,
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            borderRadius: const BorderRadius.all(AppRadius.card),
-            border: Border.all(color: AppColors.accent.withValues(alpha: 0.4)),
-          ),
-          child: const Text(
-            '＋ 새 일정 추가',
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w700,
-              color: AppColors.accent,
-            ),
-          ),
-        ),
-      ),
     );
   }
 }

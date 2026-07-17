@@ -14,6 +14,7 @@ import 'package:oncare_trainer/shared/services/chat_repository.dart';
 import 'package:oncare_trainer/shared/services/client_repository.dart';
 import 'package:oncare_trainer/shared/widgets/content_frame.dart';
 import 'package:oncare_trainer/shared/widgets/oni_avatar.dart';
+import 'package:oncare_trainer/shared/widgets/outlined_action_button.dart';
 
 /// 고객 관리 tab — reservation badge, AI summary, and the client list.
 ///
@@ -211,42 +212,12 @@ class _ClientsView extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.md),
         ],
-        _AddClientButton(onTap: onAddClient),
-      ],
-    );
-  }
-}
-
-/// "＋ 신규 고객 등록" — opens the add-client sheet (e.g. after a 상담).
-class _AddClientButton extends StatelessWidget {
-  const _AddClientButton({required this.onTap});
-
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: const BorderRadius.all(AppRadius.card),
-        child: Container(
-          height: 44,
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            borderRadius: const BorderRadius.all(AppRadius.card),
-            border: Border.all(color: AppColors.accent.withValues(alpha: 0.4)),
-          ),
-          child: const Text(
-            '＋ 신규 고객 등록',
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w700,
-              color: AppColors.accent,
-            ),
-          ),
+        OutlinedActionButton(
+          label: '＋ 신규 고객 등록',
+          color: AppColors.accent,
+          onTap: onAddClient,
         ),
-      ),
+      ],
     );
   }
 }
