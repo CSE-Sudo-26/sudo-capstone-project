@@ -259,25 +259,33 @@ class _SubTabs extends StatelessWidget {
         children: <Widget>[
           for (var i = 0; i < _labels.length; i++) ...<Widget>[
             Expanded(
-              child: GestureDetector(
-                onTap: () => onChanged(i),
-                child: Container(
-                  height: 34,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    color: current == i
-                        ? AppColors.accent
-                        : AppColors.inputBackground,
+              // InkWell (over a Material) instead of GestureDetector so the
+              // sub-tabs are keyboard-focusable and activate on Enter/Space
+              // — desktop/web users can traverse them (CodeRabbit review).
+              child: Semantics(
+                button: true,
+                selected: current == i,
+                child: Material(
+                  color: current == i
+                      ? AppColors.accent
+                      : AppColors.inputBackground,
+                  borderRadius: const BorderRadius.all(AppRadius.md),
+                  child: InkWell(
+                    onTap: () => onChanged(i),
                     borderRadius: const BorderRadius.all(AppRadius.md),
-                  ),
-                  child: Text(
-                    _labels[i],
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w700,
-                      color: current == i
-                          ? AppColors.accentForeground
-                          : AppColors.subtleForeground,
+                    child: Container(
+                      height: 34,
+                      alignment: Alignment.center,
+                      child: Text(
+                        _labels[i],
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w700,
+                          color: current == i
+                              ? AppColors.accentForeground
+                              : AppColors.subtleForeground,
+                        ),
+                      ),
                     ),
                   ),
                 ),
