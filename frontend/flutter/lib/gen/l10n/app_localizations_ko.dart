@@ -522,4 +522,317 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get dietDeleteMeal => '식단 삭제';
+
+  @override
+  String get exTypeWalking => '걷기';
+
+  @override
+  String get exTypeCardio => '유산소';
+
+  @override
+  String get exTypeStrength => '근력';
+
+  @override
+  String get exTypeYoga => '요가';
+
+  @override
+  String get exTypeStretching => '스트레칭';
+
+  @override
+  String get exTypeOther => '운동';
+
+  @override
+  String get exTypeOtherChip => '기타';
+
+  @override
+  String get exLevelLight => '가벼움';
+
+  @override
+  String get exLevelModerate => '보통';
+
+  @override
+  String get exLevelHigh => '높음';
+
+  @override
+  String get exExerciseLog => '운동 기록';
+
+  @override
+  String get exGymTab => '헬스장';
+
+  @override
+  String get exWeekSummary => '이번 주 운동 요약';
+
+  @override
+  String get exActivityTitle => '운동 현황';
+
+  @override
+  String get exThisWeek => '이번 주';
+
+  @override
+  String get exAiRoutineToday => 'AI 맞춤 루틴 · 오늘';
+
+  @override
+  String get exStatTime => '시간';
+
+  @override
+  String get exStatCalories => '칼로리';
+
+  @override
+  String get exStatStreak => '연속';
+
+  @override
+  String get exUnitCount => '회';
+
+  @override
+  String get exUnitStreakDays => '일 연속';
+
+  @override
+  String get exToday => '오늘';
+
+  @override
+  String get exLoadError => '운동 정보를 불러오지 못했어요.';
+
+  @override
+  String get exEmptyLog => '이번 주 운동 기록이 없어요.\n운동을 추가해 기록을 남겨 보세요!';
+
+  @override
+  String get exAiFeedback => 'AI 피드백';
+
+  @override
+  String get exAddExercise => '운동 추가';
+
+  @override
+  String get exRoutineBriskTitle => '빠르게 걷기 30분';
+
+  @override
+  String get exRoutineBriskSub => '유산소 · 혈압 관리';
+
+  @override
+  String get exRoutineStretchTitle => '하체 스트레칭';
+
+  @override
+  String get exRoutineStretchSub => '스트레칭 · 유연성';
+
+  @override
+  String get exRoutineStrengthTitle => '저강도 근력';
+
+  @override
+  String get exRoutineStrengthSub => '근력 · 근지구력';
+
+  @override
+  String get exMissionComplete => '미션 완료!';
+
+  @override
+  String exMinutesExercise(int minutes) {
+    return '$minutes분 운동';
+  }
+
+  @override
+  String exDurationMinutes(int minutes) {
+    return '$minutes분';
+  }
+
+  @override
+  String get exEditExercise => '운동 기록 수정';
+
+  @override
+  String get exSave => '저장';
+
+  @override
+  String get exExerciseType => '운동 종류';
+
+  @override
+  String get exExerciseDuration => '운동 시간';
+
+  @override
+  String get exExerciseIntensity => '운동 강도';
+
+  @override
+  String get exEstimatedCalories => '예상 소모 칼로리';
+
+  @override
+  String get exEnterDuration => '운동 시간을 입력해주세요';
+
+  @override
+  String get exCannotEdit => '이 기록은 수정할 수 없어요';
+
+  @override
+  String get exUpdated => '운동 기록이 수정됐어요';
+
+  @override
+  String get exLogged => '운동이 기록됐어요';
+
+  @override
+  String get exSaveFailed => '저장에 실패했어요. 잠시 후 다시 시도해 주세요';
+
+  @override
+  String get exFindGym => '헬스장 찾기';
+
+  @override
+  String get exGymSearchHint => '헬스장, 지역으로 검색';
+
+  @override
+  String get exNearbyGyms => '주변 헬스장 · O2O 연동';
+
+  @override
+  String get exAiAnalysis => '✦ AI 분석';
+
+  @override
+  String exNoGymMatch(String query) {
+    return '\'$query\'에 맞는 헬스장이 없어요';
+  }
+
+  @override
+  String get exGymsLoadError => '헬스장을 불러오지 못했어요.';
+
+  @override
+  String get exAiTopPick => '✦ AI 추천 1순위';
+
+  @override
+  String get exTrainerChat => '트레이너 채팅';
+
+  @override
+  String get exSendHealthSummary => '건강 요약 전달';
+
+  @override
+  String exSendHealthSummaryBody(String gym) {
+    return '최근 운동 기록과 건강 프로필 요약을\n$gym 트레이너에게 전달할까요?';
+  }
+
+  @override
+  String get exCancel => '취소';
+
+  @override
+  String get exSend => '전달하기';
+
+  @override
+  String exHealthSummarySent(String gym) {
+    return '$gym에 건강 요약을 전달했어요';
+  }
+
+  @override
+  String exReasonTrainer(String name, String role) {
+    return '전담 트레이너 $name$role 상주';
+  }
+
+  @override
+  String exReasonHours(String hours, String weekend) {
+    return '$hours$weekend 운영';
+  }
+
+  @override
+  String exGymWeekdayHours(String hours) {
+    return '평일 $hours';
+  }
+
+  @override
+  String exGymWeekendHours(String hours) {
+    return '주말 $hours';
+  }
+
+  @override
+  String get exTrainer => '트레이너';
+
+  @override
+  String get exMyGym => '내 헬스장';
+
+  @override
+  String get exTrainerDedicated => '전담 트레이너';
+
+  @override
+  String get exAiSlotTitle => '✦ AI 추천 예약 시간';
+
+  @override
+  String exTrainerAvailability(String trainer) {
+    return '$trainer 빈 시간';
+  }
+
+  @override
+  String get exSlotToday19 => '오늘 19:00';
+
+  @override
+  String get exSlotTomorrow0730 => '내일 07:30';
+
+  @override
+  String get exSlotTomorrow20 => '내일 20:00';
+
+  @override
+  String get exSlot1Left => '잔여 1자리';
+
+  @override
+  String get exSlotAvailable => '여유 있음';
+
+  @override
+  String get exSlot2Left => '잔여 2자리';
+
+  @override
+  String exReserveConfirmedSlotGym(String slot, String gym) {
+    return '$slot · $gym 예약이 확정됐어요';
+  }
+
+  @override
+  String exReserveConfirm(String slot) {
+    return '$slot 예약 확정';
+  }
+
+  @override
+  String get exGymInfo => '헬스장 정보';
+
+  @override
+  String get exConsultButton => '💬 1:1 상담';
+
+  @override
+  String get exGymLoadError => '헬스장 정보를 불러오지 못했어요.';
+
+  @override
+  String get exNoGymTitle => '등록된 헬스장이 없어요';
+
+  @override
+  String get exNoGymSub => '헬스장 찾기로 주변 헬스장을 등록해 보세요';
+
+  @override
+  String get exAddress => '주소';
+
+  @override
+  String get exHours => '운영시간';
+
+  @override
+  String get exPhone => '전화';
+
+  @override
+  String get exSpecialty => '전문 분야';
+
+  @override
+  String get exKakaoMapArea => '카카오맵 영역';
+
+  @override
+  String get exDefaultTrainerName => '김트레이너';
+
+  @override
+  String get exDefaultGymName => '강남 피트니스 센터';
+
+  @override
+  String exChatGreeting(String trainer) {
+    return '안녕하세요, $trainer입니다. 😊\n무엇을 도와드릴까요?';
+  }
+
+  @override
+  String get exChatChipPt => 'PT 상담';
+
+  @override
+  String get exChatChipPass => '이용권 문의';
+
+  @override
+  String get exChatChipVisit => '방문 예약';
+
+  @override
+  String get exChatReply => '네, 확인했어요! 담당 트레이너가 곧 답변드릴게요. 편한 방문 시간도 알려주세요. 🙌';
+
+  @override
+  String exGymConsultSubtitle(String gym) {
+    return '$gym · 1:1 상담';
+  }
+
+  @override
+  String get exMessageHint => '메시지를 입력하세요';
 }

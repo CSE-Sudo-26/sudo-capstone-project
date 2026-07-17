@@ -1093,6 +1093,576 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Delete Meal'**
   String get dietDeleteMeal;
+
+  /// No description provided for @exTypeWalking.
+  ///
+  /// In en, this message translates to:
+  /// **'Walking'**
+  String get exTypeWalking;
+
+  /// No description provided for @exTypeCardio.
+  ///
+  /// In en, this message translates to:
+  /// **'Cardio'**
+  String get exTypeCardio;
+
+  /// No description provided for @exTypeStrength.
+  ///
+  /// In en, this message translates to:
+  /// **'Strength'**
+  String get exTypeStrength;
+
+  /// No description provided for @exTypeYoga.
+  ///
+  /// In en, this message translates to:
+  /// **'Yoga'**
+  String get exTypeYoga;
+
+  /// No description provided for @exTypeStretching.
+  ///
+  /// In en, this message translates to:
+  /// **'Stretching'**
+  String get exTypeStretching;
+
+  /// No description provided for @exTypeOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Exercise'**
+  String get exTypeOther;
+
+  /// No description provided for @exTypeOtherChip.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get exTypeOtherChip;
+
+  /// No description provided for @exLevelLight.
+  ///
+  /// In en, this message translates to:
+  /// **'Light'**
+  String get exLevelLight;
+
+  /// No description provided for @exLevelModerate.
+  ///
+  /// In en, this message translates to:
+  /// **'Moderate'**
+  String get exLevelModerate;
+
+  /// No description provided for @exLevelHigh.
+  ///
+  /// In en, this message translates to:
+  /// **'High'**
+  String get exLevelHigh;
+
+  /// No description provided for @exExerciseLog.
+  ///
+  /// In en, this message translates to:
+  /// **'Exercise Log'**
+  String get exExerciseLog;
+
+  /// No description provided for @exGymTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Gym'**
+  String get exGymTab;
+
+  /// No description provided for @exWeekSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'This Week\'s Summary'**
+  String get exWeekSummary;
+
+  /// No description provided for @exActivityTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Activity'**
+  String get exActivityTitle;
+
+  /// No description provided for @exThisWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'This week'**
+  String get exThisWeek;
+
+  /// No description provided for @exAiRoutineToday.
+  ///
+  /// In en, this message translates to:
+  /// **'AI Routine · Today'**
+  String get exAiRoutineToday;
+
+  /// No description provided for @exStatTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Time'**
+  String get exStatTime;
+
+  /// No description provided for @exStatCalories.
+  ///
+  /// In en, this message translates to:
+  /// **'Calories'**
+  String get exStatCalories;
+
+  /// No description provided for @exStatStreak.
+  ///
+  /// In en, this message translates to:
+  /// **'Streak'**
+  String get exStatStreak;
+
+  /// No description provided for @exUnitCount.
+  ///
+  /// In en, this message translates to:
+  /// **'times'**
+  String get exUnitCount;
+
+  /// No description provided for @exUnitStreakDays.
+  ///
+  /// In en, this message translates to:
+  /// **'day streak'**
+  String get exUnitStreakDays;
+
+  /// No description provided for @exToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get exToday;
+
+  /// No description provided for @exLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t load your exercise data.'**
+  String get exLoadError;
+
+  /// No description provided for @exEmptyLog.
+  ///
+  /// In en, this message translates to:
+  /// **'No workouts logged this week.\nAdd one to start your log!'**
+  String get exEmptyLog;
+
+  /// No description provided for @exAiFeedback.
+  ///
+  /// In en, this message translates to:
+  /// **'AI Feedback'**
+  String get exAiFeedback;
+
+  /// No description provided for @exAddExercise.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Exercise'**
+  String get exAddExercise;
+
+  /// No description provided for @exRoutineBriskTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Brisk walking 30 min'**
+  String get exRoutineBriskTitle;
+
+  /// No description provided for @exRoutineBriskSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Cardio · Blood pressure'**
+  String get exRoutineBriskSub;
+
+  /// No description provided for @exRoutineStretchTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Lower-body stretch'**
+  String get exRoutineStretchTitle;
+
+  /// No description provided for @exRoutineStretchSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Stretching · Flexibility'**
+  String get exRoutineStretchSub;
+
+  /// No description provided for @exRoutineStrengthTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Low-intensity strength'**
+  String get exRoutineStrengthTitle;
+
+  /// No description provided for @exRoutineStrengthSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Strength · Endurance'**
+  String get exRoutineStrengthSub;
+
+  /// No description provided for @exMissionComplete.
+  ///
+  /// In en, this message translates to:
+  /// **'Mission complete!'**
+  String get exMissionComplete;
+
+  /// No description provided for @exMinutesExercise.
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes} min exercise'**
+  String exMinutesExercise(int minutes);
+
+  /// No description provided for @exDurationMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes} min'**
+  String exDurationMinutes(int minutes);
+
+  /// No description provided for @exEditExercise.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Exercise Record'**
+  String get exEditExercise;
+
+  /// No description provided for @exSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get exSave;
+
+  /// No description provided for @exExerciseType.
+  ///
+  /// In en, this message translates to:
+  /// **'Exercise Type'**
+  String get exExerciseType;
+
+  /// No description provided for @exExerciseDuration.
+  ///
+  /// In en, this message translates to:
+  /// **'Duration'**
+  String get exExerciseDuration;
+
+  /// No description provided for @exExerciseIntensity.
+  ///
+  /// In en, this message translates to:
+  /// **'Intensity'**
+  String get exExerciseIntensity;
+
+  /// No description provided for @exEstimatedCalories.
+  ///
+  /// In en, this message translates to:
+  /// **'Estimated Calories'**
+  String get exEstimatedCalories;
+
+  /// No description provided for @exEnterDuration.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a duration'**
+  String get exEnterDuration;
+
+  /// No description provided for @exCannotEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'This record can\'t be edited'**
+  String get exCannotEdit;
+
+  /// No description provided for @exUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Exercise record updated'**
+  String get exUpdated;
+
+  /// No description provided for @exLogged.
+  ///
+  /// In en, this message translates to:
+  /// **'Exercise logged'**
+  String get exLogged;
+
+  /// No description provided for @exSaveFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t save. Please try again in a moment'**
+  String get exSaveFailed;
+
+  /// No description provided for @exFindGym.
+  ///
+  /// In en, this message translates to:
+  /// **'Find a Gym'**
+  String get exFindGym;
+
+  /// No description provided for @exGymSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search by gym or area'**
+  String get exGymSearchHint;
+
+  /// No description provided for @exNearbyGyms.
+  ///
+  /// In en, this message translates to:
+  /// **'Nearby Gyms · O2O'**
+  String get exNearbyGyms;
+
+  /// No description provided for @exAiAnalysis.
+  ///
+  /// In en, this message translates to:
+  /// **'✦ AI analysis'**
+  String get exAiAnalysis;
+
+  /// No description provided for @exNoGymMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'No gyms match \'{query}\''**
+  String exNoGymMatch(String query);
+
+  /// No description provided for @exGymsLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t load gyms.'**
+  String get exGymsLoadError;
+
+  /// No description provided for @exAiTopPick.
+  ///
+  /// In en, this message translates to:
+  /// **'✦ AI top pick'**
+  String get exAiTopPick;
+
+  /// No description provided for @exTrainerChat.
+  ///
+  /// In en, this message translates to:
+  /// **'Trainer Chat'**
+  String get exTrainerChat;
+
+  /// No description provided for @exSendHealthSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'Share Health Summary'**
+  String get exSendHealthSummary;
+
+  /// No description provided for @exSendHealthSummaryBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Share your recent workouts and health profile summary\nwith the {gym} trainer?'**
+  String exSendHealthSummaryBody(String gym);
+
+  /// No description provided for @exCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get exCancel;
+
+  /// No description provided for @exSend.
+  ///
+  /// In en, this message translates to:
+  /// **'Share'**
+  String get exSend;
+
+  /// No description provided for @exHealthSummarySent.
+  ///
+  /// In en, this message translates to:
+  /// **'Shared your health summary with {gym}'**
+  String exHealthSummarySent(String gym);
+
+  /// No description provided for @exReasonTrainer.
+  ///
+  /// In en, this message translates to:
+  /// **'Personal trainer {name}{role} on site'**
+  String exReasonTrainer(String name, String role);
+
+  /// No description provided for @exReasonHours.
+  ///
+  /// In en, this message translates to:
+  /// **'Open {hours}{weekend}'**
+  String exReasonHours(String hours, String weekend);
+
+  /// No description provided for @exGymWeekdayHours.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekdays {hours}'**
+  String exGymWeekdayHours(String hours);
+
+  /// No description provided for @exGymWeekendHours.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekends {hours}'**
+  String exGymWeekendHours(String hours);
+
+  /// No description provided for @exTrainer.
+  ///
+  /// In en, this message translates to:
+  /// **'Trainer'**
+  String get exTrainer;
+
+  /// No description provided for @exMyGym.
+  ///
+  /// In en, this message translates to:
+  /// **'My Gym'**
+  String get exMyGym;
+
+  /// No description provided for @exTrainerDedicated.
+  ///
+  /// In en, this message translates to:
+  /// **'Personal trainer'**
+  String get exTrainerDedicated;
+
+  /// No description provided for @exAiSlotTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'✦ AI recommended times'**
+  String get exAiSlotTitle;
+
+  /// No description provided for @exTrainerAvailability.
+  ///
+  /// In en, this message translates to:
+  /// **'{trainer}\'s openings'**
+  String exTrainerAvailability(String trainer);
+
+  /// No description provided for @exSlotToday19.
+  ///
+  /// In en, this message translates to:
+  /// **'Today 19:00'**
+  String get exSlotToday19;
+
+  /// No description provided for @exSlotTomorrow0730.
+  ///
+  /// In en, this message translates to:
+  /// **'Tomorrow 07:30'**
+  String get exSlotTomorrow0730;
+
+  /// No description provided for @exSlotTomorrow20.
+  ///
+  /// In en, this message translates to:
+  /// **'Tomorrow 20:00'**
+  String get exSlotTomorrow20;
+
+  /// No description provided for @exSlot1Left.
+  ///
+  /// In en, this message translates to:
+  /// **'1 spot left'**
+  String get exSlot1Left;
+
+  /// No description provided for @exSlotAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Open'**
+  String get exSlotAvailable;
+
+  /// No description provided for @exSlot2Left.
+  ///
+  /// In en, this message translates to:
+  /// **'2 spots left'**
+  String get exSlot2Left;
+
+  /// No description provided for @exReserveConfirmedSlotGym.
+  ///
+  /// In en, this message translates to:
+  /// **'{slot} · {gym} reservation confirmed'**
+  String exReserveConfirmedSlotGym(String slot, String gym);
+
+  /// No description provided for @exReserveConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm {slot}'**
+  String exReserveConfirm(String slot);
+
+  /// No description provided for @exGymInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Gym Info'**
+  String get exGymInfo;
+
+  /// No description provided for @exConsultButton.
+  ///
+  /// In en, this message translates to:
+  /// **'💬 1:1 Consult'**
+  String get exConsultButton;
+
+  /// No description provided for @exGymLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t load the gym.'**
+  String get exGymLoadError;
+
+  /// No description provided for @exNoGymTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No gym registered'**
+  String get exNoGymTitle;
+
+  /// No description provided for @exNoGymSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Register a nearby gym with Find a Gym'**
+  String get exNoGymSub;
+
+  /// No description provided for @exAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Address'**
+  String get exAddress;
+
+  /// No description provided for @exHours.
+  ///
+  /// In en, this message translates to:
+  /// **'Hours'**
+  String get exHours;
+
+  /// No description provided for @exPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone'**
+  String get exPhone;
+
+  /// No description provided for @exSpecialty.
+  ///
+  /// In en, this message translates to:
+  /// **'Specialties'**
+  String get exSpecialty;
+
+  /// No description provided for @exKakaoMapArea.
+  ///
+  /// In en, this message translates to:
+  /// **'Kakao Map area'**
+  String get exKakaoMapArea;
+
+  /// No description provided for @exDefaultTrainerName.
+  ///
+  /// In en, this message translates to:
+  /// **'Trainer Kim'**
+  String get exDefaultTrainerName;
+
+  /// No description provided for @exDefaultGymName.
+  ///
+  /// In en, this message translates to:
+  /// **'Gangnam Fitness Center'**
+  String get exDefaultGymName;
+
+  /// No description provided for @exChatGreeting.
+  ///
+  /// In en, this message translates to:
+  /// **'Hello, I\'m {trainer}. 😊\nHow can I help you?'**
+  String exChatGreeting(String trainer);
+
+  /// No description provided for @exChatChipPt.
+  ///
+  /// In en, this message translates to:
+  /// **'PT consult'**
+  String get exChatChipPt;
+
+  /// No description provided for @exChatChipPass.
+  ///
+  /// In en, this message translates to:
+  /// **'Membership inquiry'**
+  String get exChatChipPass;
+
+  /// No description provided for @exChatChipVisit.
+  ///
+  /// In en, this message translates to:
+  /// **'Book a visit'**
+  String get exChatChipVisit;
+
+  /// No description provided for @exChatReply.
+  ///
+  /// In en, this message translates to:
+  /// **'Got it! Your trainer will reply soon. Please share a convenient time to visit. 🙌'**
+  String get exChatReply;
+
+  /// No description provided for @exGymConsultSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{gym} · 1:1 Consult'**
+  String exGymConsultSubtitle(String gym);
+
+  /// No description provided for @exMessageHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Type a message'**
+  String get exMessageHint;
 }
 
 class _AppLocalizationsDelegate

@@ -242,5 +242,207 @@
   "dietEditNutritionHint": "You can edit the analyzed values directly",
   "dietSodiumHint": "Recommended under 2,000mg/day",
   "dietSugarHint": "Recommended under 50g/day",
-  "dietDeleteMeal": "Delete Meal"
+  "dietDeleteMeal": "Delete Meal",
+  "exTypeWalking": "Walking",
+  "exTypeCardio": "Cardio",
+  "exTypeStrength": "Strength",
+  "exTypeYoga": "Yoga",
+  "exTypeStretching": "Stretching",
+  "exTypeOther": "Exercise",
+  "exTypeOtherChip": "Other",
+  "exLevelLight": "Light",
+  "exLevelModerate": "Moderate",
+  "exLevelHigh": "High",
+  "exExerciseLog": "Exercise Log",
+  "exGymTab": "Gym",
+  "exWeekSummary": "This Week's Summary",
+  "exActivityTitle": "Activity",
+  "exThisWeek": "This week",
+  "exAiRoutineToday": "AI Routine · Today",
+  "exStatTime": "Time",
+  "exStatCalories": "Calories",
+  "exStatStreak": "Streak",
+  "exUnitCount": "times",
+  "exUnitStreakDays": "day streak",
+  "exToday": "Today",
+  "exLoadError": "Couldn't load your exercise data.",
+  "exEmptyLog": "No workouts logged this week.\nAdd one to start your log!",
+  "exAiFeedback": "AI Feedback",
+  "exAddExercise": "Add Exercise",
+  "exRoutineBriskTitle": "Brisk walking 30 min",
+  "exRoutineBriskSub": "Cardio · Blood pressure",
+  "exRoutineStretchTitle": "Lower-body stretch",
+  "exRoutineStretchSub": "Stretching · Flexibility",
+  "exRoutineStrengthTitle": "Low-intensity strength",
+  "exRoutineStrengthSub": "Strength · Endurance",
+  "exMissionComplete": "Mission complete!",
+  "exMinutesExercise": "{minutes} min exercise",
+  "@exMinutesExercise": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "exDurationMinutes": "{minutes} min",
+  "@exDurationMinutes": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "exEditExercise": "Edit Exercise Record",
+  "exSave": "Save",
+  "exExerciseType": "Exercise Type",
+  "exExerciseDuration": "Duration",
+  "exExerciseIntensity": "Intensity",
+  "exEstimatedCalories": "Estimated Calories",
+  "exEnterDuration": "Please enter a duration",
+  "exCannotEdit": "This record can't be edited",
+  "exUpdated": "Exercise record updated",
+  "exLogged": "Exercise logged",
+  "exSaveFailed": "Couldn't save. Please try again in a moment",
+  "exFindGym": "Find a Gym",
+  "exGymSearchHint": "Search by gym or area",
+  "exNearbyGyms": "Nearby Gyms · O2O",
+  "exAiAnalysis": "✦ AI analysis",
+  "exNoGymMatch": "No gyms match '{query}'",
+  "@exNoGymMatch": {
+    "placeholders": {
+      "query": {
+        "type": "String"
+      }
+    }
+  },
+  "exGymsLoadError": "Couldn't load gyms.",
+  "exAiTopPick": "✦ AI top pick",
+  "exTrainerChat": "Trainer Chat",
+  "exSendHealthSummary": "Share Health Summary",
+  "exSendHealthSummaryBody": "Share your recent workouts and health profile summary\nwith the {gym} trainer?",
+  "@exSendHealthSummaryBody": {
+    "placeholders": {
+      "gym": {
+        "type": "String"
+      }
+    }
+  },
+  "exCancel": "Cancel",
+  "exSend": "Share",
+  "exHealthSummarySent": "Shared your health summary with {gym}",
+  "@exHealthSummarySent": {
+    "placeholders": {
+      "gym": {
+        "type": "String"
+      }
+    }
+  },
+  "exReasonTrainer": "Personal trainer {name}{role} on site",
+  "@exReasonTrainer": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "role": {
+        "type": "String"
+      }
+    }
+  },
+  "exReasonHours": "Open {hours}{weekend}",
+  "@exReasonHours": {
+    "placeholders": {
+      "hours": {
+        "type": "String"
+      },
+      "weekend": {
+        "type": "String"
+      }
+    }
+  },
+  "exGymWeekdayHours": "Weekdays {hours}",
+  "@exGymWeekdayHours": {
+    "placeholders": {
+      "hours": {
+        "type": "String"
+      }
+    }
+  },
+  "exGymWeekendHours": "Weekends {hours}",
+  "@exGymWeekendHours": {
+    "placeholders": {
+      "hours": {
+        "type": "String"
+      }
+    }
+  },
+  "exTrainer": "Trainer",
+  "exMyGym": "My Gym",
+  "exTrainerDedicated": "Personal trainer",
+  "exAiSlotTitle": "✦ AI recommended times",
+  "exTrainerAvailability": "{trainer}'s openings",
+  "@exTrainerAvailability": {
+    "placeholders": {
+      "trainer": {
+        "type": "String"
+      }
+    }
+  },
+  "exSlotToday19": "Today 19:00",
+  "exSlotTomorrow0730": "Tomorrow 07:30",
+  "exSlotTomorrow20": "Tomorrow 20:00",
+  "exSlot1Left": "1 spot left",
+  "exSlotAvailable": "Open",
+  "exSlot2Left": "2 spots left",
+  "exReserveConfirmedSlotGym": "{slot} · {gym} reservation confirmed",
+  "@exReserveConfirmedSlotGym": {
+    "placeholders": {
+      "slot": {
+        "type": "String"
+      },
+      "gym": {
+        "type": "String"
+      }
+    }
+  },
+  "exReserveConfirm": "Confirm {slot}",
+  "@exReserveConfirm": {
+    "placeholders": {
+      "slot": {
+        "type": "String"
+      }
+    }
+  },
+  "exGymInfo": "Gym Info",
+  "exConsultButton": "💬 1:1 Consult",
+  "exGymLoadError": "Couldn't load the gym.",
+  "exNoGymTitle": "No gym registered",
+  "exNoGymSub": "Register a nearby gym with Find a Gym",
+  "exAddress": "Address",
+  "exHours": "Hours",
+  "exPhone": "Phone",
+  "exSpecialty": "Specialties",
+  "exKakaoMapArea": "Kakao Map area",
+  "exDefaultTrainerName": "Trainer Kim",
+  "exDefaultGymName": "Gangnam Fitness Center",
+  "exChatGreeting": "Hello, I'm {trainer}. 😊\nHow can I help you?",
+  "@exChatGreeting": {
+    "placeholders": {
+      "trainer": {
+        "type": "String"
+      }
+    }
+  },
+  "exChatChipPt": "PT consult",
+  "exChatChipPass": "Membership inquiry",
+  "exChatChipVisit": "Book a visit",
+  "exChatReply": "Got it! Your trainer will reply soon. Please share a convenient time to visit. 🙌",
+  "exGymConsultSubtitle": "{gym} · 1:1 Consult",
+  "@exGymConsultSubtitle": {
+    "placeholders": {
+      "gym": {
+        "type": "String"
+      }
+    }
+  },
+  "exMessageHint": "Type a message"
 }

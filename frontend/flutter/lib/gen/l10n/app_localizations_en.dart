@@ -529,4 +529,319 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get dietDeleteMeal => 'Delete Meal';
+
+  @override
+  String get exTypeWalking => 'Walking';
+
+  @override
+  String get exTypeCardio => 'Cardio';
+
+  @override
+  String get exTypeStrength => 'Strength';
+
+  @override
+  String get exTypeYoga => 'Yoga';
+
+  @override
+  String get exTypeStretching => 'Stretching';
+
+  @override
+  String get exTypeOther => 'Exercise';
+
+  @override
+  String get exTypeOtherChip => 'Other';
+
+  @override
+  String get exLevelLight => 'Light';
+
+  @override
+  String get exLevelModerate => 'Moderate';
+
+  @override
+  String get exLevelHigh => 'High';
+
+  @override
+  String get exExerciseLog => 'Exercise Log';
+
+  @override
+  String get exGymTab => 'Gym';
+
+  @override
+  String get exWeekSummary => 'This Week\'s Summary';
+
+  @override
+  String get exActivityTitle => 'Activity';
+
+  @override
+  String get exThisWeek => 'This week';
+
+  @override
+  String get exAiRoutineToday => 'AI Routine · Today';
+
+  @override
+  String get exStatTime => 'Time';
+
+  @override
+  String get exStatCalories => 'Calories';
+
+  @override
+  String get exStatStreak => 'Streak';
+
+  @override
+  String get exUnitCount => 'times';
+
+  @override
+  String get exUnitStreakDays => 'day streak';
+
+  @override
+  String get exToday => 'Today';
+
+  @override
+  String get exLoadError => 'Couldn\'t load your exercise data.';
+
+  @override
+  String get exEmptyLog =>
+      'No workouts logged this week.\nAdd one to start your log!';
+
+  @override
+  String get exAiFeedback => 'AI Feedback';
+
+  @override
+  String get exAddExercise => 'Add Exercise';
+
+  @override
+  String get exRoutineBriskTitle => 'Brisk walking 30 min';
+
+  @override
+  String get exRoutineBriskSub => 'Cardio · Blood pressure';
+
+  @override
+  String get exRoutineStretchTitle => 'Lower-body stretch';
+
+  @override
+  String get exRoutineStretchSub => 'Stretching · Flexibility';
+
+  @override
+  String get exRoutineStrengthTitle => 'Low-intensity strength';
+
+  @override
+  String get exRoutineStrengthSub => 'Strength · Endurance';
+
+  @override
+  String get exMissionComplete => 'Mission complete!';
+
+  @override
+  String exMinutesExercise(int minutes) {
+    return '$minutes min exercise';
+  }
+
+  @override
+  String exDurationMinutes(int minutes) {
+    return '$minutes min';
+  }
+
+  @override
+  String get exEditExercise => 'Edit Exercise Record';
+
+  @override
+  String get exSave => 'Save';
+
+  @override
+  String get exExerciseType => 'Exercise Type';
+
+  @override
+  String get exExerciseDuration => 'Duration';
+
+  @override
+  String get exExerciseIntensity => 'Intensity';
+
+  @override
+  String get exEstimatedCalories => 'Estimated Calories';
+
+  @override
+  String get exEnterDuration => 'Please enter a duration';
+
+  @override
+  String get exCannotEdit => 'This record can\'t be edited';
+
+  @override
+  String get exUpdated => 'Exercise record updated';
+
+  @override
+  String get exLogged => 'Exercise logged';
+
+  @override
+  String get exSaveFailed => 'Couldn\'t save. Please try again in a moment';
+
+  @override
+  String get exFindGym => 'Find a Gym';
+
+  @override
+  String get exGymSearchHint => 'Search by gym or area';
+
+  @override
+  String get exNearbyGyms => 'Nearby Gyms · O2O';
+
+  @override
+  String get exAiAnalysis => '✦ AI analysis';
+
+  @override
+  String exNoGymMatch(String query) {
+    return 'No gyms match \'$query\'';
+  }
+
+  @override
+  String get exGymsLoadError => 'Couldn\'t load gyms.';
+
+  @override
+  String get exAiTopPick => '✦ AI top pick';
+
+  @override
+  String get exTrainerChat => 'Trainer Chat';
+
+  @override
+  String get exSendHealthSummary => 'Share Health Summary';
+
+  @override
+  String exSendHealthSummaryBody(String gym) {
+    return 'Share your recent workouts and health profile summary\nwith the $gym trainer?';
+  }
+
+  @override
+  String get exCancel => 'Cancel';
+
+  @override
+  String get exSend => 'Share';
+
+  @override
+  String exHealthSummarySent(String gym) {
+    return 'Shared your health summary with $gym';
+  }
+
+  @override
+  String exReasonTrainer(String name, String role) {
+    return 'Personal trainer $name$role on site';
+  }
+
+  @override
+  String exReasonHours(String hours, String weekend) {
+    return 'Open $hours$weekend';
+  }
+
+  @override
+  String exGymWeekdayHours(String hours) {
+    return 'Weekdays $hours';
+  }
+
+  @override
+  String exGymWeekendHours(String hours) {
+    return 'Weekends $hours';
+  }
+
+  @override
+  String get exTrainer => 'Trainer';
+
+  @override
+  String get exMyGym => 'My Gym';
+
+  @override
+  String get exTrainerDedicated => 'Personal trainer';
+
+  @override
+  String get exAiSlotTitle => '✦ AI recommended times';
+
+  @override
+  String exTrainerAvailability(String trainer) {
+    return '$trainer\'s openings';
+  }
+
+  @override
+  String get exSlotToday19 => 'Today 19:00';
+
+  @override
+  String get exSlotTomorrow0730 => 'Tomorrow 07:30';
+
+  @override
+  String get exSlotTomorrow20 => 'Tomorrow 20:00';
+
+  @override
+  String get exSlot1Left => '1 spot left';
+
+  @override
+  String get exSlotAvailable => 'Open';
+
+  @override
+  String get exSlot2Left => '2 spots left';
+
+  @override
+  String exReserveConfirmedSlotGym(String slot, String gym) {
+    return '$slot · $gym reservation confirmed';
+  }
+
+  @override
+  String exReserveConfirm(String slot) {
+    return 'Confirm $slot';
+  }
+
+  @override
+  String get exGymInfo => 'Gym Info';
+
+  @override
+  String get exConsultButton => '💬 1:1 Consult';
+
+  @override
+  String get exGymLoadError => 'Couldn\'t load the gym.';
+
+  @override
+  String get exNoGymTitle => 'No gym registered';
+
+  @override
+  String get exNoGymSub => 'Register a nearby gym with Find a Gym';
+
+  @override
+  String get exAddress => 'Address';
+
+  @override
+  String get exHours => 'Hours';
+
+  @override
+  String get exPhone => 'Phone';
+
+  @override
+  String get exSpecialty => 'Specialties';
+
+  @override
+  String get exKakaoMapArea => 'Kakao Map area';
+
+  @override
+  String get exDefaultTrainerName => 'Trainer Kim';
+
+  @override
+  String get exDefaultGymName => 'Gangnam Fitness Center';
+
+  @override
+  String exChatGreeting(String trainer) {
+    return 'Hello, I\'m $trainer. 😊\nHow can I help you?';
+  }
+
+  @override
+  String get exChatChipPt => 'PT consult';
+
+  @override
+  String get exChatChipPass => 'Membership inquiry';
+
+  @override
+  String get exChatChipVisit => 'Book a visit';
+
+  @override
+  String get exChatReply =>
+      'Got it! Your trainer will reply soon. Please share a convenient time to visit. 🙌';
+
+  @override
+  String exGymConsultSubtitle(String gym) {
+    return '$gym · 1:1 Consult';
+  }
+
+  @override
+  String get exMessageHint => 'Type a message';
 }
