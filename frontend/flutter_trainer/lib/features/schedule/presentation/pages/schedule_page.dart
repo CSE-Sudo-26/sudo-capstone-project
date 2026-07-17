@@ -12,6 +12,7 @@ import 'package:oncare_trainer/design_system/tokens/spacing.dart';
 import 'package:oncare_trainer/features/schedule/data/repositories/schedule_repository.dart';
 import 'package:oncare_trainer/features/schedule/domain/entities/schedule_session.dart';
 import 'package:oncare_trainer/shared/models/trainer_profile.dart';
+import 'package:oncare_trainer/shared/services/chat_repository.dart';
 import 'package:oncare_trainer/shared/services/client_repository.dart';
 import 'package:oncare_trainer/shared/widgets/client_avatar.dart';
 import 'package:oncare_trainer/shared/widgets/content_frame.dart';
@@ -51,6 +52,20 @@ class _SchedulePageState extends ConsumerState<SchedulePage> {
 
   void _send(ScheduleSession s) {
     if (_sent.contains(s.id)) return;
+    // Persist a trace in the client's 채팅 thread (when the client is
+    // registered) so the send shows up outside this tab.
+    final clients = ref.read(clientsProvider).valueOrNull ?? const [];
+    final match = clients.where((c) => c.name == s.clientName);
+    if (match.isNotEmpty && s.program.isNotEmpty) {
+      unawaited(
+        ref
+            .read(chatRepositoryProvider)
+            .sendTrainerMessage(
+              clientId: match.first.id,
+              text: '📤 오늘 PT 프로그램을 보냈어요 · ${s.program.length}개 운동',
+            ),
+      );
+    }
     setState(() {
       _sent.add(s.id);
       _flash = s.id;

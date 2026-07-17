@@ -296,6 +296,30 @@ void main() {
       expect(find.text('신규 회원'), findsNothing);
     });
 
+    testWidgets('program send leaves a trace in the client chat', (
+      tester,
+    ) async {
+      await openSchedule(tester);
+
+      await tester.tap(find.text('김민수'));
+      await tester.pump();
+      await tester.scrollUntilVisible(
+        find.textContaining('오늘 PT 프로그램 전송'),
+        150,
+      );
+      await tester.ensureVisible(find.textContaining('오늘 PT 프로그램 전송'));
+      await tester.pump();
+      await tester.tap(find.textContaining('오늘 PT 프로그램 전송'));
+      await settle(tester);
+
+      // The 고객 tab's chat thread shows the send trace.
+      await tester.tap(find.text('고객'));
+      await settle(tester);
+      await tester.tap(find.text('김민수'));
+      await settle(tester);
+      expect(find.textContaining('📤 오늘 PT 프로그램을 보냈어요'), findsOneWidget);
+    });
+
     testWidgets('✓ 완료 marks the session done and shows in 운동기록', (
       tester,
     ) async {

@@ -10,6 +10,7 @@ import 'package:oncare_trainer/design_system/tokens/spacing.dart';
 import 'package:oncare_trainer/features/ai_routine/data/repositories/ai_routine_repository.dart';
 import 'package:oncare_trainer/features/ai_routine/domain/entities/ai_routine_item.dart';
 import 'package:oncare_trainer/shared/models/trainer_client.dart';
+import 'package:oncare_trainer/shared/services/chat_repository.dart';
 import 'package:oncare_trainer/shared/services/client_repository.dart';
 import 'package:oncare_trainer/shared/widgets/client_avatar.dart';
 import 'package:oncare_trainer/shared/widgets/content_frame.dart';
@@ -85,8 +86,27 @@ class _AiRoutinePageState extends ConsumerState<AiRoutinePage> {
     _registerTimer?.cancel();
   }
 
-  void _send() {
+  void _send(TrainerClient client, List<AiRoutineItem> items) {
     if (_sent) return;
+    // Leave a trace in the client's 채팅 thread so the homework send is
+    // visible outside this tab (fire-and-forget; the flash is instant).
+    final program = _composeProgram(items);
+    if (program.isNotEmpty) {
+      final total = items
+          .where((i) => !_removed.contains(i.id))
+          .fold<int>(0, (sum, i) => sum + (_minuteEdits[i.id] ?? i.minutes));
+      final custom = _custom.fold<int>(0, (sum, c) => sum + c.minutes);
+      unawaited(
+        ref
+            .read(chatRepositoryProvider)
+            .sendTrainerMessage(
+              clientId: client.id,
+              text:
+                  '📋 AI 루틴 숙제를 보냈어요 · ${program.length}개 운동 · '
+                  '총 ${total + custom}분',
+            ),
+      );
+    }
     setState(() => _sent = true);
     _sentTimer?.cancel();
     // Mock: after the confirmation, reset the edits for the next round.
@@ -400,7 +420,11 @@ class _AiRoutinePageState extends ConsumerState<AiRoutinePage> {
             // Two destinations: homework to the client's app (mock),
             // or today's PT session program (real drift write that the
             // 스케줄 탭 picks up live).
-            _SendButton(clientName: client.name, sent: _sent, onSend: _send),
+            _SendButton(
+              clientName: client.name,
+              sent: _sent,
+              onSend: () => _send(client, items),
+            ),
             if (_sent)
               const Padding(
                 padding: EdgeInsets.only(top: AppSpacing.sm),

@@ -242,6 +242,29 @@ void main() {
       expect(find.text('벤치프레스 4세트'), findsOneWidget); // AI routine item
     });
 
+    testWidgets('homework send leaves a trace in the client chat', (
+      tester,
+    ) async {
+      await openTab(tester);
+
+      await tester.scrollUntilVisible(
+        find.textContaining('님에게 전송'),
+        150,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.ensureVisible(find.textContaining('님에게 전송'));
+      await tester.pump();
+      await tester.tap(find.textContaining('님에게 전송'));
+      await settle(tester);
+
+      // The 고객 tab's chat thread now shows the homework message.
+      await tester.tap(find.text('고객'));
+      await settle(tester);
+      await tester.tap(find.text('김민수'));
+      await settle(tester);
+      expect(find.textContaining('📋 AI 루틴 숙제를 보냈어요'), findsOneWidget);
+    });
+
     testWidgets('send shows confirmation then resets edits', (tester) async {
       await openTab(tester);
 
