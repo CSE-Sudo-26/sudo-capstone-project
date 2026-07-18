@@ -1597,6 +1597,7 @@ class _RecMeal {
   final Color tagColor;
 }
 
+/// AI 추천 식단 카드 데이터. 홈 캐러셀은 항상 5개를 노출한다(아래 목록 길이 = 5).
 const List<_RecMeal> _recMeals = <_RecMeal>[
   _RecMeal(
     '🥗',
@@ -1629,6 +1630,14 @@ const List<_RecMeal> _recMeals = <_RecMeal>[
     Color(0xFFF3E5F5),
     '저칼로리',
     FigmaColors.sugarPurple,
+  ),
+  _RecMeal(
+    '🥬',
+    '나물 비빔밥',
+    '식이섬유가 풍부해요',
+    Color(0xFFEFF7ED),
+    '고식이섬유',
+    FigmaColors.greenText,
   ),
 ];
 
