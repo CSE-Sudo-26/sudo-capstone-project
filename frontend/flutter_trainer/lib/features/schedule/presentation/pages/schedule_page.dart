@@ -299,24 +299,47 @@ class _SessionSheetState extends ConsumerState<_SessionSheet> {
   late int _duration;
   bool _saving = false;
 
+  // Option lists always CONTAIN the edited session's own values. Falling
+  // back to a default instead would silently rewrite the session on an
+  // otherwise no-op save — e.g. a 상담 booked for '신규 회원' (not a
+  // registered client) would be reassigned to the first client, and a
+  // 50-minute session would become 60 (review PR 218).
+  late List<String> _clientOptions;
+  late List<String> _typeOptions;
+  late List<int> _hourOptions;
+  late List<int> _minuteOptions;
+  late List<int> _durationOptions;
+
+  /// [base] plus [current] when it isn't already offered.
+  static List<T> _withCurrent<T>(List<T> base, T? current) {
+    if (current == null || base.contains(current)) return List<T>.of(base);
+    return <T>[...base, current];
+  }
+
   @override
   void initState() {
     super.initState();
     final e = widget.existing;
-    _client = e != null && widget.clientNames.contains(e.clientName)
-        ? e.clientName
+
+    _client = e?.clientName.isNotEmpty ?? false
+        ? e!.clientName
         : widget.clientNames.first;
-    _type = e != null && _types.contains(e.type) ? e.type : _types.first;
+    _clientOptions = _withCurrent(widget.clientNames, _client);
+
+    _type = e != null && e.type.isNotEmpty ? e.type : _types.first;
+    _typeOptions = _withCurrent(_types, _type);
+
     final parts = e?.time.split(':');
     _hour = parts != null ? int.tryParse(parts[0]) ?? 10 : 10;
     _minute = parts != null && parts.length > 1
         ? int.tryParse(parts[1]) ?? 0
         : 0;
-    // Snap legacy values onto the 15-minute grid the picker offers.
-    _minute = (_minute ~/ 15) * 15;
-    _duration = e != null && _durations.contains(e.durationMinutes)
-        ? e.durationMinutes
-        : 60;
+    _hourOptions = _withCurrent(<int>[for (var h = 6; h <= 22; h++) h], _hour)
+      ..sort();
+    _minuteOptions = _withCurrent(const <int>[0, 15, 30, 45], _minute)..sort();
+
+    _duration = e?.durationMinutes ?? 60;
+    _durationOptions = _withCurrent(_durations, _duration)..sort();
   }
 
   String get _time =>
@@ -391,7 +414,7 @@ class _SessionSheetState extends ConsumerState<_SessionSheet> {
               isExpanded: true,
               underline: const SizedBox.shrink(),
               items: <DropdownMenuItem<String>>[
-                for (final name in widget.clientNames)
+                for (final name in _clientOptions)
                   DropdownMenuItem<String>(value: name, child: Text(name)),
               ],
               onChanged: (v) => setState(() => _client = v ?? _client),
@@ -404,7 +427,7 @@ class _SessionSheetState extends ConsumerState<_SessionSheet> {
               isExpanded: true,
               underline: const SizedBox.shrink(),
               items: <DropdownMenuItem<String>>[
-                for (final t in _types)
+                for (final t in _typeOptions)
                   DropdownMenuItem<String>(value: t, child: Text(t)),
               ],
               onChanged: (v) => setState(() => _type = v ?? _type),
@@ -420,7 +443,7 @@ class _SessionSheetState extends ConsumerState<_SessionSheet> {
                     isExpanded: true,
                     underline: const SizedBox.shrink(),
                     items: <DropdownMenuItem<int>>[
-                      for (var h = 6; h <= 22; h++)
+                      for (final h in _hourOptions)
                         DropdownMenuItem<int>(
                           value: h,
                           child: Text('${h.toString().padLeft(2, '0')}시'),
@@ -435,11 +458,12 @@ class _SessionSheetState extends ConsumerState<_SessionSheet> {
                     value: _minute,
                     isExpanded: true,
                     underline: const SizedBox.shrink(),
-                    items: const <DropdownMenuItem<int>>[
-                      DropdownMenuItem<int>(value: 0, child: Text('00분')),
-                      DropdownMenuItem<int>(value: 15, child: Text('15분')),
-                      DropdownMenuItem<int>(value: 30, child: Text('30분')),
-                      DropdownMenuItem<int>(value: 45, child: Text('45분')),
+                    items: <DropdownMenuItem<int>>[
+                      for (final m in _minuteOptions)
+                        DropdownMenuItem<int>(
+                          value: m,
+                          child: Text('${m.toString().padLeft(2, '0')}분'),
+                        ),
                     ],
                     onChanged: (v) => setState(() => _minute = v ?? _minute),
                   ),
@@ -454,7 +478,7 @@ class _SessionSheetState extends ConsumerState<_SessionSheet> {
               isExpanded: true,
               underline: const SizedBox.shrink(),
               items: <DropdownMenuItem<int>>[
-                for (final d in _durations)
+                for (final d in _durationOptions)
                   DropdownMenuItem<int>(value: d, child: Text('$d분')),
               ],
               onChanged: (v) => setState(() => _duration = v ?? _duration),
