@@ -907,6 +907,7 @@ class LocalApiInterceptor extends Interceptor {
     'goal_blood_sugar': 100,
     'daily_calories': 2000,
     'daily_sodium_mg': 2000,
+    'daily_sugar_g': 50,
     'onboarded': true,
   };
 
@@ -958,6 +959,7 @@ class LocalApiInterceptor extends Interceptor {
       'goal_blood_sugar',
       'daily_calories',
       'daily_sodium_mg',
+      'daily_sugar_g',
     ]) {
       if (body[k] != null) patch[k] = body[k];
     }

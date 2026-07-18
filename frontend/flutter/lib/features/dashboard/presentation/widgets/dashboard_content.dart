@@ -1,11 +1,13 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import 'package:oncare/app/router/routes.dart';
 import 'package:oncare/design_system/figma/figma_kit.dart';
+import 'package:oncare/features/account/presentation/controllers/account_controller.dart';
 import 'package:oncare/shared/widgets/coaching_sheet.dart';
 
 /// The Home tab, rebuilt to match the On-Care Figma redesign.
@@ -985,19 +987,23 @@ const Map<String, _NutData> _nutrition = <String, _NutData>{
 
 const List<String> _weekDays = <String>['월', '화', '수', '목', '금', '토', '일'];
 
-class _NutritionSection extends StatefulWidget {
+class _NutritionSection extends ConsumerStatefulWidget {
   const _NutritionSection();
 
   @override
-  State<_NutritionSection> createState() => _NutritionSectionState();
+  ConsumerState<_NutritionSection> createState() => _NutritionSectionState();
 }
 
-class _NutritionSectionState extends State<_NutritionSection> {
+class _NutritionSectionState extends ConsumerState<_NutritionSection> {
   String _tab = '칼로리';
 
   @override
   Widget build(BuildContext context) {
     final _NutData cfg = _nutrition[_tab]!;
+    // 당류 목표는 건강 목표(당류 제한)와 동기화 — 프로필에서 읽어 덮어쓴다(기본 50).
+    final int sugarGoal =
+        ref.watch(profileProvider).valueOrNull?.dailySugarG ?? 50;
+    final double goal = _tab == '당류' ? sugarGoal.toDouble() : cfg.goal;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
@@ -1132,7 +1138,7 @@ class _NutritionSectionState extends State<_NutritionSection> {
                 height: 62,
                 child: CustomPaint(
                   size: Size.infinite,
-                  painter: _NutritionChartPainter(cfg),
+                  painter: _NutritionChartPainter(cfg, goal),
                 ),
               ),
               const SizedBox(height: 4),
@@ -1173,7 +1179,7 @@ class _NutritionSectionState extends State<_NutritionSection> {
                   Expanded(
                     child: _StatTile(
                       label: '목표',
-                      value: cfg.goal,
+                      value: goal,
                       unit: cfg.unit,
                     ),
                   ),
@@ -1356,20 +1362,24 @@ class _ChartLegend extends StatelessWidget {
 }
 
 class _NutritionChartPainter extends CustomPainter {
-  _NutritionChartPainter(this.cfg);
+  _NutritionChartPainter(this.cfg, this.goal);
   final _NutData cfg;
+
+  /// Effective goal for the active tab (당류는 건강 목표와 동기화된 값).
+  final double goal;
 
   @override
   void paint(Canvas canvas, Size size) {
+    // goal 도 포함해 스케일 → 목표선이 데이터보다 커도 차트 안에 보이게.
     final double maxVal =
-        <double>[...cfg.cur, ...cfg.prev].reduce(math.max) * 1.12;
+        <double>[...cfg.cur, ...cfg.prev, goal].reduce(math.max) * 1.12;
     final double w = size.width;
     final double h = size.height;
     Offset at(int i, double v) =>
         Offset((i / (cfg.cur.length - 1)) * w, h - (v / maxVal) * h);
 
     // Goal line.
-    final double gy = h - (cfg.goal / maxVal) * h;
+    final double gy = h - (goal / maxVal) * h;
     _dashLine(
       canvas,
       Offset(0, gy),
@@ -1450,7 +1460,8 @@ class _NutritionChartPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant _NutritionChartPainter old) => old.cfg != cfg;
+  bool shouldRepaint(covariant _NutritionChartPainter old) =>
+      old.cfg != cfg || old.goal != goal;
 }
 
 class _DeltaTile extends StatelessWidget {
