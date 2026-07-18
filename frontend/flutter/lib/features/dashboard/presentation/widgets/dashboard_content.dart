@@ -1597,7 +1597,7 @@ class _RecMeal {
   final Color tagColor;
 }
 
-/// AI 추천 식단 카드 데이터. 홈 캐러셀은 항상 5개를 노출한다(아래 목록 길이 = 5).
+/// AI 추천 식단 카드 데이터. 홈 캐러셀은 이 목록 길이만큼 노출한다(현재 5개).
 const List<_RecMeal> _recMeals = <_RecMeal>[
   _RecMeal(
     '🥗',
