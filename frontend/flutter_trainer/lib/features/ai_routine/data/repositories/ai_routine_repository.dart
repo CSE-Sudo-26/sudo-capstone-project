@@ -74,9 +74,13 @@ class AiRoutineRepository {
     }
 
     final now = DateTime.now();
-    // For today, the next full hour capped at 23 so an evening
-    // registration lands on a FUTURE slot (22:xx → 23:00) instead of a
-    // past 22:00 (review PR 220); other dates default to 10:00.
+    // For today, the next full hour capped at the 23:00 slot: an evening
+    // registration stays in the future (22:xx → 23:00) where the previous
+    // cap of 22 produced a past 22:00. It does NOT cover 23:00–23:59 —
+    // there is no later slot today, so that books an already-past 23:00;
+    // register after 23:00 against the next day using the date picker.
+    // A complete fix needs a server clock (review PR 220).
+    // Other dates start at 10:00.
     final hour = date == ymd(now) ? (now.hour + 1).clamp(6, 23) : 10;
     await _db
         .into(table)

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
+
+import 'package:oncare_trainer/app/router/routes.dart';
 
 import '../../helpers/pump_app.dart';
 
@@ -109,5 +112,20 @@ void main() {
     final lee = tester.getTopLeft(find.text('이지수')).dy;
     expect(kim, lessThan(park));
     expect(park, lessThan(lee));
+  });
+
+  testWidgets('the panel location percent-encodes the client id', (
+    tester,
+  ) async {
+    await openWide(tester);
+    await tester.tap(find.text('김민수'));
+    await settle(tester);
+
+    // Built via Uri(), so the id lands in a real query parameter that
+    // round-trips (a hand-concatenated string would break on ?/&/유니코드).
+    final ctx = tester.element(find.text('고객 관리'));
+    final uri = GoRouterState.of(ctx).uri;
+    expect(uri.path, AppRoutes.clients);
+    expect(uri.queryParameters['c'], 'seed-client-1');
   });
 }
