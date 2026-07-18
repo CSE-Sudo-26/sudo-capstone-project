@@ -288,28 +288,35 @@ class _SubTabs extends StatelessWidget {
               // InkWell (over a Material) instead of GestureDetector so the
               // sub-tabs are keyboard-focusable and activate on Enter/Space
               // — desktop/web users can traverse them (CodeRabbit review).
-              child: Semantics(
-                button: true,
-                selected: current == i,
-                child: Material(
-                  color: current == i
-                      ? AppColors.accent
-                      : AppColors.inputBackground,
-                  borderRadius: const BorderRadius.all(AppRadius.md),
-                  child: InkWell(
-                    onTap: () => onChanged(i),
+              //
+              // MergeSemantics folds this into the InkWell's own tap/focus
+              // node so a screen reader announces the selected state on the
+              // node it actually reads (review PR 216).
+              child: MergeSemantics(
+                child: Semantics(
+                  button: true,
+                  selected: current == i,
+                  inMutuallyExclusiveGroup: true,
+                  child: Material(
+                    color: current == i
+                        ? AppColors.accent
+                        : AppColors.inputBackground,
                     borderRadius: const BorderRadius.all(AppRadius.md),
-                    child: Container(
-                      height: 34,
-                      alignment: Alignment.center,
-                      child: Text(
-                        _labels[i],
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w700,
-                          color: current == i
-                              ? AppColors.accentForeground
-                              : AppColors.subtleForeground,
+                    child: InkWell(
+                      onTap: () => onChanged(i),
+                      borderRadius: const BorderRadius.all(AppRadius.md),
+                      child: Container(
+                        height: 34,
+                        alignment: Alignment.center,
+                        child: Text(
+                          _labels[i],
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w700,
+                            color: current == i
+                                ? AppColors.accentForeground
+                                : AppColors.subtleForeground,
+                          ),
                         ),
                       ),
                     ),
