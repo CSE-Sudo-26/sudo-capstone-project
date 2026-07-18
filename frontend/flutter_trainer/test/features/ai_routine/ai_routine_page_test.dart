@@ -322,6 +322,49 @@ void main() {
       expect(repo.registerCalls, 1);
     });
 
+    testWidgets('switching clients mid-registration does not flash success '
+        'on the new client', (tester) async {
+      await pumpTrainerApp(
+        tester,
+        token: 'demo-trainer-token',
+        extraOverrides: <Override>[
+          aiRoutineRepositoryProvider.overrideWith(
+            (ref) =>
+                _SlowCountingRoutineRepository(ref.watch(appDatabaseProvider)),
+          ),
+        ],
+      );
+      await tester.tap(find.text('AI루틴'));
+      await settle(tester);
+
+      await tester.scrollUntilVisible(
+        find.text('📅 오늘 PT 스케줄에 등록'),
+        150,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.ensureVisible(find.text('📅 오늘 PT 스케줄에 등록'));
+      await tester.pump();
+      await tester.tap(find.text('📅 오늘 PT 스케줄에 등록'));
+      await tester.pump(const Duration(milliseconds: 50));
+
+      // Switch client while the write for 김민수 is still in flight —
+      // the picker is above the button, so scroll back up to it.
+      await tester.scrollUntilVisible(
+        find.text('이지수'),
+        -150,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.ensureVisible(find.text('이지수'));
+      await tester.pump();
+      await tester.tap(find.text('이지수'));
+      await settle(tester);
+
+      // 이지수's card must not claim the registration, and her button
+      // must not be left disabled by the previous client's guard.
+      expect(find.text('✓ 오늘 스케줄에 등록됨'), findsNothing);
+      expect(find.text('📅 오늘 PT 스케줄에 등록'), findsOneWidget);
+    });
+
     testWidgets('registering with every exercise removed shows a hint', (
       tester,
     ) async {

@@ -83,6 +83,10 @@ class _AiRoutinePageState extends ConsumerState<AiRoutinePage> {
       _showAddForm = false;
       _sent = false;
       _registered = false;
+      // Also drop the in-flight guard: a registration still saving for
+      // the PREVIOUS client must not leave this one stuck disabled — its
+      // late result is ignored in _registerToSchedule (review PR 220).
+      _registering = false;
     });
     _sentTimer?.cancel();
     _registerTimer?.cancel();
@@ -133,6 +137,12 @@ class _AiRoutinePageState extends ConsumerState<AiRoutinePage> {
 
   /// Writes the routine onto today's schedule (attach to the client's
   /// 예정 session, or book a new slot) and flashes a confirmation.
+  /// Whether [clientId] is still the client on screen. `_clientId` is
+  /// null until the trainer picks someone (the first client is shown by
+  /// default), so null means "still the initial selection".
+  bool _isStillSelected(String clientId) =>
+      _clientId == null || _clientId == clientId;
+
   Future<void> _registerToSchedule(
     TrainerClient client,
     List<AiRoutineItem> items,
@@ -148,19 +158,24 @@ class _AiRoutinePageState extends ConsumerState<AiRoutinePage> {
       );
       return;
     }
+    // Remember who this write is for — the trainer can switch clients
+    // while it saves, and the result must not be attributed to the new
+    // one (review PR 220).
+    final registeredFor = client.id;
     setState(() => _registering = true);
     try {
       await ref
           .read(aiRoutineRepositoryProvider)
           .registerToTodaySchedule(clientName: client.name, program: program);
     } catch (_) {
-      if (mounted) setState(() => _registering = false);
+      if (!mounted || !_isStillSelected(registeredFor)) return;
+      setState(() => _registering = false);
       messenger.showSnackBar(
         const SnackBar(content: Text('스케줄 등록에 실패했어요. 다시 시도해 주세요')),
       );
       return;
     }
-    if (!mounted) return;
+    if (!mounted || !_isStillSelected(registeredFor)) return;
     setState(() {
       _registering = false;
       _registered = true;

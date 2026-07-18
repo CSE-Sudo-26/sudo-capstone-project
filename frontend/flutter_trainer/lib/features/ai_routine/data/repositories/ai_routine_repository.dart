@@ -74,10 +74,12 @@ class AiRoutineRepository {
     }
 
     final now = DateTime.now();
-    // Next full hour, capped at 23 so an evening registration lands on a
-    // FUTURE slot (22:xx → 23:00) instead of clamping down to a past
-    // 22:00 (review PR 220). Late-night bookings should use the date
-    // picker to target the next day.
+    // Next full hour, capped at the 23:00 slot. This keeps an evening
+    // registration in the future (22:xx → 23:00) where the previous cap
+    // of 22 produced a past 22:00. It does NOT cover 23:00–23:59: there
+    // is no later slot today, so that books at an already-past 23:00 —
+    // register after 23:00 against the next day via the date picker.
+    // A complete fix needs a server clock (review PR 220).
     final hour = (now.hour + 1).clamp(6, 23);
     await _db
         .into(table)
