@@ -69,7 +69,7 @@ class ClientsPage extends ConsumerWidget {
                     // Wide: open the side panel via the URL. Narrow:
                     // keep the full-screen push.
                     onOpen: (id) => wide
-                        ? context.go('${AppRoutes.clients}?c=$id')
+                        ? context.go(_clientsLocation(id))
                         : context.push(AppRoutes.clientDetail(id)),
                   ),
                 );
@@ -89,8 +89,7 @@ class ClientsPage extends ConsumerWidget {
                         selectedId: selected,
                         // Selecting swaps the right panel (and the URL)
                         // instead of pushing a new screen.
-                        onOpen: (id) =>
-                            context.go('${AppRoutes.clients}?c=$id'),
+                        onOpen: (id) => context.go(_clientsLocation(id)),
                       ),
                     ),
                     const VerticalDivider(
@@ -114,6 +113,14 @@ class ClientsPage extends ConsumerWidget {
     );
   }
 }
+
+/// The `?c=` location for [clientId], built through [Uri] so the id is
+/// percent-encoded — string concatenation would break on a `?`/`&`/
+/// non-ASCII id once ids stop being seed-generated.
+String _clientsLocation(String clientId) => Uri(
+  path: AppRoutes.clients,
+  queryParameters: <String, String>{'c': clientId},
+).toString();
 
 class _ClientsView extends StatelessWidget {
   const _ClientsView({
