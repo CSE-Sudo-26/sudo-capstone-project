@@ -53,6 +53,26 @@ def test_analyze_idempotency_key_dedupes_retry(client):
     assert sum(1 for e in today if e["id"] == eid) == 1
 
 
+def test_analyze_rejects_overlong_idempotency_key(client):
+    # DB 컬럼(String(64))을 넘는 키는 DB 도달 전 API 경계(max_length=64)에서
+    # 422 로 거부되어야 한다(초과 시 PostgreSQL DataError→500 방지).
+    overlong = "x" * 65
+    r = client.post(
+        "/v1/diet/analyze",
+        files={"image": ("food.jpg", _JPEG, "image/jpeg")},
+        data={"meal_type": "lunch", "idempotency_key": overlong},
+    )
+    assert r.status_code == 422, r.text
+
+    # 경계값(정확히 64자)은 정상 처리되어야 한다.
+    ok = client.post(
+        "/v1/diet/analyze",
+        files={"image": ("food.jpg", _JPEG, "image/jpeg")},
+        data={"meal_type": "lunch", "idempotency_key": "y" * 64},
+    )
+    assert ok.status_code == 200, ok.text
+
+
 def test_analyze_without_key_creates_distinct_entries(client):
     a = client.post(
         "/v1/diet/analyze",

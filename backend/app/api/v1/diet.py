@@ -109,7 +109,9 @@ async def diet_analyze(
     image: UploadFile = File(..., description="음식 사진"),
     meal_type: str = Form("lunch", description="breakfast|lunch|dinner|snack"),
     idempotency_key: str | None = Form(
-        None, description="재시도 중복 저장 방지 키(선택). 클라 요청당 1회 생성해 재시도 시 재사용."
+        None,
+        max_length=64,  # DietEntry.idempotency_key 컬럼(String(64)) 경계와 일치 — 초과 시 DB 500 방지
+        description="재시도 중복 저장 방지 키(선택). 클라 요청당 1회 생성해 재시도 시 재사용.",
     ),
     engine: str | None = Query(None, description="엔진 강제('gemini'|'yolo'). 비교실험용."),
 ) -> DietAnalyzeResponse:
