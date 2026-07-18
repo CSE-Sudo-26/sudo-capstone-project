@@ -1,3 +1,5 @@
+import 'dart:ui' show Tristate;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -57,44 +59,68 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('sub-tabs are keyboard-reachable and activate on Enter', (
+  // Both activation keys a focusable button must honour (review PR 216).
+  for (final activation in <(String, LogicalKeyboardKey)>[
+    ('Enter', LogicalKeyboardKey.enter),
+    ('Space', LogicalKeyboardKey.space),
+  ]) {
+    final (keyName, key) = activation;
+    testWidgets('sub-tabs are keyboard-reachable and activate on $keyName', (
+      tester,
+    ) async {
+      await pumpTrainerApp(tester, token: 'demo-trainer-token');
+      await tester.tap(find.text('김민수'));
+      await settle(tester);
+      expect(find.text('채팅'), findsOneWidget);
+      // Start on the 채팅 sub-tab (default), not the 식단 view.
+      expect(find.text('오늘 영양 요약'), findsNothing);
+
+      // Whether the 식단 sub-tab currently holds keyboard focus.
+      bool sikdanFocused() {
+        final ctx = FocusManager.instance.primaryFocus?.context;
+        if (ctx == null) return false;
+        return find
+            .descendant(
+              of: find.byElementPredicate((e) => e == ctx),
+              matching: find.text('식단'),
+            )
+            .evaluate()
+            .isNotEmpty;
+      }
+
+      // Tab through the focus order until the 식단 sub-tab is focused —
+      // proves it participates in keyboard traversal (was unreachable as
+      // a bare GestureDetector).
+      var reached = false;
+      for (var i = 0; i < 12 && !reached; i++) {
+        await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+        await tester.pump();
+        reached = sikdanFocused();
+      }
+      expect(reached, isTrue, reason: '키보드 Tab으로 식단 탭에 도달할 수 있어야 함');
+
+      // The activation key switches the tab — no pointer involved.
+      await tester.sendKeyEvent(key);
+      await settle(tester);
+      expect(find.text('오늘 영양 요약'), findsOneWidget);
+    });
+  }
+
+  testWidgets('the selected sub-tab exposes its state on the focus node', (
     tester,
   ) async {
     await pumpTrainerApp(tester, token: 'demo-trainer-token');
     await tester.tap(find.text('김민수'));
     await settle(tester);
-    expect(find.text('채팅'), findsOneWidget);
-    // Start on the 채팅 sub-tab (default), not the 식단 view.
-    expect(find.text('오늘 영양 요약'), findsNothing);
 
-    // Whether the 식단 sub-tab currently holds keyboard focus.
-    bool sikdanFocused() {
-      final ctx = FocusManager.instance.primaryFocus?.context;
-      if (ctx == null) return false;
-      return find
-          .descendant(
-            of: find.byElementPredicate((e) => e == ctx),
-            matching: find.text('식단'),
-          )
-          .evaluate()
-          .isNotEmpty;
-    }
-
-    // Tab through the focus order until the 식단 sub-tab is focused —
-    // proves it participates in keyboard traversal (was unreachable as a
-    // bare GestureDetector).
-    var reached = false;
-    for (var i = 0; i < 12 && !reached; i++) {
-      await tester.sendKeyEvent(LogicalKeyboardKey.tab);
-      await tester.pump();
-      reached = sikdanFocused();
-    }
-    expect(reached, isTrue, reason: '키보드 Tab으로 식단 탭에 도달할 수 있어야 함');
-
-    // Enter activates the focused tab — the 식단 view appears with no
-    // pointer tap.
-    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
-    await settle(tester);
-    expect(find.text('오늘 영양 요약'), findsOneWidget);
+    // MergeSemantics folds the selected/button flags into the node the
+    // reader actually hits, so one node carries label + state.
+    final flags = tester.getSemantics(find.text('채팅')).flagsCollection;
+    expect(
+      flags.isSelected,
+      Tristate.isTrue,
+      reason: '기본 선택된 채팅 탭이 selected 로 안내돼야 함',
+    );
+    expect(flags.isButton, isTrue);
   });
 }
