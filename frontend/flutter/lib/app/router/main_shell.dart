@@ -207,7 +207,9 @@ class _RecordAddSheet extends StatelessWidget {
     return SafeArea(
       top: false,
       child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 480),
+        // Match the main content width (720) so the sheet scales with the
+        // viewport like the tab pages instead of a narrow fixed cap.
+        constraints: const BoxConstraints(maxWidth: 720),
         child: Container(
           decoration: const BoxDecoration(
             color: Colors.white,

@@ -27,8 +27,12 @@ Future<void> showScheduleCalendarSheet(
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(top: AppRadius.card),
     ),
-    builder: (BuildContext ctx) =>
-        _CalendarBody(initialDate: initialDate ?? DateTime.now()),
+    builder: (BuildContext ctx) => ConstrainedBox(
+      // Match the main content width (720) so the sheet scales with the
+      // viewport like the tab pages instead of spanning full width.
+      constraints: const BoxConstraints(maxWidth: 720),
+      child: _CalendarBody(initialDate: initialDate ?? DateTime.now()),
+    ),
   );
 }
 

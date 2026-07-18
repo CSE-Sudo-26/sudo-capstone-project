@@ -74,7 +74,9 @@ Widget _sheetShell(BuildContext context, Widget child) {
     child: ConstrainedBox(
       constraints: BoxConstraints(
         maxHeight: MediaQuery.of(context).size.height * 0.9,
-        maxWidth: 480,
+        // Match the main content width (720) so the sheet scales with the
+        // viewport like the tab pages instead of a narrow fixed cap.
+        maxWidth: 720,
       ),
       child: Container(
         decoration: const BoxDecoration(
