@@ -97,7 +97,7 @@ Widget _sheetHandle() => Container(
   ),
 );
 
-// ─────────────────────────────────────────────────── 식단 추가하기 ──
+// ─────────────────────────────────────────────────── 식단 추가 ──
 
 /// Pick a food photo from [source], then hand it to the AI analysis sheet.
 /// Silently returns if the user cancels the picker.
@@ -128,7 +128,7 @@ Future<void> _pickAndAnalyze(
   await showDietResultSheet(pageContext, bytes, _currentMealType());
 }
 
-/// "식단 추가하기" — pick a photo source, then show the AI analysis result.
+/// "식단 추가" — pick a photo source, then show the AI analysis result.
 Future<void> showDietAddSheet(BuildContext context) {
   return showModalBottomSheet<void>(
     context: context,
@@ -150,7 +150,7 @@ Future<void> showDietAddSheet(BuildContext context) {
                   children: <Widget>[
                     const Expanded(
                       child: Text(
-                        '식단 추가하기',
+                        '식단 추가',
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w800,
@@ -177,7 +177,7 @@ Future<void> showDietAddSheet(BuildContext context) {
                   icon: Icons.image_outlined,
                   iconBg: FigmaColors.primaryA(0.12),
                   iconColor: FigmaColors.primary,
-                  title: '사진 선택하기',
+                  title: '사진 선택',
                   subtitle: '갤러리에서 음식 사진 선택',
                   onTap: () =>
                       _pickAndAnalyze(ctx, context, ImageSource.gallery),
