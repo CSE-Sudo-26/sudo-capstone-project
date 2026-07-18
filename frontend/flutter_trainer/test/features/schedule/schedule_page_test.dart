@@ -372,6 +372,54 @@ void main() {
       expect(find.textContaining('AI가 박성호님의'), findsOneWidget);
     });
 
+    testWidgets('editing a session whose client is not in the roster keeps '
+        'its own values on a no-op save', (tester) async {
+      final container = await pumpTrainerApp(
+        tester,
+        token: 'demo-trainer-token',
+      );
+      await tester.tap(find.text('스케줄'));
+      await settle(tester);
+
+      // 신규 회원 (상담, 30분) is booked but is NOT a registered client.
+      await tester.scrollUntilVisible(find.text('신규 회원'), 120);
+      await tester.ensureVisible(find.text('신규 회원'));
+      await tester.pump();
+      await tester.tap(find.text('신규 회원'));
+      await tester.pump();
+
+      await tester.scrollUntilVisible(find.text('✎ 수정'), 120);
+      await tester.ensureVisible(find.text('✎ 수정'));
+      await tester.pump();
+      await tester.tap(find.text('✎ 수정'));
+      await settle(tester);
+
+      // Save without changing anything — the sheet must have prefilled
+      // the session's own values, not snapped to defaults.
+      await tester.tap(find.text('저장하기'));
+      await settle(tester);
+
+      // Read the row outside fake-async — a drift stream's .first would
+      // otherwise deadlock inside testWidgets.
+      String? clientName;
+      String? type;
+      int? duration;
+      await tester.runAsync(() async {
+        final slots = await container
+            .read(scheduleRepositoryProvider)
+            .watchToday()
+            .first;
+        final consult = slots.firstWhere((s) => s.time == '17:00');
+        clientName = consult.clientName;
+        type = consult.type;
+        duration = consult.durationMinutes;
+      });
+
+      expect(clientName, '신규 회원'); // not reassigned to 김민수
+      expect(type, '상담');
+      expect(duration, 30);
+    });
+
     testWidgets('a failed save shows a snackbar and keeps the sheet open', (
       tester,
     ) async {
