@@ -587,7 +587,7 @@ class _DietSummaryCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    '/ 1,800 ${l.unitKcal}',
+                    '/ ${l.unitKcalValue(1800)}',
                     style: const TextStyle(
                       fontSize: 10,
                       fontWeight: FontWeight.w500,
@@ -844,7 +844,7 @@ class _ChecklistRow extends StatelessWidget {
           ),
         ),
         Text(
-          '$minutes${l.unitMinutes}',
+          l.unitMinutesValue(minutes),
           style: const TextStyle(
             fontSize: 9,
             fontWeight: FontWeight.w500,
@@ -1303,10 +1303,31 @@ class _NutTab extends StatelessWidget {
   }
 }
 
+/// Splits a resolved sentence into styled spans by locating each (already
+/// resolved) emphasis substring in order. Lets translators own the full
+/// sentence — word order, spacing, particles — while keeping per-segment
+/// styling. Falls back to plain text if a marker isn't found.
+List<InlineSpan> _emphasisSpans(String full, List<(String, TextStyle)> marks) {
+  final List<InlineSpan> spans = <InlineSpan>[];
+  int cursor = 0;
+  for (final (String text, TextStyle style) in marks) {
+    if (text.isEmpty) continue;
+    final int idx = full.indexOf(text, cursor);
+    if (idx < 0) continue;
+    if (idx > cursor) spans.add(TextSpan(text: full.substring(cursor, idx)));
+    spans.add(TextSpan(text: text, style: style));
+    cursor = idx + text.length;
+  }
+  if (cursor < full.length) spans.add(TextSpan(text: full.substring(cursor)));
+  return spans;
+}
+
 class _SodiumInsight extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final AppLocalizations l = AppLocalizations.of(context);
+    final String trend = l.homeSodiumInsightTrend;
+    final String alert = l.homeSodiumInsightAlert;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
@@ -1332,25 +1353,25 @@ class _SodiumInsight extends StatelessWidget {
                   color: FigmaColors.ink,
                   height: 1.5,
                 ),
-                children: <InlineSpan>[
-                  TextSpan(text: l.homeSodiumInsightPre),
-                  TextSpan(
-                    text: l.homeSodiumInsightTrend,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w700,
-                      color: FigmaColors.orange,
+                children: _emphasisSpans(
+                  l.homeSodiumInsight(trend, alert),
+                  <(String, TextStyle)>[
+                    (
+                      trend,
+                      const TextStyle(
+                        fontWeight: FontWeight.w700,
+                        color: FigmaColors.orange,
+                      ),
                     ),
-                  ),
-                  TextSpan(text: l.homeSodiumInsightMid),
-                  TextSpan(
-                    text: l.homeSodiumInsightAlert,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w700,
-                      color: FigmaColors.primary,
+                    (
+                      alert,
+                      const TextStyle(
+                        fontWeight: FontWeight.w700,
+                        color: FigmaColors.primary,
+                      ),
                     ),
-                  ),
-                  TextSpan(text: l.homeSodiumInsightPost),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
