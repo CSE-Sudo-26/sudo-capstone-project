@@ -31,7 +31,7 @@ flutter run -d chrome
 # 테스트 / 정적 분석 / drift codegen
 flutter test
 flutter analyze
-flutter pub run build_runner build --delete-conflicting-outputs
+dart run build_runner build --delete-conflicting-outputs
 ```
 
 로그인: 비어있지 않은 아무 이메일/비밀번호 → 시드 트레이너(김트레이너)로 로그인.
