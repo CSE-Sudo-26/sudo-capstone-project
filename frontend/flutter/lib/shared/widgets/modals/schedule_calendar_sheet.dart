@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:oncare/design_system/tokens/breakpoints.dart';
 import 'package:oncare/design_system/tokens/colors.dart';
 import 'package:oncare/design_system/tokens/radius.dart';
 import 'package:oncare/design_system/tokens/spacing.dart';
@@ -28,9 +29,10 @@ Future<void> showScheduleCalendarSheet(
       borderRadius: BorderRadius.vertical(top: AppRadius.card),
     ),
     builder: (BuildContext ctx) => ConstrainedBox(
-      // Match the main content width (720) so the sheet scales with the
-      // viewport like the tab pages instead of spanning full width.
-      constraints: const BoxConstraints(maxWidth: 720),
+      // Match the main content width so the sheet scales with the viewport
+      // like the tab pages. The theme lifts the modal route cap to this
+      // width too (see AppTheme._bottomSheetTheme); this centres the child.
+      constraints: const BoxConstraints(maxWidth: AppBreakpoints.contentMaxWidth),
       child: _CalendarBody(initialDate: initialDate ?? DateTime.now()),
     ),
   );
