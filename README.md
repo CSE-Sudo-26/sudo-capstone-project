@@ -114,7 +114,7 @@
 
 | 영역 | 사용 기술 |
 | --- | --- |
-| **Frontend** | Flutter · Dart · Riverpod · GoRouter (회원/트레이너 이중 모드) |
+| **Frontend** | Flutter · Dart · Riverpod · GoRouter (사용자 앱 · 트레이너 앱 — 분리된 코드베이스, 아키텍처 패턴 미러링) |
 | **Backend** | FastAPI · SQLAlchemy · Alembic · JWT · Docker |
 | **Database** | PostgreSQL · pgvector |
 | **AI** | Vision(VLM) 식단 인식 · 식약처 공공 영양성분 DB 매칭 · RAG 코치 |
