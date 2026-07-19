@@ -5,7 +5,9 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:oncare_trainer/core/storage/app_database.dart';
 import 'package:oncare_trainer/core/storage/seed_data.dart';
+import 'package:oncare_trainer/core/utils/date_format.dart';
 import 'package:oncare_trainer/features/ai_routine/data/repositories/ai_routine_repository.dart';
+import 'package:oncare_trainer/features/schedule/data/repositories/schedule_repository.dart';
 import 'package:oncare_trainer/shared/services/chat_repository.dart';
 
 import '../../helpers/pump_app.dart';
@@ -29,13 +31,15 @@ class _SlowCountingRoutineRepository extends AiRoutineRepository {
   int registerCalls = 0;
 
   @override
-  Future<bool> registerToTodaySchedule({
+  Future<bool> registerToSchedule({
+    required String date,
     required String clientName,
     required List<Map<String, Object?>> program,
   }) async {
     registerCalls++;
     await Future<void>.delayed(const Duration(milliseconds: 300));
-    return super.registerToTodaySchedule(
+    return super.registerToSchedule(
+      date: date,
       clientName: clientName,
       program: program,
     );
@@ -69,7 +73,8 @@ void main() {
       () async {
         final repo = AiRoutineRepository(db);
         // 박성호 has a seeded 15:00 예정 session.
-        final attached = await repo.registerToTodaySchedule(
+        final attached = await repo.registerToSchedule(
+          date: ymd(DateTime.now()),
           clientName: '박성호',
           program: <Map<String, Object?>>[
             <String, Object?>{
@@ -94,7 +99,8 @@ void main() {
       () async {
         final repo = AiRoutineRepository(db);
         // 김민수's only session today is 완료 — a new slot gets booked.
-        final attached = await repo.registerToTodaySchedule(
+        final attached = await repo.registerToSchedule(
+          date: ymd(DateTime.now()),
           clientName: '김민수',
           program: <Map<String, Object?>>[
             <String, Object?>{
@@ -297,6 +303,47 @@ void main() {
       await tester.tap(find.text('김민수'));
       await settle(tester);
       expect(find.textContaining('📋 AI 루틴 숙제를 보냈어요'), findsOneWidget);
+    });
+
+    testWidgets('내일 chip registers the routine on the next day', (
+      tester,
+    ) async {
+      final container = await pumpTrainerApp(
+        tester,
+        token: 'demo-trainer-token',
+      );
+      await tester.tap(find.text('AI루틴'));
+      await settle(tester);
+
+      await tester.scrollUntilVisible(
+        find.text('내일'),
+        150,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.ensureVisible(find.text('내일'));
+      await tester.pump();
+      await tester.tap(find.text('내일'));
+      await tester.pump();
+
+      await tester.tap(find.textContaining('내일 PT 스케줄에 등록'));
+      await settle(tester);
+      expect(find.text('✓ 내일 스케줄에 등록됨'), findsOneWidget);
+
+      // Booked under tomorrow's date, not today's. Reading a drift stream
+      // must run outside the fake-async zone (`runAsync`), otherwise the
+      // subscription never flushes and the test hangs.
+      final tomorrow = ymd(DateTime.now().add(const Duration(days: 1)));
+      final rows = await tester.runAsync(
+        () => container
+            .read(scheduleRepositoryProvider)
+            .watchDate(tomorrow)
+            .first,
+      );
+      expect(rows!.single.clientName, '김민수');
+      expect(rows.single.program, isNotEmpty);
+
+      // Drain the 3s confirmation timer so it isn't left pending.
+      await tester.pump(const Duration(seconds: 3));
     });
 
     testWidgets('send shows confirmation then resets edits', (tester) async {

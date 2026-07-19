@@ -29,6 +29,7 @@ class _ThrowingScheduleRepository extends ScheduleRepository {
 
   @override
   Future<void> addSession({
+    required String date,
     required String clientName,
     required String time,
     required String type,
@@ -83,6 +84,7 @@ void main() {
     test('addSession inserts an 예정 slot sorted into the timeline', () async {
       final repo = ScheduleRepository(db);
       await repo.addSession(
+        date: ymd(DateTime.now()),
         clientName: '이지수',
         time: '10:15',
         type: '1:1 PT',
@@ -208,6 +210,49 @@ void main() {
         expect(histAfter, histBefore); // no orphan history row
       },
     );
+
+    test('watchDate separates timelines per calendar day', () async {
+      final repo = ScheduleRepository(db);
+      final tomorrow = ymd(DateTime.now().add(const Duration(days: 1)));
+
+      expect(await repo.watchDate(tomorrow).first, isEmpty);
+
+      await repo.addSession(
+        date: tomorrow,
+        clientName: '이지수',
+        time: '11:00',
+        type: '1:1 PT',
+        durationMinutes: 60,
+      );
+
+      final tomorrowSlots = await repo.watchDate(tomorrow).first;
+      expect(tomorrowSlots.single.clientName, '이지수');
+      // Today's timeline is untouched.
+      expect((await repo.watchToday().first).length, 6);
+      // …and the booked-dates set now covers both days.
+      final booked = await repo.watchBookedDates().first;
+      expect(booked, containsAll(<String>[ymd(DateTime.now()), tomorrow]));
+    });
+
+    test('completing a non-today session labels its own date', () async {
+      final repo = ScheduleRepository(db);
+      final tomorrow = DateTime.now().add(const Duration(days: 1));
+      await repo.addSession(
+        date: ymd(tomorrow),
+        clientName: '이지수',
+        time: '11:00',
+        type: '1:1 PT',
+        durationMinutes: 60,
+      );
+      final slot = (await repo.watchDate(ymd(tomorrow)).first).single;
+
+      await repo.completeSession(slot.id, note: '내일 세션 선기록');
+
+      final history = await db.select(db.clientRoutineHistory).get();
+      final logged = history.firstWhere((h) => h.id.startsWith('hist-'));
+      expect(logged.dateLabel, '${tomorrow.month}/${tomorrow.day}');
+      expect(logged.dateLabel.contains('(오늘)'), isFalse);
+    });
 
     test('deleteSession removes the slot', () async {
       final repo = ScheduleRepository(db);
@@ -439,6 +484,71 @@ void main() {
       await settle(tester);
       expect(find.textContaining('(오늘)'), findsWidgets);
       expect(find.text('벤치 폼 안정적'), findsOneWidget);
+    });
+
+    testWidgets('picking another day browses it; 오늘로 returns to today', (
+      tester,
+    ) async {
+      await openSchedule(tester);
+      expect(find.text('김민수'), findsOneWidget);
+      // On today, the 오늘로 shortcut is hidden.
+      expect(find.text('오늘로'), findsNothing);
+
+      // Default window is centred on today (D-3…D+3); tap tomorrow.
+      final tomorrow = DateTime.now().add(const Duration(days: 1));
+      await tester.tap(find.text('${tomorrow.day}').first);
+      await settle(tester);
+
+      // Tomorrow has no seeded sessions → empty state, and 오늘로 appears.
+      expect(find.text('김민수'), findsNothing);
+      expect(find.textContaining('이 날짜에는 일정이 없어요'), findsOneWidget);
+      expect(find.text('오늘로'), findsOneWidget);
+
+      // Book a session on the browsed day; the empty state clears.
+      await tester.tap(find.text('＋ 새 일정 추가'));
+      await settle(tester);
+      await tester.tap(find.text('추가하기'));
+      await settle(tester);
+      expect(find.text('10:00'), findsOneWidget);
+      expect(find.textContaining('이 날짜에는 일정이 없어요'), findsNothing);
+
+      // 오늘로 → today's seeded timeline is intact and the button hides.
+      await tester.tap(find.text('오늘로'));
+      await settle(tester);
+      expect(find.text('김민수'), findsOneWidget);
+      expect(find.text('오늘로'), findsNothing);
+    });
+
+    testWidgets('the week strip fits a narrow column without overflowing', (
+      tester,
+    ) async {
+      // A narrow viewport is where the fixed-width cells used to overflow
+      // by ~4px; flexible cells must fit any width.
+      tester.view.physicalSize = const Size(360, 720);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      await openSchedule(tester);
+
+      // The chevrons render and no RenderFlex overflow was thrown.
+      expect(find.byIcon(Icons.chevron_left), findsOneWidget);
+      expect(find.byIcon(Icons.chevron_right), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('the chevron scrubs the visible week without moving the '
+        'selection', (tester) async {
+      await openSchedule(tester);
+      expect(find.text('김민수'), findsOneWidget); // today selected
+
+      // Shifting the window a week forward keeps today selected, so the
+      // timeline still shows today's sessions.
+      await tester.tap(find.byIcon(Icons.chevron_right));
+      await settle(tester);
+      expect(find.text('김민수'), findsOneWidget);
+      // Today is now off the visible window, so 오늘로 is offered.
+      expect(find.text('오늘로'), findsOneWidget);
     });
 
     testWidgets('💬 채팅 jumps to the client detail chat', (tester) async {
