@@ -249,20 +249,36 @@ class _AddClientSheetState extends ConsumerState<_AddClientSheet> {
     super.dispose();
   }
 
+  /// Set when the entered name is blank or already taken.
+  String? _nameError;
+
   Future<void> _save() async {
     if (_saving) return;
     final name = _name.text.trim();
-    if (name.isEmpty) return;
-    setState(() => _saving = true);
+    if (name.isEmpty) {
+      setState(() => _nameError = '이름을 입력해 주세요');
+      return;
+    }
+    setState(() {
+      _saving = true;
+      _nameError = null;
+    });
     final navigator = Navigator.of(context);
+    bool added;
     try {
-      await ref
+      added = await ref
           .read(clientRepositoryProvider)
           .addClient(name: name, goal: _goal.text);
     } finally {
       if (mounted) setState(() => _saving = false);
     }
     if (!mounted) return;
+    if (!added) {
+      // Duplicate name — schedules resolve their client by name, so
+      // allowing it would misattribute chat/운동기록 (review PR 243).
+      setState(() => _nameError = '이미 같은 이름의 고객이 있어요');
+      return;
+    }
     navigator.pop();
   }
 
@@ -312,7 +328,14 @@ class _AddClientSheetState extends ConsumerState<_AddClientSheet> {
           const SizedBox(height: AppSpacing.xs),
           TextField(
             controller: _name,
-            decoration: const InputDecoration(hintText: '고객 이름', isDense: true),
+            decoration: InputDecoration(
+              hintText: '고객 이름',
+              isDense: true,
+              errorText: _nameError,
+            ),
+            onChanged: (_) {
+              if (_nameError != null) setState(() => _nameError = null);
+            },
           ),
           const SizedBox(height: AppSpacing.sm),
           TextField(
