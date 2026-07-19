@@ -124,6 +124,28 @@ void main() {
       expect(logged.sortOrder, lessThan(0)); // sorts before seed rows
     });
 
+    test('concurrent completeSession calls log the 운동기록 once', () async {
+      final repo = ScheduleRepository(db);
+      final before = await repo.watchToday().first;
+      final target = before.firstWhere((s) => s.clientName == '박성호');
+
+      // Both calls observe 예정 before either commits — only the one that
+      // actually flips the status may write history (review PR 237).
+      await Future.wait<void>(<Future<void>>[
+        repo.completeSession(target.id, note: '첫 번째'),
+        repo.completeSession(target.id, note: '두 번째'),
+      ]);
+
+      final history = await db.select(db.clientRoutineHistory).get();
+      final logged = history.where((h) => h.id.startsWith('hist-')).toList();
+      expect(logged.length, 1, reason: '완료 처리는 멱등해야 함');
+
+      // A later completion of an already-완료 session is also a no-op.
+      await repo.completeSession(target.id, note: '세 번째');
+      final after = await db.select(db.clientRoutineHistory).get();
+      expect(after.where((h) => h.id.startsWith('hist-')).length, 1);
+    });
+
     test(
       'completeSession without a known client only flips the status',
       () async {
