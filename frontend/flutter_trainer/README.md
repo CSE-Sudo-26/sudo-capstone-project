@@ -88,6 +88,10 @@ lib/
 | `fix/trainer-client-detail-states` | 고객 상세 로딩/오류/미존재 상태 분리 + 다시 시도 |
 | `feature/trainer-schedule-manage` | 스케줄 추가/수정/삭제(15분 단위 시간), 예정 세션 확장(계획 미리보기·계획 없음 안내·💬 채팅 바로가기), 오늘 중심 주간 스트립, 와이드 2컬럼 |
 | `feature/trainer-routine-programs` | AI 루틴 → 오늘 PT 스케줄 등록(예정 세션에 부착 or 신규 슬롯), AI 추천 항목 삭제, 고객 피커 가로 스크롤, 와이드 분할 |
+| `feature/trainer-session-complete` | 예정 세션 ✓ 완료 처리(메모 입력) → 고객 운동기록 자동 기록 — 예약→수업→기록 루프 완성 |
+| `feature/trainer-send-to-chat` | 숙제/PT 프로그램 전송 시 채팅 스레드에 영속 메시지 + 고객 카드 미리보기 갱신 (`ChatRepository` shared 승격) |
+| `feature/trainer-unread-badge` | 고객 카드 안읽은 메시지 뱃지(스레드 열람 시 해제, KV 마커 — 스키마 무변경) |
+| `feature/trainer-client-onboarding` | ＋ 신규 고객 등록 시트, 상세 헤더 ● 활성/○ 휴면 토글 |
 
 ## 주요 결정
 

@@ -14,6 +14,7 @@ import 'package:oncare_trainer/shared/services/chat_repository.dart';
 import 'package:oncare_trainer/shared/services/client_repository.dart';
 import 'package:oncare_trainer/shared/widgets/content_frame.dart';
 import 'package:oncare_trainer/shared/widgets/oni_avatar.dart';
+import 'package:oncare_trainer/shared/widgets/outlined_action_button.dart';
 
 /// 고객 관리 tab — reservation badge, AI summary, and the client list.
 ///
@@ -25,6 +26,18 @@ import 'package:oncare_trainer/shared/widgets/oni_avatar.dart';
 class ClientsPage extends ConsumerWidget {
   /// Creates the clients tab.
   const ClientsPage({super.key});
+
+  Future<void> _openAddClientSheet(BuildContext context) {
+    return showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: AppColors.card,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: AppRadius.card),
+      ),
+      builder: (context) => const _AddClientSheet(),
+    );
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -71,6 +84,7 @@ class ClientsPage extends ConsumerWidget {
                     onOpen: (id) => wide
                         ? context.go(_clientsLocation(id))
                         : context.push(AppRoutes.clientDetail(id)),
+                    onAddClient: () => _openAddClientSheet(context),
                   ),
                 );
               }
@@ -90,6 +104,7 @@ class ClientsPage extends ConsumerWidget {
                         // Selecting swaps the right panel (and the URL)
                         // instead of pushing a new screen.
                         onOpen: (id) => context.go(_clientsLocation(id)),
+                        onAddClient: () => _openAddClientSheet(context),
                       ),
                     ),
                     const VerticalDivider(
@@ -129,6 +144,7 @@ class _ClientsView extends StatelessWidget {
     required this.unread,
     required this.selectedId,
     required this.onOpen,
+    required this.onAddClient,
   });
 
   final List<TrainerClient> clients;
@@ -142,6 +158,9 @@ class _ClientsView extends StatelessWidget {
 
   /// Invoked with the tapped client's id.
   final ValueChanged<String> onOpen;
+
+  /// Opens the 신규 고객 등록 sheet.
+  final VoidCallback onAddClient;
 
   @override
   Widget build(BuildContext context) {
@@ -200,7 +219,155 @@ class _ClientsView extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.md),
         ],
+        OutlinedActionButton(
+          label: '＋ 신규 고객 등록',
+          color: AppColors.accent,
+          onTap: onAddClient,
+        ),
       ],
+    );
+  }
+}
+
+/// Bottom sheet collecting the new client's 이름/목표.
+class _AddClientSheet extends ConsumerStatefulWidget {
+  const _AddClientSheet();
+
+  @override
+  ConsumerState<_AddClientSheet> createState() => _AddClientSheetState();
+}
+
+class _AddClientSheetState extends ConsumerState<_AddClientSheet> {
+  final TextEditingController _name = TextEditingController();
+  final TextEditingController _goal = TextEditingController();
+  bool _saving = false;
+
+  @override
+  void dispose() {
+    _name.dispose();
+    _goal.dispose();
+    super.dispose();
+  }
+
+  /// Set when the entered name is blank or already taken.
+  String? _nameError;
+
+  Future<void> _save() async {
+    if (_saving) return;
+    final name = _name.text.trim();
+    if (name.isEmpty) {
+      setState(() => _nameError = '이름을 입력해 주세요');
+      return;
+    }
+    setState(() {
+      _saving = true;
+      _nameError = null;
+    });
+    final navigator = Navigator.of(context);
+    bool added;
+    try {
+      added = await ref
+          .read(clientRepositoryProvider)
+          .addClient(name: name, goal: _goal.text);
+    } finally {
+      if (mounted) setState(() => _saving = false);
+    }
+    if (!mounted) return;
+    if (!added) {
+      // Duplicate name — schedules resolve their client by name, so
+      // allowing it would misattribute chat/운동기록 (review PR 243).
+      setState(() => _nameError = '이미 같은 이름의 고객이 있어요');
+      return;
+    }
+    navigator.pop();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.fromLTRB(
+        AppSpacing.xl,
+        AppSpacing.lg,
+        AppSpacing.xl,
+        AppSpacing.xl + MediaQuery.viewInsetsOf(context).bottom,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          const Text(
+            '신규 고객 등록',
+            style: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.w800,
+              color: AppColors.foreground,
+            ),
+          ),
+          const SizedBox(height: AppSpacing.lg),
+          Row(
+            children: <Widget>[
+              const Text(
+                '이름',
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.subtleForeground,
+                ),
+              ),
+              const SizedBox(width: 3),
+              Text(
+                '*필수',
+                style: TextStyle(
+                  fontSize: 9,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.destructive.withValues(alpha: 0.85),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.xs),
+          TextField(
+            controller: _name,
+            decoration: InputDecoration(
+              hintText: '고객 이름',
+              isDense: true,
+              errorText: _nameError,
+            ),
+            onChanged: (_) {
+              if (_nameError != null) setState(() => _nameError = null);
+            },
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          TextField(
+            controller: _goal,
+            decoration: const InputDecoration(
+              hintText: '목표 (예: 체중 감량 · 근력 향상)',
+              isDense: true,
+            ),
+          ),
+          const SizedBox(height: AppSpacing.lg),
+          Material(
+            color: AppColors.primary,
+            borderRadius: const BorderRadius.all(AppRadius.lg),
+            child: InkWell(
+              onTap: _saving ? null : _save,
+              borderRadius: const BorderRadius.all(AppRadius.lg),
+              child: Container(
+                height: 44,
+                alignment: Alignment.center,
+                child: const Text(
+                  '등록하기',
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.primaryForeground,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
