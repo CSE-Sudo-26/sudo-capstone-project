@@ -333,7 +333,7 @@ class _ExerciseAddSheetState extends ConsumerState<_ExerciseAddSheet> {
                         ),
                       ),
                       Text(
-                        '${(_minutes * 6).round()} ${l.unitKcal}',
+                        l.unitKcalValue((_minutes * 6).round()),
                         style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w800,
