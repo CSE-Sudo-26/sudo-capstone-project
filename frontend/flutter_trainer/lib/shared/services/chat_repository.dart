@@ -81,10 +81,38 @@ class ChatRepository {
     );
   }
 
-  /// Marks a client's thread as read up to now.
-  Future<void> markThreadRead(String clientId) {
-    final nowSeconds = DateTime.now().millisecondsSinceEpoch ~/ 1000;
-    return _db.putValue('$_readKeyPrefix$clientId', '$nowSeconds');
+  /// Marks a client's thread read up to its newest client message.
+  ///
+  /// Idempotent and write-free when there is nothing new: the marker is
+  /// the newest client message's timestamp (not `now()`), so calling this
+  /// again with no new messages computes the same value and skips the
+  /// write entirely. That matters because `watchUnreadCounts` watches
+  /// `app_key_values` — an unconditional write would emit on that stream
+  /// and rebuild the list on every call (review PR 241).
+  Future<void> markThreadRead(String clientId) async {
+    final newest =
+        await (_db.select(_db.clientChatMessages)
+              ..where(
+                (t) => t.clientId.equals(clientId) & t.sender.equals('client'),
+              )
+              ..orderBy(<OrderingTerm Function($ClientChatMessagesTable)>[
+                (t) => OrderingTerm(
+                  expression: t.createdAt,
+                  mode: OrderingMode.desc,
+                ),
+              ])
+              ..limit(1))
+            .getSingleOrNull();
+    // No client message at all — nothing could be unread.
+    if (newest == null) return;
+
+    // Same unit as the unread query's comparison (epoch seconds).
+    final marker = newest.createdAt.millisecondsSinceEpoch ~/ 1000;
+    final key = '$_readKeyPrefix$clientId';
+    final stored = int.tryParse(await _db.readValue(key) ?? '');
+    if (stored != null && stored >= marker) return; // already read
+
+    await _db.putValue(key, '$marker');
   }
 
   static const String _readKeyPrefix = 'chat_read_';
