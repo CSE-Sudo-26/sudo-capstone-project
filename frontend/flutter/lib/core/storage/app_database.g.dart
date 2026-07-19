@@ -301,6 +301,17 @@ class $DietEntriesTable extends DietEntries
     requiredDuringInsert: false,
     defaultValue: const Constant(0),
   );
+  static const VerificationMeta _idempotencyKeyMeta = const VerificationMeta(
+    'idempotencyKey',
+  );
+  @override
+  late final GeneratedColumn<String> idempotencyKey = GeneratedColumn<String>(
+    'idempotency_key',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _createdAtMeta = const VerificationMeta(
     'createdAt',
   );
@@ -323,6 +334,7 @@ class $DietEntriesTable extends DietEntries
     totalCalories,
     sodiumMg,
     sugarG,
+    idempotencyKey,
     createdAt,
   ];
   @override
@@ -397,6 +409,15 @@ class $DietEntriesTable extends DietEntries
         sugarG.isAcceptableOrUnknown(data['sugar_g']!, _sugarGMeta),
       );
     }
+    if (data.containsKey('idempotency_key')) {
+      context.handle(
+        _idempotencyKeyMeta,
+        idempotencyKey.isAcceptableOrUnknown(
+          data['idempotency_key']!,
+          _idempotencyKeyMeta,
+        ),
+      );
+    }
     if (data.containsKey('created_at')) {
       context.handle(
         _createdAtMeta,
@@ -444,6 +465,10 @@ class $DietEntriesTable extends DietEntries
         DriftSqlType.int,
         data['${effectivePrefix}sugar_g'],
       )!,
+      idempotencyKey: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}idempotency_key'],
+      ),
       createdAt: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}created_at'],
@@ -466,6 +491,7 @@ class DietEntryRow extends DataClass implements Insertable<DietEntryRow> {
   final int totalCalories;
   final int sodiumMg;
   final int sugarG;
+  final String? idempotencyKey;
   final DateTime createdAt;
   const DietEntryRow({
     required this.id,
@@ -476,6 +502,7 @@ class DietEntryRow extends DataClass implements Insertable<DietEntryRow> {
     required this.totalCalories,
     required this.sodiumMg,
     required this.sugarG,
+    this.idempotencyKey,
     required this.createdAt,
   });
   @override
@@ -489,6 +516,9 @@ class DietEntryRow extends DataClass implements Insertable<DietEntryRow> {
     map['total_calories'] = Variable<int>(totalCalories);
     map['sodium_mg'] = Variable<int>(sodiumMg);
     map['sugar_g'] = Variable<int>(sugarG);
+    if (!nullToAbsent || idempotencyKey != null) {
+      map['idempotency_key'] = Variable<String>(idempotencyKey);
+    }
     map['created_at'] = Variable<DateTime>(createdAt);
     return map;
   }
@@ -503,6 +533,9 @@ class DietEntryRow extends DataClass implements Insertable<DietEntryRow> {
       totalCalories: Value(totalCalories),
       sodiumMg: Value(sodiumMg),
       sugarG: Value(sugarG),
+      idempotencyKey: idempotencyKey == null && nullToAbsent
+          ? const Value.absent()
+          : Value(idempotencyKey),
       createdAt: Value(createdAt),
     );
   }
@@ -521,6 +554,7 @@ class DietEntryRow extends DataClass implements Insertable<DietEntryRow> {
       totalCalories: serializer.fromJson<int>(json['totalCalories']),
       sodiumMg: serializer.fromJson<int>(json['sodiumMg']),
       sugarG: serializer.fromJson<int>(json['sugarG']),
+      idempotencyKey: serializer.fromJson<String?>(json['idempotencyKey']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
     );
   }
@@ -536,6 +570,7 @@ class DietEntryRow extends DataClass implements Insertable<DietEntryRow> {
       'totalCalories': serializer.toJson<int>(totalCalories),
       'sodiumMg': serializer.toJson<int>(sodiumMg),
       'sugarG': serializer.toJson<int>(sugarG),
+      'idempotencyKey': serializer.toJson<String?>(idempotencyKey),
       'createdAt': serializer.toJson<DateTime>(createdAt),
     };
   }
@@ -549,6 +584,7 @@ class DietEntryRow extends DataClass implements Insertable<DietEntryRow> {
     int? totalCalories,
     int? sodiumMg,
     int? sugarG,
+    Value<String?> idempotencyKey = const Value.absent(),
     DateTime? createdAt,
   }) => DietEntryRow(
     id: id ?? this.id,
@@ -559,6 +595,9 @@ class DietEntryRow extends DataClass implements Insertable<DietEntryRow> {
     totalCalories: totalCalories ?? this.totalCalories,
     sodiumMg: sodiumMg ?? this.sodiumMg,
     sugarG: sugarG ?? this.sugarG,
+    idempotencyKey: idempotencyKey.present
+        ? idempotencyKey.value
+        : this.idempotencyKey,
     createdAt: createdAt ?? this.createdAt,
   );
   DietEntryRow copyWithCompanion(DietEntriesCompanion data) {
@@ -573,6 +612,9 @@ class DietEntryRow extends DataClass implements Insertable<DietEntryRow> {
           : this.totalCalories,
       sodiumMg: data.sodiumMg.present ? data.sodiumMg.value : this.sodiumMg,
       sugarG: data.sugarG.present ? data.sugarG.value : this.sugarG,
+      idempotencyKey: data.idempotencyKey.present
+          ? data.idempotencyKey.value
+          : this.idempotencyKey,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
     );
   }
@@ -588,6 +630,7 @@ class DietEntryRow extends DataClass implements Insertable<DietEntryRow> {
           ..write('totalCalories: $totalCalories, ')
           ..write('sodiumMg: $sodiumMg, ')
           ..write('sugarG: $sugarG, ')
+          ..write('idempotencyKey: $idempotencyKey, ')
           ..write('createdAt: $createdAt')
           ..write(')'))
         .toString();
@@ -603,6 +646,7 @@ class DietEntryRow extends DataClass implements Insertable<DietEntryRow> {
     totalCalories,
     sodiumMg,
     sugarG,
+    idempotencyKey,
     createdAt,
   );
   @override
@@ -617,6 +661,7 @@ class DietEntryRow extends DataClass implements Insertable<DietEntryRow> {
           other.totalCalories == this.totalCalories &&
           other.sodiumMg == this.sodiumMg &&
           other.sugarG == this.sugarG &&
+          other.idempotencyKey == this.idempotencyKey &&
           other.createdAt == this.createdAt);
 }
 
@@ -629,6 +674,7 @@ class DietEntriesCompanion extends UpdateCompanion<DietEntryRow> {
   final Value<int> totalCalories;
   final Value<int> sodiumMg;
   final Value<int> sugarG;
+  final Value<String?> idempotencyKey;
   final Value<DateTime> createdAt;
   final Value<int> rowid;
   const DietEntriesCompanion({
@@ -640,6 +686,7 @@ class DietEntriesCompanion extends UpdateCompanion<DietEntryRow> {
     this.totalCalories = const Value.absent(),
     this.sodiumMg = const Value.absent(),
     this.sugarG = const Value.absent(),
+    this.idempotencyKey = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.rowid = const Value.absent(),
   });
@@ -652,6 +699,7 @@ class DietEntriesCompanion extends UpdateCompanion<DietEntryRow> {
     required int totalCalories,
     this.sodiumMg = const Value.absent(),
     this.sugarG = const Value.absent(),
+    this.idempotencyKey = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
@@ -669,6 +717,7 @@ class DietEntriesCompanion extends UpdateCompanion<DietEntryRow> {
     Expression<int>? totalCalories,
     Expression<int>? sodiumMg,
     Expression<int>? sugarG,
+    Expression<String>? idempotencyKey,
     Expression<DateTime>? createdAt,
     Expression<int>? rowid,
   }) {
@@ -681,6 +730,7 @@ class DietEntriesCompanion extends UpdateCompanion<DietEntryRow> {
       if (totalCalories != null) 'total_calories': totalCalories,
       if (sodiumMg != null) 'sodium_mg': sodiumMg,
       if (sugarG != null) 'sugar_g': sugarG,
+      if (idempotencyKey != null) 'idempotency_key': idempotencyKey,
       if (createdAt != null) 'created_at': createdAt,
       if (rowid != null) 'rowid': rowid,
     });
@@ -695,6 +745,7 @@ class DietEntriesCompanion extends UpdateCompanion<DietEntryRow> {
     Value<int>? totalCalories,
     Value<int>? sodiumMg,
     Value<int>? sugarG,
+    Value<String?>? idempotencyKey,
     Value<DateTime>? createdAt,
     Value<int>? rowid,
   }) {
@@ -707,6 +758,7 @@ class DietEntriesCompanion extends UpdateCompanion<DietEntryRow> {
       totalCalories: totalCalories ?? this.totalCalories,
       sodiumMg: sodiumMg ?? this.sodiumMg,
       sugarG: sugarG ?? this.sugarG,
+      idempotencyKey: idempotencyKey ?? this.idempotencyKey,
       createdAt: createdAt ?? this.createdAt,
       rowid: rowid ?? this.rowid,
     );
@@ -739,6 +791,9 @@ class DietEntriesCompanion extends UpdateCompanion<DietEntryRow> {
     if (sugarG.present) {
       map['sugar_g'] = Variable<int>(sugarG.value);
     }
+    if (idempotencyKey.present) {
+      map['idempotency_key'] = Variable<String>(idempotencyKey.value);
+    }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
     }
@@ -759,6 +814,7 @@ class DietEntriesCompanion extends UpdateCompanion<DietEntryRow> {
           ..write('totalCalories: $totalCalories, ')
           ..write('sodiumMg: $sodiumMg, ')
           ..write('sugarG: $sugarG, ')
+          ..write('idempotencyKey: $idempotencyKey, ')
           ..write('createdAt: $createdAt, ')
           ..write('rowid: $rowid')
           ..write(')'))
@@ -2607,6 +2663,7 @@ typedef $$DietEntriesTableCreateCompanionBuilder =
       required int totalCalories,
       Value<int> sodiumMg,
       Value<int> sugarG,
+      Value<String?> idempotencyKey,
       Value<DateTime> createdAt,
       Value<int> rowid,
     });
@@ -2620,6 +2677,7 @@ typedef $$DietEntriesTableUpdateCompanionBuilder =
       Value<int> totalCalories,
       Value<int> sodiumMg,
       Value<int> sugarG,
+      Value<String?> idempotencyKey,
       Value<DateTime> createdAt,
       Value<int> rowid,
     });
@@ -2670,6 +2728,11 @@ class $$DietEntriesTableFilterComposer
 
   ColumnFilters<int> get sugarG => $composableBuilder(
     column: $table.sugarG,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get idempotencyKey => $composableBuilder(
+    column: $table.idempotencyKey,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -2728,6 +2791,11 @@ class $$DietEntriesTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get idempotencyKey => $composableBuilder(
+    column: $table.idempotencyKey,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<DateTime> get createdAt => $composableBuilder(
     column: $table.createdAt,
     builder: (column) => ColumnOrderings(column),
@@ -2768,6 +2836,11 @@ class $$DietEntriesTableAnnotationComposer
 
   GeneratedColumn<int> get sugarG =>
       $composableBuilder(column: $table.sugarG, builder: (column) => column);
+
+  GeneratedColumn<String> get idempotencyKey => $composableBuilder(
+    column: $table.idempotencyKey,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
@@ -2812,6 +2885,7 @@ class $$DietEntriesTableTableManager
                 Value<int> totalCalories = const Value.absent(),
                 Value<int> sodiumMg = const Value.absent(),
                 Value<int> sugarG = const Value.absent(),
+                Value<String?> idempotencyKey = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => DietEntriesCompanion(
@@ -2823,6 +2897,7 @@ class $$DietEntriesTableTableManager
                 totalCalories: totalCalories,
                 sodiumMg: sodiumMg,
                 sugarG: sugarG,
+                idempotencyKey: idempotencyKey,
                 createdAt: createdAt,
                 rowid: rowid,
               ),
@@ -2836,6 +2911,7 @@ class $$DietEntriesTableTableManager
                 required int totalCalories,
                 Value<int> sodiumMg = const Value.absent(),
                 Value<int> sugarG = const Value.absent(),
+                Value<String?> idempotencyKey = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => DietEntriesCompanion.insert(
@@ -2847,6 +2923,7 @@ class $$DietEntriesTableTableManager
                 totalCalories: totalCalories,
                 sodiumMg: sodiumMg,
                 sugarG: sugarG,
+                idempotencyKey: idempotencyKey,
                 createdAt: createdAt,
                 rowid: rowid,
               ),

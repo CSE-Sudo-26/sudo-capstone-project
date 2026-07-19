@@ -25,6 +25,8 @@ class DietEntries extends Table {
   IntColumn get totalCalories => integer()();
   IntColumn get sodiumMg => integer().withDefault(const Constant(0))();
   IntColumn get sugarG => integer().withDefault(const Constant(0))();
+  // 재시도 중복 저장 방지 멱등키(요청당 1회). 무키 요청은 null.
+  TextColumn get idempotencyKey => text().nullable()();
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
 
   @override
@@ -118,7 +120,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.executor);
 
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 4;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -136,6 +138,10 @@ class AppDatabase extends _$AppDatabase {
       if (from < 3) {
         // 운동 강도(intensity) 컬럼 추가 — 기존 행은 기본값 moderate.
         await m.addColumn(exerciseSessions, exerciseSessions.intensity);
+      }
+      if (from < 4) {
+        // 식단 멱등키(idempotency_key) 컬럼 추가 — 기존 행은 null.
+        await m.addColumn(dietEntries, dietEntries.idempotencyKey);
       }
     },
   );
