@@ -8,8 +8,20 @@ import 'package:oncare_trainer/core/storage/app_database.dart';
 import 'package:oncare_trainer/core/storage/seed_data.dart';
 import 'package:oncare_trainer/core/utils/date_format.dart';
 import 'package:oncare_trainer/features/schedule/data/repositories/schedule_repository.dart';
+import 'package:oncare_trainer/shared/services/chat_repository.dart';
 
 import '../../helpers/pump_app.dart';
+
+/// A chat repository whose sends always fail.
+class _FailingChatRepository extends ChatRepository {
+  const _FailingChatRepository(super.db);
+
+  @override
+  Future<void> sendTrainerMessage({
+    required String clientId,
+    required String text,
+  }) async => throw Exception('chat write failed');
+}
 
 /// A repository whose writes always fail — to exercise error handling.
 class _ThrowingScheduleRepository extends ScheduleRepository {
@@ -124,6 +136,28 @@ void main() {
       expect(logged.trainerNote, '벤치 폼 안정적');
       expect(logged.exercisesJson, contains('벤치프레스'));
       expect(logged.sortOrder, lessThan(0)); // sorts before seed rows
+    });
+
+    test('concurrent completeSession calls log the 운동기록 once', () async {
+      final repo = ScheduleRepository(db);
+      final before = await repo.watchToday().first;
+      final target = before.firstWhere((s) => s.clientName == '박성호');
+
+      // Both calls observe 예정 before either commits — only the one that
+      // actually flips the status may write history (review PR 237).
+      await Future.wait<void>(<Future<void>>[
+        repo.completeSession(target.id, note: '첫 번째'),
+        repo.completeSession(target.id, note: '두 번째'),
+      ]);
+
+      final history = await db.select(db.clientRoutineHistory).get();
+      final logged = history.where((h) => h.id.startsWith('hist-')).toList();
+      expect(logged.length, 1, reason: '완료 처리는 멱등해야 함');
+
+      // A later completion of an already-완료 session is also a no-op.
+      await repo.completeSession(target.id, note: '세 번째');
+      final after = await db.select(db.clientRoutineHistory).get();
+      expect(after.where((h) => h.id.startsWith('hist-')).length, 1);
     });
 
     test(
@@ -474,6 +508,39 @@ void main() {
       expect(clientName, '신규 회원'); // not reassigned to 김민수
       expect(type, '상담');
       expect(duration, 30);
+    });
+
+    testWidgets('a failed chat write does not mark the program as sent', (
+      tester,
+    ) async {
+      await pumpTrainerApp(
+        tester,
+        token: 'demo-trainer-token',
+        extraOverrides: <Override>[
+          chatRepositoryProvider.overrideWith(
+            (ref) => _FailingChatRepository(ref.watch(appDatabaseProvider)),
+          ),
+        ],
+      );
+      await tester.tap(find.text('스케줄'));
+      await settle(tester);
+
+      await tester.tap(find.text('김민수')); // 완료 session with a program
+      await tester.pump();
+      await tester.scrollUntilVisible(
+        find.textContaining('오늘 PT 프로그램 전송'),
+        150,
+      );
+      await tester.ensureVisible(find.textContaining('오늘 PT 프로그램 전송'));
+      await tester.pump();
+      await tester.tap(find.textContaining('오늘 PT 프로그램 전송'));
+      await settle(tester);
+
+      // The write failed, so the UI must NOT claim success — the button
+      // stays actionable and an error is surfaced (review PR 239).
+      expect(find.text('전송에 실패했어요. 다시 시도해 주세요'), findsOneWidget);
+      expect(find.text('✓ 김민수님에게 전송됨'), findsNothing);
+      expect(find.textContaining('오늘 PT 프로그램 전송'), findsOneWidget);
     });
 
     testWidgets('a failed save shows a snackbar and keeps the sheet open', (

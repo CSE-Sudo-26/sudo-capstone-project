@@ -68,11 +68,28 @@ class ClientRepository {
     });
   }
 
+  /// Whether a client with this display name already exists
+  /// (whitespace- and case-insensitive).
+  Future<bool> clientNameExists(String name) async {
+    final key = name.trim().toLowerCase();
+    if (key.isEmpty) return false;
+    final rows = await _db.select(_db.trainerClients).get();
+    return rows.any((r) => r.name.trim().toLowerCase() == key);
+  }
+
   /// Registers a new client (e.g. after a 상담) with a fresh, empty
   /// profile. The non-`seed-` id survives the daily re-seed.
-  Future<void> addClient({required String name, required String goal}) async {
+  ///
+  /// Returns `false` — writing nothing — when the name is blank or
+  /// already taken. Schedule rows reference a client by NAME (the chat
+  /// shortcut and completion logging both look up `clientName`), so a
+  /// duplicate name would attribute one client's chat/운동기록 to
+  /// another. Keeping names unique closes that path until schedules
+  /// carry a clientId (review PR 243).
+  Future<bool> addClient({required String name, required String goal}) async {
     final trimmedName = name.trim();
-    if (trimmedName.isEmpty) return;
+    if (trimmedName.isEmpty) return false;
+    if (await clientNameExists(trimmedName)) return false;
     final now = DateTime.now();
     await _db
         .into(_db.trainerClients)
@@ -96,6 +113,7 @@ class ClientRepository {
             sortOrder: Value(now.millisecondsSinceEpoch),
           ),
         );
+    return true;
   }
 
   /// Flips a client between 활성 and 휴면.
