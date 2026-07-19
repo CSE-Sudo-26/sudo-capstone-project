@@ -83,6 +83,74 @@ class ScheduleRepository {
     )..where((t) => t.id.equals(id))).go();
   }
 
+  /// Marks an 예정 session 완료 (with the trainer's [note]) and, when the
+  /// client exists, logs it to their 운동기록 history — closing the
+  /// 예약 → 수업 → 기록 loop.
+  ///
+  /// Idempotent: the read, the status-guarded update and the history
+  /// insert all run inside ONE transaction, and history is written only
+  /// when this call is the one that flipped 예정 → 완료. Two concurrent
+  /// completions would otherwise both observe 예정 and insert duplicate
+  /// history rows (review PR 237).
+  Future<void> completeSession(String id, {String note = ''}) async {
+    final table = _db.trainerScheduleEntries;
+
+    await _db.transaction(() async {
+      final session = await (_db.select(
+        table,
+      )..where((t) => t.id.equals(id))).getSingleOrNull();
+      if (session == null || session.status != '예정') return;
+
+      // Conditional update: `changed` is 0 when a concurrent call already
+      // completed this session, in which case we must not log again.
+      final changed =
+          await (_db.update(
+            table,
+          )..where((t) => t.id.equals(id) & t.status.equals('예정'))).write(
+            TrainerScheduleEntriesCompanion(
+              status: const Value('완료'),
+              // An empty memo must not wipe an existing note.
+              note: note.isEmpty ? const Value.absent() : Value(note),
+            ),
+          );
+      if (changed != 1) return;
+
+      final client =
+          await (_db.select(_db.trainerClients)
+                ..where((t) => t.name.equals(session.clientName))
+                ..limit(1))
+              .getSingleOrNull();
+
+      // 상담 등 미등록 고객은 기록 없이 완료만 처리한다.
+      if (client == null) return;
+      final program = (jsonDecode(session.programJson) as List<Object?>)
+          .map((e) => e! as Map<String, Object?>)
+          .toList();
+      final now = DateTime.now();
+      await _db
+          .into(_db.clientRoutineHistory)
+          .insert(
+            ClientRoutineHistoryCompanion.insert(
+              id: 'hist-${now.microsecondsSinceEpoch}',
+              clientId: client.id,
+              dateLabel: '${now.month}/${now.day} (오늘)',
+              label: 'PT 세션 · 트레이너 지도',
+              completionRate: 100,
+              exercisesJson: jsonEncode(<String>[
+                for (final m in program)
+                  (m['sets'] as int? ?? 1) > 1
+                      ? '${m['name']} ${m['sets']}세트'
+                      : '${m['name']} ${m['reps']}',
+              ]),
+              trainerNote: Value(note),
+              // Seed rows use ascending sortOrder from 0; a negative,
+              // decreasing key keeps runtime completions newest-first.
+              sortOrder: Value(-now.millisecondsSinceEpoch),
+            ),
+          );
+    });
+  }
+
   ScheduleSession _toEntity(TrainerScheduleRow row) {
     final program = (jsonDecode(row.programJson) as List<Object?>)
         .map((e) => e! as Map<String, Object?>)

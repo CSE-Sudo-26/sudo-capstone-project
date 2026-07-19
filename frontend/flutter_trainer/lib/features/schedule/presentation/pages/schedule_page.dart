@@ -117,6 +117,20 @@ class _SchedulePageState extends ConsumerState<SchedulePage> {
     }
   }
 
+  /// 완료 처리 — asks for an optional trainer memo, then flips the
+  /// session to 완료 and logs it to the client's 운동기록. The dialog
+  /// pops `null` on cancel, or the (possibly empty) memo on confirm.
+  Future<void> _confirmComplete(ScheduleSession s) async {
+    final note = await showDialog<String>(
+      context: context,
+      builder: (context) => _CompleteDialog(session: s),
+    );
+    if (note == null || !mounted) return;
+    await ref
+        .read(scheduleRepositoryProvider)
+        .completeSession(s.id, note: note);
+  }
+
   /// Jumps to the client's 채팅 — the split panel on wide viewports,
   /// the full-screen detail elsewhere. Falls back to the 고객 tab when
   /// the name can't be resolved (e.g. a renamed client).
@@ -234,9 +248,73 @@ class _SchedulePageState extends ConsumerState<SchedulePage> {
             onEdit: () => _openSessionSheet(existing: s),
             onDelete: () => _confirmDelete(s),
             onChat: () => _openChat(s),
+            onComplete: s.isUpcoming ? () => _confirmComplete(s) : null,
           ),
           const SizedBox(height: AppSpacing.sm),
         ],
+      ],
+    );
+  }
+}
+
+/// 완료 처리 확인 다이얼로그 — owns the memo controller so it outlives
+/// the route's exit transition (disposing it in the caller races the
+/// dialog teardown).
+class _CompleteDialog extends StatefulWidget {
+  const _CompleteDialog({required this.session});
+
+  final ScheduleSession session;
+
+  @override
+  State<_CompleteDialog> createState() => _CompleteDialogState();
+}
+
+class _CompleteDialogState extends State<_CompleteDialog> {
+  final TextEditingController _memo = TextEditingController();
+
+  @override
+  void dispose() {
+    _memo.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final s = widget.session;
+    return AlertDialog(
+      backgroundColor: AppColors.card,
+      title: const Text('세션 완료 처리', style: TextStyle(fontSize: 16)),
+      content: SizedBox(
+        width: 320,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(
+              '${s.time} ${s.clientName}님 세션을 완료로 표시하고 '
+              '운동기록에 남길게요.',
+              style: const TextStyle(fontSize: 13),
+            ),
+            const SizedBox(height: AppSpacing.md),
+            TextField(
+              controller: _memo,
+              decoration: const InputDecoration(
+                hintText: '트레이너 메모 (선택)',
+                isDense: true,
+              ),
+            ),
+          ],
+        ),
+      ),
+      actions: <Widget>[
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: const Text('취소'),
+        ),
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(_memo.text.trim()),
+          child: const Text('완료 처리'),
+        ),
       ],
     );
   }
@@ -683,6 +761,7 @@ class _TimelineRow extends StatelessWidget {
     required this.onEdit,
     required this.onDelete,
     required this.onChat,
+    required this.onComplete,
   });
 
   final ScheduleSession session;
@@ -694,6 +773,9 @@ class _TimelineRow extends StatelessWidget {
   final VoidCallback onEdit;
   final VoidCallback onDelete;
   final VoidCallback onChat;
+
+  /// 예정 sessions only — flips to 완료 and logs the 운동기록.
+  final VoidCallback? onComplete;
 
   @override
   Widget build(BuildContext context) {
@@ -730,6 +812,7 @@ class _TimelineRow extends StatelessWidget {
                   onEdit: onEdit,
                   onDelete: onDelete,
                   onChat: onChat,
+                  onComplete: onComplete,
                 ),
         ),
       ],
@@ -772,6 +855,7 @@ class _SessionCard extends StatelessWidget {
     required this.onEdit,
     required this.onDelete,
     required this.onChat,
+    required this.onComplete,
   });
 
   final ScheduleSession session;
@@ -783,6 +867,9 @@ class _SessionCard extends StatelessWidget {
   final VoidCallback onEdit;
   final VoidCallback onDelete;
   final VoidCallback onChat;
+
+  /// 예정 sessions only — flips to 완료 and logs the 운동기록.
+  final VoidCallback? onComplete;
 
   @override
   Widget build(BuildContext context) {
@@ -902,6 +989,7 @@ class _SessionCard extends StatelessWidget {
                     onEdit: onEdit,
                     onDelete: onDelete,
                     onChat: onChat,
+                    onComplete: onComplete,
                   ),
                   if (s.isDone && s.program.isNotEmpty) ...<Widget>[
                     const SizedBox(height: AppSpacing.md),
@@ -1071,16 +1159,26 @@ class _ManageRow extends StatelessWidget {
     required this.onEdit,
     required this.onDelete,
     required this.onChat,
+    required this.onComplete,
   });
 
   final VoidCallback onEdit;
   final VoidCallback onDelete;
   final VoidCallback onChat;
+  final VoidCallback? onComplete;
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: <Widget>[
+        if (onComplete != null) ...<Widget>[
+          _ActionChip(
+            label: '✓ 완료',
+            color: AppColors.success,
+            onTap: onComplete!,
+          ),
+          const SizedBox(width: AppSpacing.xs),
+        ],
         _ActionChip(label: '✎ 수정', color: AppColors.accent, onTap: onEdit),
         const SizedBox(width: AppSpacing.xs),
         _ActionChip(label: '삭제', color: AppColors.destructive, onTap: onDelete),
