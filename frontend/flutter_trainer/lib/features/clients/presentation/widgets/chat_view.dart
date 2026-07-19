@@ -4,8 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:oncare_trainer/design_system/tokens/colors.dart';
 import 'package:oncare_trainer/design_system/tokens/radius.dart';
 import 'package:oncare_trainer/design_system/tokens/spacing.dart';
-import 'package:oncare_trainer/features/clients/data/repositories/chat_repository.dart';
-import 'package:oncare_trainer/features/clients/domain/entities/client_chat_message.dart';
+import 'package:oncare_trainer/shared/services/chat_repository.dart';
+import 'package:oncare_trainer/shared/models/client_chat_message.dart';
 import 'package:oncare_trainer/shared/widgets/client_avatar.dart';
 
 /// The 채팅 sub-tab: an AI-received system banner, the message thread

@@ -6,8 +6,8 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:oncare_trainer/core/storage/app_database.dart';
 import 'package:oncare_trainer/core/storage/seed_data.dart';
-import 'package:oncare_trainer/features/clients/data/repositories/chat_repository.dart';
-import 'package:oncare_trainer/features/clients/domain/entities/client_chat_message.dart';
+import 'package:oncare_trainer/shared/services/chat_repository.dart';
+import 'package:oncare_trainer/shared/models/client_chat_message.dart';
 
 import '../../helpers/pump_app.dart';
 
@@ -86,6 +86,16 @@ void main() {
         expect(last.id.startsWith('seed-'), isFalse); // survives re-seed
       },
     );
+
+    test('sendTrainerMessage refreshes the client list preview', () async {
+      final repo = ChatRepository(db);
+      await repo.sendTrainerMessage(clientId: 'seed-client-2', text: '내일 봬요!');
+      final row = await (db.select(
+        db.trainerClients,
+      )..where((t) => t.id.equals('seed-client-2'))).getSingle();
+      expect(row.lastMessage, '내일 봬요!');
+      expect(row.lastTime, '방금');
+    });
 
     test('sendTrainerMessage ignores empty/whitespace input', () async {
       final repo = ChatRepository(db);

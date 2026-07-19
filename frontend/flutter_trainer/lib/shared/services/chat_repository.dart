@@ -2,7 +2,7 @@ import 'package:drift/drift.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:oncare_trainer/core/storage/app_database.dart';
-import 'package:oncare_trainer/features/clients/domain/entities/client_chat_message.dart';
+import 'package:oncare_trainer/shared/models/client_chat_message.dart';
 
 /// Reads and appends messages in a client's chat thread (drift-backed).
 class ChatRepository {
@@ -21,8 +21,10 @@ class ChatRepository {
     return query.watch().map((rows) => rows.map(_toEntity).toList());
   }
 
-  /// Appends a trainer message. The `chat-` id (no `seed-` prefix) means
-  /// it survives re-seeding, and `now()` sorts it after the seed thread.
+  /// Appends a trainer message and refreshes the client's list-card
+  /// preview (`lastMessage`/`lastTime`) in one transaction. The `chat-`
+  /// id (no `seed-` prefix) means it survives re-seeding, and `now()`
+  /// sorts it after the seed thread.
   Future<void> sendTrainerMessage({
     required String clientId,
     required String text,
@@ -30,18 +32,28 @@ class ChatRepository {
     final trimmed = text.trim();
     if (trimmed.isEmpty) return;
     final now = DateTime.now();
-    await _db
-        .into(_db.clientChatMessages)
-        .insert(
-          ClientChatMessagesCompanion.insert(
-            id: 'chat-$clientId-${now.microsecondsSinceEpoch}',
-            clientId: clientId,
-            sender: 'trainer',
-            body: trimmed,
-            timeLabel: _timeLabel(now),
-            createdAt: now,
-          ),
-        );
+    await _db.transaction(() async {
+      await _db
+          .into(_db.clientChatMessages)
+          .insert(
+            ClientChatMessagesCompanion.insert(
+              id: 'chat-$clientId-${now.microsecondsSinceEpoch}',
+              clientId: clientId,
+              sender: 'trainer',
+              body: trimmed,
+              timeLabel: _timeLabel(now),
+              createdAt: now,
+            ),
+          );
+      await (_db.update(
+        _db.trainerClients,
+      )..where((t) => t.id.equals(clientId))).write(
+        TrainerClientsCompanion(
+          lastMessage: Value(trimmed),
+          lastTime: const Value('방금'),
+        ),
+      );
+    });
   }
 
   ClientChatMessage _toEntity(ClientChatMessageRow row) {

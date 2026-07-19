@@ -10,6 +10,7 @@ import 'package:oncare_trainer/design_system/tokens/spacing.dart';
 import 'package:oncare_trainer/features/ai_routine/data/repositories/ai_routine_repository.dart';
 import 'package:oncare_trainer/features/ai_routine/domain/entities/ai_routine_item.dart';
 import 'package:oncare_trainer/shared/models/trainer_client.dart';
+import 'package:oncare_trainer/shared/services/chat_repository.dart';
 import 'package:oncare_trainer/shared/services/client_repository.dart';
 import 'package:oncare_trainer/shared/widgets/client_avatar.dart';
 import 'package:oncare_trainer/shared/widgets/content_frame.dart';
@@ -56,6 +57,9 @@ class _AiRoutinePageState extends ConsumerState<AiRoutinePage> {
   bool _sent = false;
   Timer? _sentTimer;
 
+  /// A homework send is in flight (blocks re-entry, disables the button).
+  bool _sending = false;
+
   /// A schedule registration just succeeded (drives the 3s flash).
   bool _registered = false;
   // In-flight guard: set before the await so a second tap can't create a
@@ -82,6 +86,7 @@ class _AiRoutinePageState extends ConsumerState<AiRoutinePage> {
       _custom.clear();
       _showAddForm = false;
       _sent = false;
+      _sending = false;
       _registered = false;
       // Also drop the in-flight guard: a registration still saving for
       // the PREVIOUS client must not leave this one stuck disabled — its
@@ -92,9 +97,43 @@ class _AiRoutinePageState extends ConsumerState<AiRoutinePage> {
     _registerTimer?.cancel();
   }
 
-  void _send() {
-    if (_sent) return;
-    setState(() => _sent = true);
+  Future<void> _send(TrainerClient client, List<AiRoutineItem> items) async {
+    if (_sent || _sending) return;
+    final program = _composeProgram(items);
+    if (program.isEmpty) return;
+
+    final messenger = ScaffoldMessenger.of(context);
+    final total = items
+        .where((i) => !_removed.contains(i.id))
+        .fold<int>(0, (sum, i) => sum + (_minuteEdits[i.id] ?? i.minutes));
+    final custom = _custom.fold<int>(0, (sum, c) => sum + c.minutes);
+
+    // AWAIT the chat write before claiming success — firing it off with
+    // unawaited() showed '전송 완료' even when the insert failed, and
+    // swallowed the error (review PR 239).
+    setState(() => _sending = true);
+    try {
+      await ref
+          .read(chatRepositoryProvider)
+          .sendTrainerMessage(
+            clientId: client.id,
+            text:
+                '📋 AI 루틴 숙제를 보냈어요 · ${program.length}개 운동 · '
+                '총 ${total + custom}분',
+          );
+    } catch (_) {
+      if (!mounted) return;
+      setState(() => _sending = false);
+      messenger.showSnackBar(
+        const SnackBar(content: Text('전송에 실패했어요. 다시 시도해 주세요')),
+      );
+      return;
+    }
+    if (!mounted) return;
+    setState(() {
+      _sending = false;
+      _sent = true;
+    });
     _sentTimer?.cancel();
     // Mock: after the confirmation, reset the edits for the next round.
     _sentTimer = Timer(const Duration(seconds: 3), () {
@@ -430,7 +469,13 @@ class _AiRoutinePageState extends ConsumerState<AiRoutinePage> {
             // Two destinations: homework to the client's app (mock),
             // or today's PT session program (real drift write that the
             // 스케줄 탭 picks up live).
-            _SendButton(clientName: client.name, sent: _sent, onSend: _send),
+            _SendButton(
+              clientName: client.name,
+              // Disabled while the chat write is in flight so a second
+              // tap can't queue a duplicate message.
+              sent: _sent || _sending,
+              onSend: () => _send(client, items),
+            ),
             if (_sent)
               const Padding(
                 padding: EdgeInsets.only(top: AppSpacing.sm),
