@@ -8,8 +8,20 @@ import 'package:oncare_trainer/core/storage/seed_data.dart';
 import 'package:oncare_trainer/core/utils/date_format.dart';
 import 'package:oncare_trainer/features/ai_routine/data/repositories/ai_routine_repository.dart';
 import 'package:oncare_trainer/features/schedule/data/repositories/schedule_repository.dart';
+import 'package:oncare_trainer/shared/services/chat_repository.dart';
 
 import '../../helpers/pump_app.dart';
+
+/// A chat repository whose sends always fail.
+class _FailingChatRepository extends ChatRepository {
+  const _FailingChatRepository(super.db);
+
+  @override
+  Future<void> sendTrainerMessage({
+    required String clientId,
+    required String text,
+  }) async => throw Exception('chat write failed');
+}
 
 /// Counts registration calls and delays them, to test the in-flight
 /// double-tap guard.
@@ -433,6 +445,38 @@ void main() {
       // must not be left disabled by the previous client's guard.
       expect(find.text('✓ 오늘 스케줄에 등록됨'), findsNothing);
       expect(find.text('📅 오늘 PT 스케줄에 등록'), findsOneWidget);
+    });
+
+    testWidgets('a failed chat write does not show the send confirmation', (
+      tester,
+    ) async {
+      await pumpTrainerApp(
+        tester,
+        token: 'demo-trainer-token',
+        extraOverrides: <Override>[
+          chatRepositoryProvider.overrideWith(
+            (ref) => _FailingChatRepository(ref.watch(appDatabaseProvider)),
+          ),
+        ],
+      );
+      await tester.tap(find.text('AI루틴'));
+      await settle(tester);
+
+      await tester.scrollUntilVisible(
+        find.textContaining('님에게 전송'),
+        150,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.ensureVisible(find.textContaining('님에게 전송'));
+      await tester.pump();
+      await tester.tap(find.textContaining('님에게 전송'));
+      await settle(tester);
+
+      // The homework write failed — no success flash, and the button is
+      // still actionable (review PR 239).
+      expect(find.text('전송에 실패했어요. 다시 시도해 주세요'), findsOneWidget);
+      expect(find.text('✓ 김민수님에게 전송 완료!'), findsNothing);
+      expect(find.textContaining('검토 완료'), findsOneWidget);
     });
 
     testWidgets('registering with every exercise removed shows a hint', (
