@@ -834,6 +834,18 @@ class $ExerciseSessionsTable extends ExerciseSessions
     type: DriftSqlType.int,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _intensityMeta = const VerificationMeta(
+    'intensity',
+  );
+  @override
+  late final GeneratedColumn<String> intensity = GeneratedColumn<String>(
+    'intensity',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('moderate'),
+  );
   static const VerificationMeta _createdAtMeta = const VerificationMeta(
     'createdAt',
   );
@@ -854,6 +866,7 @@ class $ExerciseSessionsTable extends ExerciseSessions
     type,
     minutes,
     calories,
+    intensity,
     createdAt,
   ];
   @override
@@ -913,6 +926,12 @@ class $ExerciseSessionsTable extends ExerciseSessions
     } else if (isInserting) {
       context.missing(_caloriesMeta);
     }
+    if (data.containsKey('intensity')) {
+      context.handle(
+        _intensityMeta,
+        intensity.isAcceptableOrUnknown(data['intensity']!, _intensityMeta),
+      );
+    }
     if (data.containsKey('created_at')) {
       context.handle(
         _createdAtMeta,
@@ -952,6 +971,10 @@ class $ExerciseSessionsTable extends ExerciseSessions
         DriftSqlType.int,
         data['${effectivePrefix}calories'],
       )!,
+      intensity: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}intensity'],
+      )!,
       createdAt: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}created_at'],
@@ -973,6 +996,7 @@ class ExerciseSessionRow extends DataClass
   final String type;
   final int minutes;
   final int calories;
+  final String intensity;
   final DateTime createdAt;
   const ExerciseSessionRow({
     required this.id,
@@ -981,6 +1005,7 @@ class ExerciseSessionRow extends DataClass
     required this.type,
     required this.minutes,
     required this.calories,
+    required this.intensity,
     required this.createdAt,
   });
   @override
@@ -992,6 +1017,7 @@ class ExerciseSessionRow extends DataClass
     map['type'] = Variable<String>(type);
     map['minutes'] = Variable<int>(minutes);
     map['calories'] = Variable<int>(calories);
+    map['intensity'] = Variable<String>(intensity);
     map['created_at'] = Variable<DateTime>(createdAt);
     return map;
   }
@@ -1004,6 +1030,7 @@ class ExerciseSessionRow extends DataClass
       type: Value(type),
       minutes: Value(minutes),
       calories: Value(calories),
+      intensity: Value(intensity),
       createdAt: Value(createdAt),
     );
   }
@@ -1020,6 +1047,7 @@ class ExerciseSessionRow extends DataClass
       type: serializer.fromJson<String>(json['type']),
       minutes: serializer.fromJson<int>(json['minutes']),
       calories: serializer.fromJson<int>(json['calories']),
+      intensity: serializer.fromJson<String>(json['intensity']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
     );
   }
@@ -1033,6 +1061,7 @@ class ExerciseSessionRow extends DataClass
       'type': serializer.toJson<String>(type),
       'minutes': serializer.toJson<int>(minutes),
       'calories': serializer.toJson<int>(calories),
+      'intensity': serializer.toJson<String>(intensity),
       'createdAt': serializer.toJson<DateTime>(createdAt),
     };
   }
@@ -1044,6 +1073,7 @@ class ExerciseSessionRow extends DataClass
     String? type,
     int? minutes,
     int? calories,
+    String? intensity,
     DateTime? createdAt,
   }) => ExerciseSessionRow(
     id: id ?? this.id,
@@ -1052,6 +1082,7 @@ class ExerciseSessionRow extends DataClass
     type: type ?? this.type,
     minutes: minutes ?? this.minutes,
     calories: calories ?? this.calories,
+    intensity: intensity ?? this.intensity,
     createdAt: createdAt ?? this.createdAt,
   );
   ExerciseSessionRow copyWithCompanion(ExerciseSessionsCompanion data) {
@@ -1062,6 +1093,7 @@ class ExerciseSessionRow extends DataClass
       type: data.type.present ? data.type.value : this.type,
       minutes: data.minutes.present ? data.minutes.value : this.minutes,
       calories: data.calories.present ? data.calories.value : this.calories,
+      intensity: data.intensity.present ? data.intensity.value : this.intensity,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
     );
   }
@@ -1075,14 +1107,23 @@ class ExerciseSessionRow extends DataClass
           ..write('type: $type, ')
           ..write('minutes: $minutes, ')
           ..write('calories: $calories, ')
+          ..write('intensity: $intensity, ')
           ..write('createdAt: $createdAt')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode =>
-      Object.hash(id, weekStart, dayLabel, type, minutes, calories, createdAt);
+  int get hashCode => Object.hash(
+    id,
+    weekStart,
+    dayLabel,
+    type,
+    minutes,
+    calories,
+    intensity,
+    createdAt,
+  );
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -1093,6 +1134,7 @@ class ExerciseSessionRow extends DataClass
           other.type == this.type &&
           other.minutes == this.minutes &&
           other.calories == this.calories &&
+          other.intensity == this.intensity &&
           other.createdAt == this.createdAt);
 }
 
@@ -1103,6 +1145,7 @@ class ExerciseSessionsCompanion extends UpdateCompanion<ExerciseSessionRow> {
   final Value<String> type;
   final Value<int> minutes;
   final Value<int> calories;
+  final Value<String> intensity;
   final Value<DateTime> createdAt;
   final Value<int> rowid;
   const ExerciseSessionsCompanion({
@@ -1112,6 +1155,7 @@ class ExerciseSessionsCompanion extends UpdateCompanion<ExerciseSessionRow> {
     this.type = const Value.absent(),
     this.minutes = const Value.absent(),
     this.calories = const Value.absent(),
+    this.intensity = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.rowid = const Value.absent(),
   });
@@ -1122,6 +1166,7 @@ class ExerciseSessionsCompanion extends UpdateCompanion<ExerciseSessionRow> {
     required String type,
     required int minutes,
     required int calories,
+    this.intensity = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
@@ -1137,6 +1182,7 @@ class ExerciseSessionsCompanion extends UpdateCompanion<ExerciseSessionRow> {
     Expression<String>? type,
     Expression<int>? minutes,
     Expression<int>? calories,
+    Expression<String>? intensity,
     Expression<DateTime>? createdAt,
     Expression<int>? rowid,
   }) {
@@ -1147,6 +1193,7 @@ class ExerciseSessionsCompanion extends UpdateCompanion<ExerciseSessionRow> {
       if (type != null) 'type': type,
       if (minutes != null) 'minutes': minutes,
       if (calories != null) 'calories': calories,
+      if (intensity != null) 'intensity': intensity,
       if (createdAt != null) 'created_at': createdAt,
       if (rowid != null) 'rowid': rowid,
     });
@@ -1159,6 +1206,7 @@ class ExerciseSessionsCompanion extends UpdateCompanion<ExerciseSessionRow> {
     Value<String>? type,
     Value<int>? minutes,
     Value<int>? calories,
+    Value<String>? intensity,
     Value<DateTime>? createdAt,
     Value<int>? rowid,
   }) {
@@ -1169,6 +1217,7 @@ class ExerciseSessionsCompanion extends UpdateCompanion<ExerciseSessionRow> {
       type: type ?? this.type,
       minutes: minutes ?? this.minutes,
       calories: calories ?? this.calories,
+      intensity: intensity ?? this.intensity,
       createdAt: createdAt ?? this.createdAt,
       rowid: rowid ?? this.rowid,
     );
@@ -1195,6 +1244,9 @@ class ExerciseSessionsCompanion extends UpdateCompanion<ExerciseSessionRow> {
     if (calories.present) {
       map['calories'] = Variable<int>(calories.value);
     }
+    if (intensity.present) {
+      map['intensity'] = Variable<String>(intensity.value);
+    }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
     }
@@ -1213,6 +1265,7 @@ class ExerciseSessionsCompanion extends UpdateCompanion<ExerciseSessionRow> {
           ..write('type: $type, ')
           ..write('minutes: $minutes, ')
           ..write('calories: $calories, ')
+          ..write('intensity: $intensity, ')
           ..write('createdAt: $createdAt, ')
           ..write('rowid: $rowid')
           ..write(')'))
@@ -2830,6 +2883,7 @@ typedef $$ExerciseSessionsTableCreateCompanionBuilder =
       required String type,
       required int minutes,
       required int calories,
+      Value<String> intensity,
       Value<DateTime> createdAt,
       Value<int> rowid,
     });
@@ -2841,6 +2895,7 @@ typedef $$ExerciseSessionsTableUpdateCompanionBuilder =
       Value<String> type,
       Value<int> minutes,
       Value<int> calories,
+      Value<String> intensity,
       Value<DateTime> createdAt,
       Value<int> rowid,
     });
@@ -2881,6 +2936,11 @@ class $$ExerciseSessionsTableFilterComposer
 
   ColumnFilters<int> get calories => $composableBuilder(
     column: $table.calories,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get intensity => $composableBuilder(
+    column: $table.intensity,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -2929,6 +2989,11 @@ class $$ExerciseSessionsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get intensity => $composableBuilder(
+    column: $table.intensity,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<DateTime> get createdAt => $composableBuilder(
     column: $table.createdAt,
     builder: (column) => ColumnOrderings(column),
@@ -2961,6 +3026,9 @@ class $$ExerciseSessionsTableAnnotationComposer
 
   GeneratedColumn<int> get calories =>
       $composableBuilder(column: $table.calories, builder: (column) => column);
+
+  GeneratedColumn<String> get intensity =>
+      $composableBuilder(column: $table.intensity, builder: (column) => column);
 
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
@@ -3009,6 +3077,7 @@ class $$ExerciseSessionsTableTableManager
                 Value<String> type = const Value.absent(),
                 Value<int> minutes = const Value.absent(),
                 Value<int> calories = const Value.absent(),
+                Value<String> intensity = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => ExerciseSessionsCompanion(
@@ -3018,6 +3087,7 @@ class $$ExerciseSessionsTableTableManager
                 type: type,
                 minutes: minutes,
                 calories: calories,
+                intensity: intensity,
                 createdAt: createdAt,
                 rowid: rowid,
               ),
@@ -3029,6 +3099,7 @@ class $$ExerciseSessionsTableTableManager
                 required String type,
                 required int minutes,
                 required int calories,
+                Value<String> intensity = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => ExerciseSessionsCompanion.insert(
@@ -3038,6 +3109,7 @@ class $$ExerciseSessionsTableTableManager
                 type: type,
                 minutes: minutes,
                 calories: calories,
+                intensity: intensity,
                 createdAt: createdAt,
                 rowid: rowid,
               ),

@@ -134,6 +134,8 @@ class ExerciseSession(Base):
     type: Mapped[str] = mapped_column(String(20))  # cardio|strength|yoga|walking
     minutes: Mapped[int] = mapped_column(Integer, default=0)
     calories: Mapped[int] = mapped_column(Integer, default=0)
+    # 운동 강도 — 칼로리 추정 배수의 근거이자 수정 시트 복원 값. light|moderate|high
+    intensity: Mapped[str] = mapped_column(String(20), default="moderate", server_default="moderate")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
 
