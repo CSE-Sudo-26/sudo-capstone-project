@@ -8,6 +8,7 @@ from __future__ import annotations
 import json
 import math
 import uuid
+from uuid import uuid4
 
 import pytest
 from pydantic import ValidationError
@@ -131,6 +132,63 @@ def test_analyze_offline_saves_and_reflects_macros_in_today(client, db_session):
         "protein_pct": 25,
         "fat_pct": 25,
     }
+
+
+def test_analyze_idempotency_key_dedupes_retry(client):
+    key = f"idem-{uuid4().hex}"
+    first = client.post(
+        "/v1/diet/analyze",
+        files={"image": ("food.jpg", _JPEG, "image/jpeg")},
+        data={"meal_type": "lunch", "idempotency_key": key},
+    )
+    assert first.status_code == 200, first.text
+    eid = first.json()["entry_id"]
+
+    # 응답 유실 후 재시도를 흉내 — 같은 키로 재요청하면 새 저장 없이 기존 entry 반환.
+    second = client.post(
+        "/v1/diet/analyze",
+        files={"image": ("food.jpg", _JPEG, "image/jpeg")},
+        data={"meal_type": "lunch", "idempotency_key": key},
+    )
+    assert second.status_code == 200, second.text
+    assert second.json()["entry_id"] == eid
+
+    today = client.get("/v1/diet/days/today").json()["entries"]
+    assert sum(1 for e in today if e["id"] == eid) == 1
+
+
+def test_analyze_rejects_overlong_idempotency_key(client):
+    # DB 컬럼(String(64))을 넘는 키는 DB 도달 전 API 경계(max_length=64)에서
+    # 422 로 거부되어야 한다(초과 시 PostgreSQL DataError→500 방지).
+    overlong = "x" * 65
+    r = client.post(
+        "/v1/diet/analyze",
+        files={"image": ("food.jpg", _JPEG, "image/jpeg")},
+        data={"meal_type": "lunch", "idempotency_key": overlong},
+    )
+    assert r.status_code == 422, r.text
+
+    # 경계값(정확히 64자)은 정상 처리되어야 한다.
+    ok = client.post(
+        "/v1/diet/analyze",
+        files={"image": ("food.jpg", _JPEG, "image/jpeg")},
+        data={"meal_type": "lunch", "idempotency_key": "y" * 64},
+    )
+    assert ok.status_code == 200, ok.text
+
+
+def test_analyze_without_key_creates_distinct_entries(client):
+    a = client.post(
+        "/v1/diet/analyze",
+        files={"image": ("food.jpg", _JPEG, "image/jpeg")},
+        data={"meal_type": "lunch"},
+    ).json()["entry_id"]
+    b = client.post(
+        "/v1/diet/analyze",
+        files={"image": ("food.jpg", _JPEG, "image/jpeg")},
+        data={"meal_type": "lunch"},
+    ).json()["entry_id"]
+    assert a != b
 
 
 def test_analyze_rejects_unsupported_mime(client):

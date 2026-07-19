@@ -1,7 +1,7 @@
 """Add macronutrients to diet_entries.
 
-Revision ID: 0008_diet_entry_macros
-Revises: 0007_coach_embedding_768
+Revision ID: 0010_diet_entry_macros
+Revises: 0009_diet_idempotency_key
 Create Date: 2026-07-17
 """
 from __future__ import annotations
@@ -11,8 +11,8 @@ from collections.abc import Sequence
 from alembic import op
 import sqlalchemy as sa
 
-revision: str = "0008_diet_entry_macros"
-down_revision: str | Sequence[str] | None = "0007_coach_embedding_768"
+revision: str = "0010_diet_entry_macros"
+down_revision: str | Sequence[str] | None = "0009_diet_idempotency_key"
 branch_labels: str | Sequence[str] | None = None
 depends_on: str | Sequence[str] | None = None
 
