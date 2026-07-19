@@ -113,6 +113,13 @@ class _ChatViewState extends ConsumerState<ChatView> {
               if (list.length != _lastCount) {
                 _lastCount = list.length;
                 _scrollToBottom();
+                // Viewing the thread clears its unread badge — also for
+                // messages that arrive while it stays open. Deferred so
+                // the write never runs inside build.
+                final repo = ref.read(chatRepositoryProvider);
+                Future<void>.microtask(
+                  () => repo.markThreadRead(widget.clientId),
+                );
               }
               return ListView(
                 controller: _scroll,
