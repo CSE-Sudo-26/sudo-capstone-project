@@ -1010,6 +1010,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dietEmpty => 'No meals logged yet';
 
   @override
+  String get dietDayEmpty => 'No record';
+
+  @override
+  String get dietMacros => 'Macros';
+
+  @override
   String get dietTodaySummary => 'Today\'s nutrition';
 
   @override
@@ -1034,7 +1040,13 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get dietAiAnalysis => 'AI analysis';
+  String get aiAnalysis => 'AI analysis';
+
+  @override
+  String get aiPeriodAnalysis => 'AI period analysis';
+
+  @override
+  String get aiAllAnalysis => 'AI all-time analysis';
 
   @override
   String dietAiOverSodium(int over) {
@@ -2389,6 +2401,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get routineAlreadyGone => 'That routine is already gone';
+
+  @override
+  String get workoutPendingTitle => 'Not done yet';
+
+  @override
+  String get workoutUndatedTitle => 'Records without a date';
+
+  @override
+  String get workoutPendingCancel => 'Cancel assignment';
 
   @override
   String get routineUpdateFailed =>
